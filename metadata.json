@@ -1,0 +1,6 @@
+{
+  "name": "格子熵",
+  "description": "Grid Entropy - 经典几何格盘游戏聚合平台。通过舒尔特方格、2048、五子交锋等矩阵思维练习消耗混沌高熵，达成自我认知秩序的重建与负熵增益。",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
