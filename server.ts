@@ -352,6 +352,135 @@ app.get('/api/entropy-leaderboard/:date', async (req, res) => {
   }
 });
 
+// ==================== FEATURE REQUESTS API ====================
+
+// GET /api/features - Fetch all feature requests with user's vote status
+app.get('/api/features', async (req, res) => {
+  try {
+    const userId = (req.query.userId as string) || '';
+
+    const [rows] = await pool.execute(
+      `SELECT fr.*,
+              CASE WHEN fv.user_id IS NOT NULL THEN TRUE ELSE FALSE END as userVoted
+       FROM feature_requests fr
+       LEFT JOIN feature_votes fv ON fr.id = fv.feature_id AND fv.user_id = ?
+       ORDER BY fr.votes DESC, fr.created_at ASC`,
+      [userId]
+    );
+
+    res.json(rows);
+  } catch (error: any) {
+    console.error('Error fetching feature requests:', error.message);
+    res.status(500).json([]);
+  }
+});
+
+// POST /api/features/vote - Vote for a feature request (consumes negentropy)
+app.post('/api/features/vote', async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const { featureId, userId, negentropySpent } = req.body;
+
+    if (!featureId || !userId || !negentropySpent) {
+      res.status(400).json({ success: false, error: 'Missing required fields' });
+      return;
+    }
+
+    await connection.beginTransaction();
+
+    // Check if user already voted for this feature
+    const [existing] = await connection.execute(
+      `SELECT id FROM feature_votes WHERE feature_id = ? AND user_id = ?`,
+      [featureId, userId]
+    );
+
+    if ((existing as any[]).length > 0) {
+      await connection.rollback();
+      res.status(409).json({ success: false, error: 'Already voted for this feature' });
+      return;
+    }
+
+    // Insert vote record
+    await connection.execute(
+      `INSERT INTO feature_votes (feature_id, user_id, negentropy_spent, created_at)
+       VALUES (?, ?, ?, ?)`,
+      [featureId, userId, negentropySpent, Date.now()]
+    );
+
+    // Increment vote count
+    await connection.execute(
+      `UPDATE feature_requests SET votes = votes + 1 WHERE id = ?`,
+      [featureId]
+    );
+
+    await connection.commit();
+    res.json({ success: true });
+  } catch (error: any) {
+    await connection.rollback();
+    console.error('Error voting for feature:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  } finally {
+    connection.release();
+  }
+});
+
+// ==================== ENTROPY STATE SYNC ====================
+
+// POST /api/entropy/sync - Sync user entropy/negentropy state to users table
+app.post('/api/entropy/sync', async (req, res) => {
+  try {
+    const { userId, entropy, negentropy, totalNegentropyGenerated, lastActiveDate } = req.body;
+
+    if (!userId) {
+      res.status(400).json({ success: false, error: 'Missing userId' });
+      return;
+    }
+
+    await pool.execute(
+      `UPDATE users SET
+        entropy = ?,
+        negentropy = ?,
+        total_negentropy_generated = ?,
+        last_active_date = ?,
+        updated_at = ?
+       WHERE user_id = ?`,
+      [entropy || 0, negentropy || 0, totalNegentropyGenerated || 0, lastActiveDate || null, Date.now(), userId]
+    );
+
+    res.json({ success: true });
+  } catch (error: any) {
+    console.error('Error syncing entropy state:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/entropy/state/:userId - Fetch user entropy state
+app.get('/api/entropy/state/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const [rows] = await pool.execute(
+      `SELECT user_id as userId, entropy, negentropy,
+              total_negentropy_generated as totalNegentropyGenerated,
+              last_active_date as lastActiveDate
+       FROM users
+       WHERE user_id = ?
+       LIMIT 1`,
+      [userId]
+    );
+
+    const records = rows as any[];
+    if (records.length > 0) {
+      res.json({ success: true, state: records[0] });
+    } else {
+      res.json({ success: false, error: 'User not found' });
+    }
+  } catch (error: any) {
+    console.error('Error fetching entropy state:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Grid Game API server running on http://localhost:${PORT}`);
 });

@@ -18,6 +18,7 @@ import MemoryMatrix from './components/MemoryMatrix';
 import GameOfLife from './components/GameOfLife';
 import PixelCanvas from './components/PixelCanvas';
 import Snake from './components/Snake';
+import FeatureRequestPanel from './components/FeatureRequestPanel';
 import { 
   Trophy, 
   Share2, 
@@ -51,8 +52,9 @@ export default function App() {
     nickname: '',
     avatarColor: '',
     avatarEmoji: '',
-    accumulatedEntropy: 0,
-    todayEntropyConsumed: 0,
+    entropy: 0,
+    negentropy: 0,
+    totalNegentropyGenerated: 0,
     lastActiveDate: '',
   });
   const [themeId, setThemeId] = useState<string>('minimalism');
@@ -121,8 +123,9 @@ export default function App() {
               nickname: p.nickname,
               avatarColor: p.avatarColor,
               avatarEmoji: p.avatarEmoji,
-              accumulatedEntropy: 0,
-              todayEntropyConsumed: 0,
+              entropy: 0,
+              negentropy: 0,
+              totalNegentropyGenerated: 0,
               lastActiveDate: todayStr,
             };
           }
@@ -152,15 +155,30 @@ export default function App() {
     }
 
     if (loadedUser) {
-      if (loadedUser.accumulatedEntropy === undefined) loadedUser.accumulatedEntropy = 0;
-      if (loadedUser.todayEntropyConsumed === undefined) loadedUser.todayEntropyConsumed = 0;
+      if (loadedUser.entropy === undefined) loadedUser.entropy = 0;
+      if (loadedUser.negentropy === undefined) loadedUser.negentropy = 0;
+      if (loadedUser.totalNegentropyGenerated === undefined) loadedUser.totalNegentropyGenerated = 0;
       if (!loadedUser.lastActiveDate) loadedUser.lastActiveDate = todayStr;
 
+      // Daily entropy increase calculation
       if (loadedUser.lastActiveDate !== todayStr) {
-        const remainingUnsolved = 100 - (loadedUser.todayEntropyConsumed || 0);
-        const nextAccumulated = Math.max(0, (loadedUser.accumulatedEntropy || 0) + remainingUnsolved);
-        loadedUser.accumulatedEntropy = nextAccumulated;
-        loadedUser.todayEntropyConsumed = 0;
+        const lastDate = new Date(loadedUser.lastActiveDate);
+        const today = new Date(todayStr);
+        const daysSinceLastActive = Math.max(1, Math.floor((today.getTime() - lastDate.getTime()) / 86400000));
+
+        // Each day away: entropy increases by 20, reduced by the negentropy earned that day
+        let totalEntropyIncrease = 0;
+        let remainingNegentropy = loadedUser.negentropy || 0;
+
+        for (let d = 0; d < daysSinceLastActive; d++) {
+          const dayEntropyIncrease = 20;
+          const offset = Math.min(remainingNegentropy, dayEntropyIncrease);
+          totalEntropyIncrease += dayEntropyIncrease - offset;
+          remainingNegentropy -= offset;
+        }
+
+        loadedUser.entropy = Math.max(0, (loadedUser.entropy || 0) + totalEntropyIncrease);
+        loadedUser.negentropy = remainingNegentropy; // leftover after offsetting all days
         loadedUser.lastActiveDate = todayStr;
         localStorage.setItem('schulte_profile', JSON.stringify(loadedUser));
       }
@@ -196,8 +214,9 @@ export default function App() {
       nickname: authUser.nickname,
       avatarColor: authUser.avatarColor,
       avatarEmoji: authUser.avatarEmoji,
-      accumulatedEntropy: 0,
-      todayEntropyConsumed: 0,
+      entropy: 0,
+      negentropy: 0,
+      totalNegentropyGenerated: 0,
       lastActiveDate: todayStr,
     };
     setUser(profile);
@@ -230,20 +249,25 @@ export default function App() {
     setShowAuth(true);
   };
 
-  // Dynamic real-time entropy consumption engine
+  // Dynamic real-time negentropy production engine
+  // Playing games generates negentropy (order energy) which reduces entropy
   const consumeEntropy = useCallback(async (points: number) => {
     setUser((prevUser) => {
       if (!prevUser.userId) return prevUser;
       const todayStr = new Date().toISOString().split('T')[0];
-      const nextConsumed = (prevUser.todayEntropyConsumed || 0) + points;
+      const nextNegentropy = (prevUser.negentropy || 0) + points;
+      const nextTotalGenerated = (prevUser.totalNegentropyGenerated || 0) + points;
+      const nextEntropy = Math.max(0, (prevUser.entropy || 0) - points);
       const updated = {
         ...prevUser,
-        todayEntropyConsumed: nextConsumed,
+        negentropy: nextNegentropy,
+        totalNegentropyGenerated: nextTotalGenerated,
+        entropy: nextEntropy,
         lastActiveDate: todayStr
       };
-      
+
       localStorage.setItem('schulte_profile', JSON.stringify(updated));
-      
+
       // Async background server sync
       saveEntropyRecordToFirebase(
         updated.userId,
@@ -251,7 +275,7 @@ export default function App() {
         updated.avatarColor,
         updated.avatarEmoji,
         todayStr,
-        nextConsumed
+        nextNegentropy
       );
 
       return updated;
@@ -276,6 +300,19 @@ export default function App() {
     
     await consumeEntropy(points);
   };
+
+  // Handle negentropy spent on feature voting
+  const handleNegentropySpent = useCallback((spent: number) => {
+    setUser((prevUser) => {
+      if (!prevUser.userId) return prevUser;
+      const updated = {
+        ...prevUser,
+        negentropy: Math.max(0, (prevUser.negentropy || 0) - spent),
+      };
+      localStorage.setItem('schulte_profile', JSON.stringify(updated));
+      return updated;
+    });
+  }, []);
 
   // Auto-close mobile drawer when game begins
   useEffect(() => {
@@ -437,79 +474,85 @@ export default function App() {
                 transition={{ duration: 0.3 }}
                 className="space-y-5"
               >
-                {/* 🌌 对抗熵增 - Daily Entropy Combat Dashboard */}
+                {/* 🌌 对抗熵增 - Entropy Dashboard */}
                 <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 max-w-lg mx-auto flex flex-col gap-3.5 shadow-xl select-none">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6.5 h-6.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/20 flex items-center justify-center text-[#3EB489]">
                         <Orbit size={13} className="animate-spin" style={{ animationDuration: '6s' }} />
                       </div>
-                      <span className="text-xs font-black text-white tracking-tight">每日“对抗熵增”任务</span>
+                      <span className="text-xs font-black text-white tracking-tight">熵 · 系统状态</span>
                     </div>
 
                     {/* Status Badge */}
-                    {user.todayEntropyConsumed >= 100 ? (
+                    {(user.entropy || 0) <= 0 ? (
                       <span className="text-[9.5px] font-black text-[#3EB489] bg-[#3EB489]/10 px-2.5 py-0.5 rounded-full border border-[#3EB489]/25 flex items-center gap-1">
                         <Sparkles size={10} className="animate-pulse" />
-                        <span>负熵常驻（已攻克）</span>
+                        <span>秩序井然（低熵态）</span>
                       </span>
                     ) : (
                       <span className="text-[9.5px] font-bold text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/25 flex items-center gap-1 animate-pulse">
                         <Flame size={10} />
-                        <span>处于熵增中（未消解）</span>
+                        <span>熵增中（需整理）</span>
                       </span>
                     )}
                   </div>
 
-                  {/* High Contrast Slider / Bar */}
+                  {/* Entropy Level Bar */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
-                      <span>{user.todayEntropyConsumed >= 100 ? '今日负熵释放完成，进入高度有序状态' : '今日负熵释放进度'}</span>
+                      <span>{(user.entropy || 0) <= 0 ? '系统已恢复秩序' : `混沌熵值 · 自然增长中 (+1/小时)`}</span>
                       <span className="font-mono text-zinc-300 font-bold">
-                        {user.todayEntropyConsumed || 0} / 100 负熵
+                        {user.entropy || 0} E
                       </span>
                     </div>
-                    
-                    {/* Real Custom Progress Track */}
+
                     <div className="h-2 rounded-full bg-zinc-800/60 overflow-hidden relative border border-zinc-950">
-                      <div 
-                        className="h-full bg-gradient-to-r from-amber-500 to-[#3EB489] transition-all duration-500"
-                        style={{ width: `${Math.min(100, ((user.todayEntropyConsumed || 0) / 100) * 100)}%` }}
+                      <div
+                        className="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500"
+                        style={{ width: `${Math.min(100, ((user.entropy || 0) / 200) * 100)}%` }}
                       />
                     </div>
                   </div>
 
-                  {/* Detail Row containing Carry-Over details */}
+                  {/* Detail Row: Negentropy balance + Total generated */}
                   <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium pt-3.5 border-t border-zinc-800/40 text-zinc-400">
                     <div className="bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/20 flex flex-col gap-0.5">
                       <span className="text-[9px] text-zinc-500 block">
-                        累计历史混沌熵
+                        负熵余额
                       </span>
                       <span className="font-mono text-xs font-black text-white flex items-center gap-1.5 mt-0.5">
-                        <span className={(user.accumulatedEntropy || 0) > 0 ? "text-rose-400 animate-pulse font-extrabold" : "text-[#3EB489]"}>
-                          {user.accumulatedEntropy || 0} E
+                        <span className={(user.negentropy || 0) > 0 ? "text-[#3EB489]" : "text-zinc-500"}>
+                          {user.negentropy || 0} E
                         </span>
-                        {(user.accumulatedEntropy || 0) > 0 && (
-                          <span className="text-[8.5px] font-normal text-zinc-500 leading-tight">未达标累存值</span>
+                        {(user.negentropy || 0) > 0 && (
+                          <span className="text-[8.5px] font-normal text-zinc-500 leading-tight">可用于提交需求</span>
                         )}
                       </span>
                     </div>
 
                     <div className="bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/20 flex flex-col gap-0.5">
                       <span className="text-[9px] text-zinc-500 block">
-                        秩序混沌状态级
+                        累计产出负熵
                       </span>
                       <span className="font-mono text-xs font-black text-white flex items-center gap-1 mt-0.5">
-                        <span className={100 - (user.todayEntropyConsumed || 0) <= 0 ? "text-[#3EB489]" : "text-amber-500 font-bold"}>
-                          {100 - (user.todayEntropyConsumed || 0)} E
+                        <span className="text-teal-400">
+                          {user.totalNegentropyGenerated || 0} E
                         </span>
                         <span className="text-[9px] font-normal text-zinc-500">
-                          ({100 - (user.todayEntropyConsumed || 0) <= 0 ? '产生秩序' : '处于高熵'})
+                          (整理格子获得)
                         </span>
                       </span>
                     </div>
                   </div>
                 </div>
+
+                {/* 🌟 需求工厂 - Feature Request Panel */}
+                <FeatureRequestPanel
+                  userId={user.userId}
+                  negentropy={user.negentropy || 0}
+                  onNegentropyChange={handleNegentropySpent}
+                />
 
                 {/* 3x3 Grid console (Optimized responsive columns) */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-2xl mx-auto">

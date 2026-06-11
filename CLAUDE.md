@@ -104,7 +104,7 @@ All 9 games are now implemented.
 
 ### Entropy System
 
-Each player has `accumulatedEntropy` (carry-over from unfinished days) and `todayEntropyConsumed`. Daily goal: 100 "negative entropy". Playing games consumes entropy ticks; unconsumed entropy rolls over via daily carry-over logic.
+Each player has `entropy` (current chaos level that naturally increases over time) and `negentropy` (order energy produced by playing games). Entropy increases by 20 per day of inactivity. Playing games produces negentropy which reduces entropy. Negentropy can be consumed to submit feature requests to the system.
 
 ## Key Patterns
 

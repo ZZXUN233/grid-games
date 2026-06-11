@@ -33,11 +33,11 @@ const LOCAL_CHALLENGERS: Record<string, ScoreRecord[]> = {
 };
 
 const LOCAL_ENTROPY_CHALLENGERS: Omit<EntropyRecord, 'date'>[] = [
-  { id: 'ec1', userId: 'ai_koala', nickname: '瞬时王考拉 🐨', avatarColor: '#10B981', avatarEmoji: '🐨', entropyConsumed: 220 },
-  { id: 'ec2', userId: 'ai_panda', nickname: '极速熊猫 🐼', avatarColor: '#8B5CF6', avatarEmoji: '🐼', entropyConsumed: 185 },
-  { id: 'ec3', userId: 'ai_falcon', nickname: '猎鹰之眼 🦅', avatarColor: '#EF4444', avatarEmoji: '🦅', entropyConsumed: 145 },
-  { id: 'ec4', userId: 'ai_fox', nickname: '幻影狐 🦊', avatarColor: '#F59E0B', avatarEmoji: '🦊', entropyConsumed: 110 },
-  { id: 'ec5', userId: 'ai_owl', nickname: '睿智猫头鹰 🦉', avatarColor: '#6366F1', avatarEmoji: '🦉', entropyConsumed: 90 }
+  { id: 'ec1', userId: 'ai_koala', nickname: '瞬时王考拉 🐨', avatarColor: '#10B981', avatarEmoji: '🐨', negentropy: 220 },
+  { id: 'ec2', userId: 'ai_panda', nickname: '极速熊猫 🐼', avatarColor: '#8B5CF6', avatarEmoji: '🐼', negentropy: 185 },
+  { id: 'ec3', userId: 'ai_falcon', nickname: '猎鹰之眼 🦅', avatarColor: '#EF4444', avatarEmoji: '🦅', negentropy: 145 },
+  { id: 'ec4', userId: 'ai_fox', nickname: '幻影狐 🦊', avatarColor: '#F59E0B', avatarEmoji: '🦊', negentropy: 110 },
+  { id: 'ec5', userId: 'ai_owl', nickname: '睿智猫头鹰 🦉', avatarColor: '#6366F1', avatarEmoji: '🦉', negentropy: 90 }
 ];
 
 export default function Leaderboard({ currentUserId, localScores, theme, activeTab, difficultyFilter, user }: LeaderboardProps) {
@@ -125,7 +125,7 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
     // Inject self if not present
     if (user && user.userId) {
       const selfIndex = allEntropy.findIndex((e) => e.userId === user.userId);
-      if (selfIndex === -1 && user.todayEntropyConsumed > 0) {
+      if (selfIndex === -1 && (user.negentropy || 0) > 0) {
         allEntropy.push({
           id: `${user.userId}_${todayStr}`,
           userId: user.userId,
@@ -133,10 +133,10 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
           avatarColor: user.avatarColor,
           avatarEmoji: user.avatarEmoji,
           date: todayStr,
-          entropyConsumed: user.todayEntropyConsumed
+          negentropy: user.negentropy
         });
-      } else if (selfIndex !== -1 && user.todayEntropyConsumed > allEntropy[selfIndex].entropyConsumed) {
-        allEntropy[selfIndex].entropyConsumed = user.todayEntropyConsumed;
+      } else if (selfIndex !== -1 && (user.negentropy || 0) > (allEntropy[selfIndex].negentropy || 0)) {
+        allEntropy[selfIndex].negentropy = user.negentropy;
       }
     }
 
@@ -151,7 +151,7 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
     });
 
     // Sort descending by entropy consumed
-    return allEntropy.sort((a, b) => b.entropyConsumed - a.entropyConsumed).slice(0, 10);
+    return allEntropy.sort((a, b) => (b.negentropy || 0) - (a.negentropy || 0)).slice(0, 10);
   };
 
   const finalSchulteLeaderboard = getMergedLeaderboard();
@@ -217,9 +217,10 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
           {finalEntropyLeaderboard.map((record, index) => {
             const isSelf = record.userId === currentUserId;
             const rank = index + 1;
-            const targetLeft = 100 - record.entropyConsumed;
-            const labelStr = targetLeft <= 0 
-              ? `已完成 (超额消解 ${Math.abs(targetLeft)})` 
+            const targetLeft = Math.max(0, 100 - (record.negentropy || 0));
+            const isComplete = (record.negentropy || 0) >= 100;
+            const labelStr = isComplete
+              ? `已完成 (超额 ${Math.abs(100 - record.negentropy)})`
               : `未完成 (余 ${targetLeft} 熵)`;
 
             let rankBadge = '';
@@ -275,10 +276,10 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
                 {/* Right block: Entropy Stats */}
                 <div className="text-right flex flex-col justify-center">
                   <span className={`font-mono text-xs font-black leading-none ${isSelf ? 'text-[#3EB489]' : 'text-[#3EB489]/90'}`}>
-                    +{record.entropyConsumed} 负熵
+                    +{record.negentropy || 0} 负熵
                   </span>
                   <span className="text-[9px] text-zinc-500 font-mono mt-1 leading-none block">
-                    熵值降至: {Math.max(-999, 100 - record.entropyConsumed)}
+                    熵值降至: {Math.max(-999, 100 - (record.negentropy || 0))}
                   </span>
                 </div>
               </div>

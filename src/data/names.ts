@@ -39,8 +39,9 @@ export function generateRandomProfile() {
     nickname: `${prefix}${suffix}`,
     avatarColor: color,
     avatarEmoji: emoji,
-    accumulatedEntropy: 0,
-    todayEntropyConsumed: 0,
+    entropy: 0,
+    negentropy: 0,
+    totalNegentropyGenerated: 0,
     lastActiveDate: todayStr
   };
 }

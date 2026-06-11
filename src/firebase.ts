@@ -50,14 +50,14 @@ export async function saveEntropyRecordToFirebase(
   avatarColor: string,
   avatarEmoji: string,
   date: string,
-  entropyConsumed: number
+  negentropy: number
 ): Promise<boolean> {
   try {
     const id = `${userId}_${date}`;
     const response = await fetch(`${API_BASE}/entropy`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, userId, nickname, avatarColor, avatarEmoji, date, entropyConsumed }),
+      body: JSON.stringify({ id, userId, nickname, avatarColor, avatarEmoji, date, entropyConsumed: negentropy }),
     });
     const data = await response.json();
     return data.success === true;
@@ -83,5 +83,39 @@ export async function fetchTodayEntropyLeaderboard(
   } catch (error) {
     console.error('Failed to fetch entropy leaderboard:', error);
     return [];
+  }
+}
+
+/**
+ * Fetch feature requests
+ */
+export async function fetchFeatureRequests(userId: string): Promise<any[]> {
+  try {
+    const res = await fetch(`${API_BASE}/features?userId=${encodeURIComponent(userId)}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Vote for a feature request (consumes negentropy)
+ */
+export async function voteFeatureRequest(
+  featureId: number,
+  userId: string,
+  negentropySpent: number
+): Promise<boolean> {
+  try {
+    const res = await fetch(`${API_BASE}/features/vote`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ featureId, userId, negentropySpent }),
+    });
+    const data = await res.json();
+    return data.success === true;
+  } catch {
+    return false;
   }
 }
