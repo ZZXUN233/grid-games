@@ -41,7 +41,9 @@ import {
   Flame,
   Orbit,
   Sparkles,
-  Settings
+  Settings,
+  Copy,
+  Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -281,6 +283,7 @@ export default function App() {
   };
 
   const [isLoggedInState, setIsLoggedInState] = useState(false);
+  const [userIdCopied, setUserIdCopied] = useState(false);
 
   // Track login state on mount
   useEffect(() => {
@@ -697,12 +700,31 @@ export default function App() {
 
                 {/* Quick Player Profile card under the portal */}
                 <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/30 rounded-xl border border-zinc-800/50 max-w-lg mx-auto">
-                  <div className="flex items-center gap-2">
-                    <span className="text-base select-none">{user.avatarEmoji || "🕹️"}</span>
-                    <span className="text-xs text-zinc-400 font-bold">已登录玩家：</span>
-                    <span className="text-xs font-black text-white font-mono">{user.nickname || "载入中..."}</span>
+                  <div className="flex items-center gap-2 min-w-0">
+                    <span className="text-base select-none shrink-0">{user.avatarEmoji || "🕹️"}</span>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-xs font-black text-white font-mono truncate">{user.nickname || "载入中..."}</span>
+                      </div>
+                      {user.userId && (
+                        <div className="flex items-center gap-1 mt-0.5">
+                          <span className="text-[10px] text-zinc-500 font-mono select-all">{user.userId}</span>
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(user.userId);
+                              setUserIdCopied(true);
+                              setTimeout(() => setUserIdCopied(false), 1500);
+                            }}
+                            className="p-0.5 rounded text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all cursor-pointer"
+                            title="复制用户 ID"
+                          >
+                            {userIdCopied ? <Check size={10} className="text-[#3EB489]" /> : <Copy size={10} />}
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                  <div className="flex items-cnter gap-1.5">
+                  <div className="flex items-cnter gap-1.5 shrink-0">
                     <button
                       onClick={() => setIsDrawerOpen(true)}
                       className="text-[10px] py-1 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 font-bold text-zinc-400 hover:text-zinc-200 cursor-pointer active:scale-95 transition-all"
