@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { GameTheme } from '../types';
 import { registerUser, loginUser, AuthUser } from '../api';
-import { LogIn, UserPlus, Eye, EyeOff } from 'lucide-react';
+import { LogIn, UserPlus, Eye, EyeOff, X } from 'lucide-react';
 
 interface AuthModalProps {
   theme: GameTheme;
-  onSuccess: (user: AuthUser) => void;
+  onSuccess: (user: AuthUser, password?: string) => void;
   onClose?: () => void;
 }
 
@@ -36,7 +36,7 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
 
         const result = await registerUser(nickname.trim(), password);
         if (result.success && result.user) {
-          onSuccess(result.user);
+          onSuccess(result.user, password);
         } else {
           throw new Error(result.error || '注册失败');
         }
@@ -46,7 +46,7 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
 
         const result = await loginUser(userId.trim(), password);
         if (result.success && result.user) {
-          onSuccess(result.user);
+          onSuccess(result.user, password);
         } else {
           throw new Error(result.error || '登录失败');
         }
@@ -81,7 +81,7 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
             <UserPlus size={18} className={isLight ? 'text-[#8B5A2B]' : 'text-emerald-400'} />
           )}
         </div>
-        <div>
+        <div className="flex-1 min-w-0">
           <h3 className={`text-sm font-black ${isLight ? 'text-[#4A3C31]' : 'text-white'}`}>
             {mode === 'login' ? '登录账号' : '注册新账号'}
           </h3>
@@ -89,6 +89,14 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
             {mode === 'login' ? '使用你的用户 ID 和密码登录' : '创建账号以保存你的游戏进度'}
           </p>
         </div>
+        {onClose && (
+          <button
+            onClick={onClose}
+            className={`p-1.5 rounded-lg hover:bg-zinc-800/50 text-zinc-500 hover:text-white transition-all cursor-pointer shrink-0`}
+          >
+            <X size={16} />
+          </button>
+        )}
       </div>
 
       {/* Error message */}

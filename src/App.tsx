@@ -1212,7 +1212,7 @@ export default function App() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 0.7 }}
               exit={{ opacity: 0 }}
-              onClick={() => {}}
+              onClick={() => setShowAuth(false)}
               className="fixed inset-0 bg-black/80 z-50 backdrop-blur-md"
             />
             <motion.div
@@ -1224,7 +1224,8 @@ export default function App() {
               <div className="pointer-events-auto w-full max-w-md">
                 <AuthModal
                   theme={activeTheme}
-                  onSuccess={(authUser) => handleAuthSuccess(authUser)}
+                  onSuccess={(authUser, password) => handleAuthSuccess(authUser, password)}
+                  onClose={() => setShowAuth(false)}
                 />
               </div>
             </motion.div>

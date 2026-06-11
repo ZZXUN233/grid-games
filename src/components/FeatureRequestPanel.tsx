@@ -66,7 +66,7 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
   };
 
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 max-w-lg mx-auto flex flex-col gap-3.5 shadow-xl select-none">
+    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 w-full flex flex-col gap-3.5 shadow-xl select-none">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-6.5 h-6.5 bg-amber-500/10 rounded-lg border border-amber-500/20 flex items-center justify-center text-amber-500">
