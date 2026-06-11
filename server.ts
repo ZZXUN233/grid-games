@@ -17,15 +17,15 @@ app.use(cors());
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 
-// MySQL connection pool
+// MySQL connection pool — configured via env vars for Docker portability
 const pool = mysql2.createPool({
-  host: '192.168.31.200',
-  port: 3306,
-  user: 'root',
-  password: '012369zzx',
-  database: 'gg',
+  host: process.env.DB_HOST || '192.168.31.200',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '012369zzx',
+  database: process.env.DB_NAME || 'gg',
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
 });
 
 // Test connection on startup
