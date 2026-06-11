@@ -2,10 +2,7 @@ version: '3.8'
 
 services:
   grid-games:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: grid-games-app
+    image: localhost:5000/grid-games:latest
     ports:
       - "3004:3004"
     environment:

@@ -10,8 +10,8 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-# Compile server TypeScript to JavaScript for production (no tsx needed at runtime)
-RUN npx esbuild server.ts --platform=node --format=esm --outfile=server.mjs --bundle --external:mysql2 --external:bcryptjs
+# Transpile server TypeScript to JavaScript (no bundling — deps resolve from node_modules)
+RUN npx esbuild server.ts --platform=node --format=esm --outfile=server.mjs
 
 # Production stage
 FROM node:20-alpine AS production
