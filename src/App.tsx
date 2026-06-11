@@ -475,7 +475,7 @@ export default function App() {
                 className="space-y-5"
               >
                 {/* 🌌 对抗熵增 - Entropy Dashboard */}
-                <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 max-w-lg mx-auto flex flex-col gap-3.5 shadow-xl select-none">
+                <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 max-w-2xl mx-auto flex flex-col gap-3.5 shadow-xl select-none">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6.5 h-6.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/20 flex items-center justify-center text-[#3EB489]">
@@ -483,8 +483,10 @@ export default function App() {
                       </div>
                       <span className="text-xs font-black text-white tracking-tight">熵 · 系统状态</span>
                     </div>
+                  </div>
 
-                    {/* Status Badge */}
+                  {/* Status Badge — independent row */}
+                  <div className="flex items-center gap-2">
                     {(user.entropy || 0) <= 0 ? (
                       <span className="text-[9.5px] font-black text-[#3EB489] bg-[#3EB489]/10 px-2.5 py-0.5 rounded-full border border-[#3EB489]/25 flex items-center gap-1">
                         <Sparkles size={10} className="animate-pulse" />
@@ -546,13 +548,6 @@ export default function App() {
                     </div>
                   </div>
                 </div>
-
-                {/* 🌟 需求工厂 - Feature Request Panel */}
-                <FeatureRequestPanel
-                  userId={user.userId}
-                  negentropy={user.negentropy || 0}
-                  onNegentropyChange={handleNegentropySpent}
-                />
 
                 {/* 3x3 Grid console (Optimized responsive columns) */}
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-2xl mx-auto">
@@ -829,6 +824,17 @@ export default function App() {
                 activeTab="level"
                 difficultyFilter="Level 1"
                 user={user}
+              />
+            </div>
+          )}
+
+          {/* 🌟 需求工厂 - 移至底部，浏览完游戏和排行后自然看到 */}
+          {selectedGameId === null && user.userId && (
+            <div className="w-full max-w-2xl mx-auto mt-5">
+              <FeatureRequestPanel
+                userId={user.userId}
+                negentropy={user.negentropy || 0}
+                onNegentropyChange={handleNegentropySpent}
               />
             </div>
           )}

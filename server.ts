@@ -2,28 +2,28 @@ import express from 'express';
 import mysql2 from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import cors from 'cors';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 
-// CORS — allow frontend on port 3000
-app.use((_req, res, next) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-  if (_req.method === 'OPTIONS') return res.sendStatus(204);
-  next();
-});
+// CORS — same pattern as chigua/Poetica-6, permissive in dev, irrelevant in production (single origin)
+app.use(cors());
 
-const PORT = 3001;
+const PORT = parseInt(process.env.PORT || '3001', 10);
 
 // MySQL connection pool
 const pool = mysql2.createPool({
-  host: 'localhost',
+  host: '192.168.31.200',
   port: 3306,
   user: 'root',
-  password: 'root123456',
-  database: 'test_db',
+  password: '012369zzx',
+  database: 'gg',
   waitForConnections: true,
   connectionLimit: 10,
 });
@@ -479,6 +479,23 @@ app.get('/api/entropy/state/:userId', async (req, res) => {
     console.error('Error fetching entropy state:', error.message);
     res.status(500).json({ success: false, error: error.message });
   }
+});
+
+// ==================== STATIC FILES (Production) ====================
+
+// Static files — serve built frontend from dist/ (production)
+const distPath = path.join(__dirname, 'dist');
+app.use(express.static(distPath));
+
+// SPA fallback — match paths without file extensions (real page routes, not assets)
+// Pattern copied from chigua/Poetica-6
+app.get(/^\/(?!.*\.[a-z0-9]+$).*$/, (_req, res) => {
+  res.sendFile(path.join(distPath, 'index.html'), (err) => {
+    if (err) {
+      // dist/ doesn't exist (dev mode) — serve 404 JSON
+      res.status(404).json({ error: 'Not found' });
+    }
+  });
 });
 
 app.listen(PORT, () => {
