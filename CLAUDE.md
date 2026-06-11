@@ -75,7 +75,7 @@ All 9 games are now implemented.
 
 ### Data Layer
 
-- **Frontend:** `src/firebase.ts` (legacy name) / `src/api.ts` → HTTP calls to backend at `http://localhost:3001/api`
+- **Frontend:** `src/api.ts` → HTTP calls to backend at `http://localhost:3001/api`
 - **Backend:** `server.ts` — Express server, connects to MySQL (`mysql2` pool), exposes REST endpoints
 - **Database:** MySQL (`test_db`), three tables: `users`, `scores`, `entropy_leaderboard`
 

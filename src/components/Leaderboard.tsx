@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ScoreRecord, GameTheme, UserProfile, EntropyRecord } from '../types';
-import { fetchTopScoresFromFirebase, fetchTodayEntropyLeaderboard } from '../firebase';
+import { fetchTopScores, fetchTodayEntropyLeaderboard } from '../api';
 import { Trophy, RefreshCw, Eye, Component, Swords, Hash, Flame, Sparkles, Orbit } from 'lucide-react';
 
 interface LeaderboardProps {
@@ -81,7 +81,7 @@ export default function Leaderboard({ currentUserId, localScores, theme, activeT
           setDbEntropyRecords(records);
         } else {
           if (selectedSubDiff) {
-            const records = await fetchTopScoresFromFirebase(boardType, selectedSubDiff, 15);
+            const records = await fetchTopScores(boardType, selectedSubDiff, 15);
             setDbScores(records);
           }
         }

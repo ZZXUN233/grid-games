@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UserProfile, ScoreRecord, GameTheme } from './types';
 import { THEMES } from './data/themes';
 import { generateRandomProfile } from './data/names';
-import { saveScoreToFirebase, saveEntropyRecordToFirebase } from './firebase';
+import { saveScore, saveEntropyRecord } from './api';
 import { fetchProfile, AuthUser } from './api';
 import NameEditor from './components/NameEditor';
 import AuthModal from './components/AuthModal';
@@ -269,7 +269,7 @@ export default function App() {
       localStorage.setItem('schulte_profile', JSON.stringify(updated));
 
       // Async background server sync
-      saveEntropyRecordToFirebase(
+      saveEntropyRecord(
         updated.userId,
         updated.nickname,
         updated.avatarColor,
@@ -289,7 +289,7 @@ export default function App() {
     localStorage.setItem('schulte_local_scores', JSON.stringify(updated));
 
     // 2. Submit score asynchronously to Firestore
-    await saveScoreToFirebase(score);
+    await saveScore(score);
 
     // 3. Calculate grid difficulty rating points for entropy reduction
     let points = 25; // default benchmark

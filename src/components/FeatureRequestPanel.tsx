@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FeatureRequest } from '../types';
-import { fetchFeatureRequests, voteFeatureRequest } from '../firebase';
+import { fetchFeatureRequests, voteFeatureRequest } from '../api';
 import { Lightbulb, Zap, CheckCircle, Clock, XCircle, Sparkles, ThumbsUp, ArrowRight } from 'lucide-react';
 
 interface FeatureRequestPanelProps {
