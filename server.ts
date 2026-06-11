@@ -26,7 +26,10 @@ const pool = mysql2.createPool({
   database: process.env.DB_NAME || 'gg',
   waitForConnections: true,
   connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
-  // Prevent idle connections from being dropped by MySQL wait_timeout
+  connectTimeout: 10000,
+  // Recycle idle connections before MySQL wait_timeout kills them
+  idleTimeout: 60000,
+  // TCP keep-alive to prevent intermediate NAT/firewall drops
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000,
 });
@@ -267,10 +270,14 @@ app.post('/api/scores', async (req, res) => {
   try {
     const { id, userId, nickname, avatarColor, avatarEmoji, mode, difficulty, time, createdAt } = req.body;
 
+    // Round time to 2 decimal places for DECIMAL(10,2) column
+    const timeSec = typeof time === 'number' ? Math.round(time * 100) / 100 : parseFloat(time || '0');
+    const ts = typeof createdAt === 'number' ? createdAt : Date.now();
+
     await pool.execute(
       `INSERT INTO scores (id, user_id, nickname, avatar_color, avatar_emoji, mode, difficulty, time_seconds, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, userId, nickname || avatarColor || '#64748B', avatarEmoji || '👤', mode, difficulty, time, createdAt || Date.now()]
+      [String(id), String(userId), nickname || avatarColor || '#64748B', avatarEmoji || '👤', mode, difficulty, timeSec, ts]
     );
 
     res.json({ success: true });
@@ -278,7 +285,7 @@ app.post('/api/scores', async (req, res) => {
     if (error.code === 'ER_DUP_ENTRY') {
       return res.json({ success: true });
     }
-    console.error('Error saving score:', error.message);
+    console.error('Error saving score:', error.code, error.message, error.sqlMessage || '');
     res.status(500).json({ success: false, error: error.message });
   }
 });
