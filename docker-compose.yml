@@ -7,18 +7,11 @@ services:
       - "3004:3004"
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    env_file:
+      - .env.local
     environment:
       - NODE_ENV=production
       - PORT=3004
-      # MySQL connection — override in .env.local for production
-      - DB_HOST=${DB_HOST:-192.168.31.200}
-      - DB_PORT=${DB_PORT:-3306}
-      - DB_USER=${DB_USER:-root}
-      - DB_PASSWORD=${DB_PASSWORD}
-      - DB_NAME=${DB_NAME:-gg}
-      - DB_CONNECTION_LIMIT=${DB_CONNECTION_LIMIT:-10}
-    env_file:
-      - .env.local
     restart: unless-stopped
     volumes:
       # Prevent host node_modules from shadowing container
