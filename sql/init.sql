@@ -93,13 +93,18 @@ INSERT IGNORE INTO `feature_requests` (`id`, `title`, `description`, `type`, `co
 CREATE TABLE IF NOT EXISTS `invite_clicks` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '点击ID',
   `inviter_user_id` varchar(16) NOT NULL COMMENT '邀请者用户ID',
-  `clicker_ip` varchar(45) NOT NULL COMMENT '点击者IP（24h去重）',
+  `clicker_ip` varchar(45) NOT NULL COMMENT '点击者IP',
+  `clicker_ua` varchar(200) NOT NULL DEFAULT '' COMMENT '点击者User-Agent指纹',
   `reward` int NOT NULL DEFAULT 5 COMMENT '本次奖励负熵值',
   `created_at` bigint NOT NULL COMMENT '点击时间戳',
   PRIMARY KEY (`id`),
   KEY `idx_inviter` (`inviter_user_id`),
-  KEY `idx_ip_time` (`inviter_user_id`, `clicker_ip`, `created_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请点击追踪表（24h同IP去重，每次点击奖励负熵5）';
+  KEY `idx_ip_time` (`inviter_user_id`, `clicker_ip`, `created_at`),
+  KEY `idx_ip_ua` (`inviter_user_id`, `clicker_ip`, `clicker_ua`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请点击追踪表（多层反刷校验）';
+
+-- 迁移：已有 invite_clicks 表增加 clicker_ua 列
+ALTER TABLE `invite_clicks` ADD COLUMN IF NOT EXISTS `clicker_ua` varchar(200) NOT NULL DEFAULT '' COMMENT '点击者User-Agent指纹' AFTER `clicker_ip`;
 
 -- ==================== 迁移脚本 (已有数据库升级) ====================
 -- 如果 users 表缺少熵字段，执行以下 ALTER

@@ -583,37 +583,70 @@ app.post('/api/features/vote', async (req, res) => {
 
 // ==================== INVITE SYSTEM ====================
 
-const INVITE_REWARD = 5; // negentropy awarded to inviter per unique click (24h dedup)
+const INVITE_REWARD = 5; // negentropy per valid click
+const INVITE_24H = 86400000;
+const INVITE_IP_DAILY_MAX = 5; // max unique inviters one IP can reward per day
 
-// POST /api/invite/click — Record an invite link click, reward inviter
+// POST /api/invite/click — Record invite click with multi-layer anti-abuse
+// Layer 1: self-click rejection
+// Layer 2: IP + inviter dedup (same IP clicking same link within 24h)
+// Layer 3: IP + UA fingerprint dedup (same device clicking same link)
+// Layer 4: global per-IP daily cap (max 5 unique inviters per IP per day)
 app.post('/api/invite/click', async (req, res) => {
   try {
-    const { inviterUserId } = req.body;
+    const { inviterUserId, clickerUserId } = req.body;
     const clickerIp = req.ip || req.socket.remoteAddress || 'unknown';
+    const clickerUa = (req.headers['user-agent'] || 'unknown').substring(0, 200);
 
     if (!inviterUserId) {
       res.status(400).json({ success: false, error: 'Missing inviterUserId' });
       return;
     }
 
-    // Dedup: same IP clicking same inviter's link within 24h only counts once
-    const [recent] = await pool.execute(
-      `SELECT id FROM invite_clicks WHERE inviter_user_id = ? AND clicker_ip = ? AND created_at > ?`,
-      [inviterUserId, clickerIp, Date.now() - 86400000]
-    );
-    if ((recent as any[]).length > 0) {
-      res.json({ success: true, rewarded: false, reason: 'already clicked in past 24h' });
+    // Layer 1: can't click your own invite link
+    if (clickerUserId && clickerUserId === inviterUserId) {
+      res.json({ success: true, rewarded: false, reason: 'self-click' });
       return;
     }
 
-    // Record click and reward inviter
+    // Layer 2: IP + inviter dedup (same IP → same inviter, 24h)
+    const [sameInviter] = await pool.execute(
+      `SELECT id FROM invite_clicks WHERE inviter_user_id = ? AND clicker_ip = ? AND created_at > ?`,
+      [inviterUserId, clickerIp, Date.now() - INVITE_24H]
+    );
+    if ((sameInviter as any[]).length > 0) {
+      res.json({ success: true, rewarded: false, reason: 'duplicate: same IP + inviter in 24h' });
+      return;
+    }
+
+    // Layer 3: IP + UA fingerprint dedup (same device clicking same link)
+    const [sameDevice] = await pool.execute(
+      `SELECT id FROM invite_clicks WHERE inviter_user_id = ? AND clicker_ip = ? AND clicker_ua = ? AND created_at > ?`,
+      [inviterUserId, clickerIp, clickerUa, Date.now() - INVITE_24H]
+    );
+    if ((sameDevice as any[]).length > 0) {
+      res.json({ success: true, rewarded: false, reason: 'duplicate: same device fingerprint in 24h' });
+      return;
+    }
+
+    // Layer 4: global per-IP daily cap (prevent one IP from farming many inviters)
+    const [dailyCount] = await pool.execute(
+      `SELECT COUNT(DISTINCT inviter_user_id) as cnt FROM invite_clicks WHERE clicker_ip = ? AND created_at > ?`,
+      [clickerIp, Date.now() - INVITE_24H]
+    );
+    if (((dailyCount as any[])[0]?.cnt || 0) >= INVITE_IP_DAILY_MAX) {
+      res.json({ success: true, rewarded: false, reason: `IP daily limit reached (${INVITE_IP_DAILY_MAX}/day)` });
+      return;
+    }
+
+    // All checks passed — record click and reward
     const connection = await pool.getConnection();
     try {
       await connection.beginTransaction();
 
       await connection.execute(
-        `INSERT INTO invite_clicks (inviter_user_id, clicker_ip, reward, created_at) VALUES (?, ?, ?, ?)`,
-        [inviterUserId, clickerIp, INVITE_REWARD, Date.now()]
+        `INSERT INTO invite_clicks (inviter_user_id, clicker_ip, clicker_ua, reward, created_at) VALUES (?, ?, ?, ?, ?)`,
+        [inviterUserId, clickerIp, clickerUa, INVITE_REWARD, Date.now()]
       );
 
       await connection.execute(

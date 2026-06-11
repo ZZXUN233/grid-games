@@ -208,7 +208,7 @@ export default function App() {
     const params = new URLSearchParams(window.location.search);
     const inviterId = params.get('invite');
     if (inviterId && user.userId && inviterId !== user.userId) {
-      recordInviteClick(inviterId).then((res) => {
+      recordInviteClick(inviterId, user.userId).then((res) => {
         if (res.rewarded) {
           setInviteToast(`🎁 已为邀请者 ${inviterId} 贡献 +${res.reward || 5} 负熵！`);
         }

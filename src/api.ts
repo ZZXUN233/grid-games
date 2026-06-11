@@ -242,12 +242,12 @@ export async function voteFeatureRequest(
 
 // ==================== INVITE ====================
 
-export async function recordInviteClick(inviterUserId: string): Promise<{ success: boolean; rewarded?: boolean; reward?: number; reason?: string }> {
+export async function recordInviteClick(inviterUserId: string, clickerUserId?: string): Promise<{ success: boolean; rewarded?: boolean; reward?: number; reason?: string }> {
   try {
     const res = await fetch(`${API_BASE}/invite/click`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ inviterUserId }),
+      body: JSON.stringify({ inviterUserId, clickerUserId }),
     });
     return await res.json();
   } catch {
