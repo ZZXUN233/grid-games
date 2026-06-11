@@ -89,6 +89,18 @@ INSERT IGNORE INTO `feature_requests` (`id`, `title`, `description`, `type`, `co
 (6, '自定义头像框', '更多个性化头像框样式选择', 'avatar', 20, 0, 'pending', UNIX_TIMESTAMP() * 1000);
 
 
+-- ==================== 邀请追踪表 ====================
+CREATE TABLE IF NOT EXISTS `invite_clicks` (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '点击ID',
+  `inviter_user_id` varchar(16) NOT NULL COMMENT '邀请者用户ID',
+  `clicker_ip` varchar(45) NOT NULL COMMENT '点击者IP（24h去重）',
+  `reward` int NOT NULL DEFAULT 5 COMMENT '本次奖励负熵值',
+  `created_at` bigint NOT NULL COMMENT '点击时间戳',
+  PRIMARY KEY (`id`),
+  KEY `idx_inviter` (`inviter_user_id`),
+  KEY `idx_ip_time` (`inviter_user_id`, `clicker_ip`, `created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请点击追踪表（24h同IP去重，每次点击奖励负熵5）';
+
 -- ==================== 迁移脚本 (已有数据库升级) ====================
 -- 如果 users 表缺少熵字段，执行以下 ALTER
 ALTER TABLE `users`

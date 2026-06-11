@@ -581,6 +581,84 @@ app.post('/api/features/vote', async (req, res) => {
   }
 });
 
+// ==================== INVITE SYSTEM ====================
+
+const INVITE_REWARD = 5; // negentropy awarded to inviter per unique click (24h dedup)
+
+// POST /api/invite/click — Record an invite link click, reward inviter
+app.post('/api/invite/click', async (req, res) => {
+  try {
+    const { inviterUserId } = req.body;
+    const clickerIp = req.ip || req.socket.remoteAddress || 'unknown';
+
+    if (!inviterUserId) {
+      res.status(400).json({ success: false, error: 'Missing inviterUserId' });
+      return;
+    }
+
+    // Dedup: same IP clicking same inviter's link within 24h only counts once
+    const [recent] = await pool.execute(
+      `SELECT id FROM invite_clicks WHERE inviter_user_id = ? AND clicker_ip = ? AND created_at > ?`,
+      [inviterUserId, clickerIp, Date.now() - 86400000]
+    );
+    if ((recent as any[]).length > 0) {
+      res.json({ success: true, rewarded: false, reason: 'already clicked in past 24h' });
+      return;
+    }
+
+    // Record click and reward inviter
+    const connection = await pool.getConnection();
+    try {
+      await connection.beginTransaction();
+
+      await connection.execute(
+        `INSERT INTO invite_clicks (inviter_user_id, clicker_ip, reward, created_at) VALUES (?, ?, ?, ?)`,
+        [inviterUserId, clickerIp, INVITE_REWARD, Date.now()]
+      );
+
+      await connection.execute(
+        `UPDATE users SET negentropy = negentropy + ?, total_negentropy_generated = total_negentropy_generated + ?, updated_at = ? WHERE user_id = ?`,
+        [INVITE_REWARD, INVITE_REWARD, Date.now(), inviterUserId]
+      );
+
+      await connection.commit();
+      res.json({ success: true, rewarded: true, reward: INVITE_REWARD });
+    } catch (err: any) {
+      await connection.rollback();
+      throw err;
+    } finally {
+      connection.release();
+    }
+  } catch (error: any) {
+    console.error('Error recording invite click:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// GET /api/invite/stats/:userId — Get inviter statistics
+app.get('/api/invite/stats/:userId', async (req, res) => {
+  try {
+    const { userId } = req.params;
+
+    const [rows] = await pool.execute(
+      `SELECT COUNT(*) as totalClicks, COALESCE(SUM(reward), 0) as totalReward
+       FROM invite_clicks WHERE inviter_user_id = ?`,
+      [userId]
+    );
+    const stats = (rows as any[])[0] || { totalClicks: 0, totalReward: 0 };
+
+    res.json({
+      success: true,
+      totalClicks: stats.totalClicks,
+      totalReward: stats.totalReward,
+      rewardPerClick: INVITE_REWARD,
+    });
+  } catch (error: any) {
+    console.error('Error fetching invite stats:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // ==================== ENTROPY STATE SYNC ====================
 
 // POST /api/entropy/sync - Sync user entropy/negentropy state to users table

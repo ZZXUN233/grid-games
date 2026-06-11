@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { UserProfile, ScoreRecord, GameTheme } from './types';
 import { THEMES } from './data/themes';
 import { generateRandomProfile } from './data/names';
-import { saveScore, saveEntropyRecord } from './api';
+import { saveScore, saveEntropyRecord, recordInviteClick, fetchInviteStats } from './api';
 import { fetchProfile, AuthUser } from './api';
 import NameEditor from './components/NameEditor';
 import AuthModal from './components/AuthModal';
@@ -199,6 +199,41 @@ export default function App() {
     }
     })();
   }, []);
+
+  // Invite tracking: detect ?invite=<userId> param and reward inviter
+  const [inviteStats, setInviteStats] = useState<{ totalClicks: number; totalReward: number }>({ totalClicks: 0, totalReward: 0 });
+  const [inviteToast, setInviteToast] = useState('');
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const inviterId = params.get('invite');
+    if (inviterId && user.userId && inviterId !== user.userId) {
+      recordInviteClick(inviterId).then((res) => {
+        if (res.rewarded) {
+          setInviteToast(`🎁 已为邀请者 ${inviterId} 贡献 +${res.reward || 5} 负熵！`);
+        }
+      });
+      // Clean URL without reload
+      const url = new URL(window.location.href);
+      url.searchParams.delete('invite');
+      window.history.replaceState({}, '', url.toString());
+    }
+  }, [user.userId]);
+
+  // Load invite stats when user logs in
+  useEffect(() => {
+    if (user.userId) {
+      fetchInviteStats(user.userId).then(setInviteStats);
+    }
+  }, [user.userId]);
+
+  // Clear invite toast after 5s
+  useEffect(() => {
+    if (inviteToast) {
+      const t = setTimeout(() => setInviteToast(''), 5000);
+      return () => clearTimeout(t);
+    }
+  }, [inviteToast]);
 
   // Real-time entropy growth: +1 per minute while on page
   // Sync entropy state to server every 5 minutes
@@ -466,6 +501,20 @@ export default function App() {
 
   return (
     <div className={`min-h-screen ${activeTheme.bg} transition-colors duration-500 py-6 px-4 flex flex-col justify-between select-none`}>
+      {/* Invite reward toast */}
+      <AnimatePresence>
+        {inviteToast && (
+          <motion.div
+            initial={{ opacity: 0, y: -30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -30 }}
+            className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] px-4 py-2.5 rounded-xl bg-[#3EB489]/20 border border-[#3EB489]/40 text-[#3EB489] text-xs font-bold shadow-lg backdrop-blur-sm"
+          >
+            {inviteToast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       {/* Outer balanced boundary container */}
       <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center gap-6">
 
@@ -1039,6 +1088,28 @@ export default function App() {
                         onChange={handleUserChange}
                         theme={activeTheme}
                       />
+                    </div>
+                  )}
+
+                  {/* Invite Stats */}
+                  {user.userId && (inviteStats.totalClicks > 0 || inviteStats.totalReward > 0) && (
+                    <div className="space-y-2 bg-amber-500/5 rounded-xl p-3.5 border border-amber-500/15">
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
+                        邀请贡献统计
+                      </span>
+                      <div className="grid grid-cols-2 gap-2 text-[11px]">
+                        <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
+                          <div className="text-lg font-black text-white">{inviteStats.totalClicks}</div>
+                          <div className="text-[9px] text-zinc-500">次点击</div>
+                        </div>
+                        <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
+                          <div className="text-lg font-black text-[#3EB489]">+{inviteStats.totalReward}</div>
+                          <div className="text-[9px] text-zinc-500">负熵收益</div>
+                        </div>
+                      </div>
+                      <p className="text-[9px] text-zinc-500 leading-relaxed">
+                        每有一个人通过你的分享链接访问，你将获得 +5 负熵（24h 同 IP 去重）
+                      </p>
                     </div>
                   )}
 

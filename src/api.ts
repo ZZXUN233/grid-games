@@ -240,6 +240,31 @@ export async function voteFeatureRequest(
   }
 }
 
+// ==================== INVITE ====================
+
+export async function recordInviteClick(inviterUserId: string): Promise<{ success: boolean; rewarded?: boolean; reward?: number; reason?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/invite/click`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ inviterUserId }),
+    });
+    return await res.json();
+  } catch {
+    return { success: false };
+  }
+}
+
+export async function fetchInviteStats(userId: string): Promise<{ totalClicks: number; totalReward: number; rewardPerClick: number }> {
+  try {
+    const res = await fetch(`${API_BASE}/invite/stats/${encodeURIComponent(userId)}`);
+    if (!res.ok) return { totalClicks: 0, totalReward: 0, rewardPerClick: 5 };
+    return await res.json();
+  } catch {
+    return { totalClicks: 0, totalReward: 0, rewardPerClick: 5 };
+  }
+}
+
 // Submit a new feature request (costs 100 negentropy)
 export async function createFeatureRequest(
   userId: string,
