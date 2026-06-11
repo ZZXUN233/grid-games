@@ -3,6 +3,7 @@ import mysql2 from 'mysql2/promise';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -14,6 +15,35 @@ app.use(express.json());
 
 // CORS — same pattern as chigua/Poetica-6, permissive in dev, irrelevant in production (single origin)
 app.use(cors());
+
+// Rate limiting — anti-abuse for auth endpoints
+const globalLimiter = rateLimit({
+  windowMs: 60 * 1000, // 1 minute
+  max: 200,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: '请求过于频繁，请稍后再试' },
+});
+
+const registerLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000, // 1 hour
+  max: 5, // max 5 registrations per hour per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: '注册请求过于频繁（5次/小时），请稍后再试' },
+  skipSuccessfulRequests: true, // only count failed attempts
+});
+
+const loginLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // max 20 login attempts per IP
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, error: '登录尝试过于频繁（20次/15分钟），请稍后再试' },
+  skipSuccessfulRequests: true, // only count failures (prevent brute force)
+});
+
+app.use(globalLimiter);
 
 const PORT = parseInt(process.env.PORT || '3001', 10);
 
@@ -72,7 +102,7 @@ function generateUserId(): string {
 // ==================== USER / AUTH API ====================
 
 // POST /api/auth/register - Register a new user
-app.post('/api/auth/register', async (req, res) => {
+app.post('/api/auth/register', registerLimiter, async (req, res) => {
   try {
     const { nickname, password, avatarColor, avatarEmoji } = req.body;
 
@@ -121,7 +151,7 @@ app.post('/api/auth/register', async (req, res) => {
 });
 
 // POST /api/auth/login - Login with password
-app.post('/api/auth/login', async (req, res) => {
+app.post('/api/auth/login', loginLimiter, async (req, res) => {
   try {
     const { userId, password } = req.body;
 
