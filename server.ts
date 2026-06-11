@@ -239,7 +239,7 @@ app.post('/api/auth/profile', async (req, res) => {
     }
 
     const [rows] = await pool.execute(
-      'SELECT user_id, nickname, avatar_color, avatar_emoji FROM users WHERE user_id = ?',
+      'SELECT user_id, nickname, avatar_color, avatar_emoji, entropy, negentropy, total_negentropy_generated, last_active_date FROM users WHERE user_id = ?',
       [userId]
     );
     const users = rows as any[];
@@ -255,6 +255,10 @@ app.post('/api/auth/profile', async (req, res) => {
         nickname: user.nickname,
         avatarColor: user.avatar_color,
         avatarEmoji: user.avatar_emoji,
+        entropy: user.entropy ?? 0,
+        negentropy: user.negentropy ?? 0,
+        totalNegentropyGenerated: user.total_negentropy_generated ?? 0,
+        lastActiveDate: user.last_active_date || '',
       }
     });
   } catch (error: any) {

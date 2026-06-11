@@ -123,10 +123,10 @@ export default function App() {
               nickname: p.nickname,
               avatarColor: p.avatarColor,
               avatarEmoji: p.avatarEmoji,
-              entropy: 0,
-              negentropy: 0,
-              totalNegentropyGenerated: 0,
-              lastActiveDate: todayStr,
+              entropy: p.entropy ?? 0,
+              negentropy: p.negentropy ?? 0,
+              totalNegentropyGenerated: p.totalNegentropyGenerated ?? 0,
+              lastActiveDate: p.lastActiveDate || todayStr,
             };
             setIsLoggedInState(true);
           }
@@ -198,6 +198,50 @@ export default function App() {
     })();
   }, []);
 
+  // Real-time entropy growth: +1 per minute while on page
+  // Sync entropy state to server every 5 minutes
+  const userRef = React.useRef(user);
+  userRef.current = user;
+
+  useEffect(() => {
+    const entropyInterval = setInterval(() => {
+      setUser((prevUser) => {
+        if (!prevUser.userId) return prevUser;
+        const updated = {
+          ...prevUser,
+          entropy: (prevUser.entropy || 0) + 1,
+        };
+        localStorage.setItem('schulte_profile', JSON.stringify(updated));
+        return updated;
+      });
+    }, 60000); // every 60 seconds
+
+    const syncInterval = setInterval(() => {
+      const u = userRef.current;
+      if (!u.userId) return;
+      const todayStr = new Date().toISOString().split('T')[0];
+      // Sync to entropy leaderboard
+      saveEntropyRecord(u.userId, u.nickname, u.avatarColor, u.avatarEmoji, todayStr, u.negentropy || 0);
+      // Sync full entropy state to users table
+      fetch('/api/entropy/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userId: u.userId,
+          entropy: u.entropy || 0,
+          negentropy: u.negentropy || 0,
+          totalNegentropyGenerated: u.totalNegentropyGenerated || 0,
+          lastActiveDate: todayStr,
+        }),
+      }).catch(() => {});
+    }, 300000); // sync every 5 minutes
+
+    return () => {
+      clearInterval(entropyInterval);
+      clearInterval(syncInterval);
+    };
+  }, []);
+
   const handleUserChange = (updatedUser: UserProfile) => {
     setUser(updatedUser);
     localStorage.setItem('schulte_profile', JSON.stringify(updatedUser));
@@ -249,20 +293,23 @@ export default function App() {
     setShowAuth(true);
   };
 
-  // Dynamic real-time negentropy production engine
-  // Playing games generates negentropy (order energy) which reduces entropy
-  const consumeEntropy = useCallback(async (points: number) => {
+  // Entropy economics engine: playing games costs mental energy (+3 entropy) but skill
+  // generates negentropy which offsets it. Net: entropy tracks overall chaos level.
+  const GAME_BASE_COST = 3; // base entropy per game played (mental effort)
+
+  const consumeEntropy = useCallback(async (negentropyReward: number) => {
     setUser((prevUser) => {
       if (!prevUser.userId) return prevUser;
       const todayStr = new Date().toISOString().split('T')[0];
-      const nextNegentropy = (prevUser.negentropy || 0) + points;
-      const nextTotalGenerated = (prevUser.totalNegentropyGenerated || 0) + points;
-      const nextEntropy = Math.max(0, (prevUser.entropy || 0) - points);
+      const nextNegentropy = (prevUser.negentropy || 0) + negentropyReward;
+      const nextTotalGenerated = (prevUser.totalNegentropyGenerated || 0) + negentropyReward;
+      // Playing costs base entropy; negentropy offsets it
+      const netEntropy = Math.max(0, (prevUser.entropy || 0) + GAME_BASE_COST - negentropyReward);
       const updated = {
         ...prevUser,
         negentropy: nextNegentropy,
         totalNegentropyGenerated: nextTotalGenerated,
-        entropy: nextEntropy,
+        entropy: netEntropy,
         lastActiveDate: todayStr
       };
 
@@ -291,14 +338,17 @@ export default function App() {
     // 2. Submit score asynchronously to Firestore
     await saveScore(score);
 
-    // 3. Calculate grid difficulty rating points for entropy reduction
-    let points = 25; // default benchmark
-    if (score.difficulty.includes('3x3')) points = 15;
-    else if (score.difficulty.includes('4x4')) points = 25;
-    else if (score.difficulty.includes('5x5')) points = 35;
-    else if (score.difficulty.includes('6x6')) points = 50;
-    
-    await consumeEntropy(points);
+    // 3. Entropy economics: playing costs 3 entropy (handled by consumeEntropy),
+    //    skill generates negentropy reward scaled by difficulty
+    let reward = 25; // default negentropy reward
+    if (score.difficulty.includes('3x3')) reward = 15;
+    else if (score.difficulty.includes('4x4')) reward = 25;
+    else if (score.difficulty.includes('5x5')) reward = 35;
+    else if (score.difficulty.includes('6x6')) reward = 50;
+    // Higher reward for faster times (under 30s gets bonus)
+    if (score.time && score.time < 30) reward += 10;
+
+    await consumeEntropy(reward);
   };
 
   // Handle negentropy spent on feature voting
@@ -485,17 +535,32 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Status Badge — independent row */}
+                  {/* Status Badge — entropy tier */}
                   <div className="flex items-center gap-2">
                     {(user.entropy || 0) <= 0 ? (
                       <span className="text-[9.5px] font-black text-[#3EB489] bg-[#3EB489]/10 px-2.5 py-0.5 rounded-full border border-[#3EB489]/25 flex items-center gap-1">
-                        <Sparkles size={10} className="animate-pulse" />
-                        <span>秩序井然（低熵态）</span>
+                        <Sparkles size={10} />
+                        <span>秩序井然</span>
                       </span>
-                    ) : (
+                    ) : (user.entropy || 0) < 30 ? (
+                      <span className="text-[9.5px] font-bold text-blue-400 bg-blue-400/10 px-2.5 py-0.5 rounded-full border border-blue-400/25 flex items-center gap-1">
+                        <Sparkles size={10} />
+                        <span>微弱波动</span>
+                      </span>
+                    ) : (user.entropy || 0) < 80 ? (
                       <span className="text-[9.5px] font-bold text-amber-500 bg-amber-500/10 px-2.5 py-0.5 rounded-full border border-amber-500/25 flex items-center gap-1 animate-pulse">
                         <Flame size={10} />
-                        <span>熵增中（需整理）</span>
+                        <span>熵增活跃</span>
+                      </span>
+                    ) : (user.entropy || 0) < 150 ? (
+                      <span className="text-[9.5px] font-bold text-orange-500 bg-orange-500/10 px-2.5 py-0.5 rounded-full border border-orange-500/25 flex items-center gap-1 animate-pulse">
+                        <Flame size={10} />
+                        <span>混沌临近</span>
+                      </span>
+                    ) : (
+                      <span className="text-[9.5px] font-black text-rose-500 bg-rose-500/10 px-2.5 py-0.5 rounded-full border border-rose-500/25 flex items-center gap-1 animate-pulse">
+                        <Flame size={10} />
+                        <span>熵爆临界</span>
                       </span>
                     )}
                   </div>
@@ -503,7 +568,7 @@ export default function App() {
                   {/* Entropy Level Bar */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
-                      <span>{(user.entropy || 0) <= 0 ? '系统已恢复秩序' : `混沌熵值 · 自然增长中 (+1/小时)`}</span>
+                      <span>{(user.entropy || 0) <= 0 ? '系统已恢复秩序' : (user.entropy || 0) < 30 ? `混沌熵值 · 微弱波动中` : (user.entropy || 0) < 80 ? `混沌熵值 · 持续增长中 (+1/分钟)` : `混沌熵值 · 加速膨胀中 (+1/分钟)`}</span>
                       <span className="font-mono text-zinc-300 font-bold">
                         {user.entropy || 0} E
                       </span>

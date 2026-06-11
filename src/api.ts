@@ -17,6 +17,10 @@ export interface AuthUser {
   nickname: string;
   avatarColor: string;
   avatarEmoji: string;
+  entropy?: number;
+  negentropy?: number;
+  totalNegentropyGenerated?: number;
+  lastActiveDate?: string;
 }
 
 export async function registerUser(
