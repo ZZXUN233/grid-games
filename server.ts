@@ -26,6 +26,9 @@ const pool = mysql2.createPool({
   database: process.env.DB_NAME || 'gg',
   waitForConnections: true,
   connectionLimit: parseInt(process.env.DB_CONNECTION_LIMIT || '10', 10),
+  // Prevent idle connections from being dropped by MySQL wait_timeout
+  enableKeepAlive: true,
+  keepAliveInitialDelay: 10000,
 });
 
 // Test connection on startup

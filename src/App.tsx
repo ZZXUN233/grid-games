@@ -128,6 +128,7 @@ export default function App() {
               totalNegentropyGenerated: 0,
               lastActiveDate: todayStr,
             };
+            setIsLoggedInState(true);
           }
         }
       } catch (e) {
@@ -235,7 +236,6 @@ export default function App() {
     setIsLoggedInState(false);
   };
 
-  const isLoggedIn = !!localStorage.getItem('gridgame_auth_session');
   const [isLoggedInState, setIsLoggedInState] = useState(false);
 
   // Track login state on mount
