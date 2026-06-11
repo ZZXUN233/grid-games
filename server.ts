@@ -34,6 +34,15 @@ const pool = mysql2.createPool({
   keepAliveInitialDelay: 10000,
 });
 
+// Print effective DB config on startup (password masked)
+console.log('DB Config:', JSON.stringify({
+  host: process.env.DB_HOST || '192.168.31.200',
+  port: parseInt(process.env.DB_PORT || '3306', 10),
+  user: process.env.DB_USER || 'root',
+  password: '***',
+  database: process.env.DB_NAME || 'gg',
+}));
+
 // Test connection on startup
 pool.getConnection()
   .then(conn => {
@@ -42,6 +51,7 @@ pool.getConnection()
   })
   .catch(err => {
     console.error('MySQL connection failed:', err.message);
+    console.error('Full error:', JSON.stringify(err, Object.getOwnPropertyNames(err)));
   });
 
 // ==================== HELPER ====================
