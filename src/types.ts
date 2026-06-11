@@ -26,8 +26,9 @@ export interface ScoreRecord {
   nickname: string;
   avatarColor: string;
   avatarEmoji: string;
-  mode: 'level' | 'free' | 'letter';
-  difficulty: string; // e.g., "Level 1 (3x3)", "5x5", "Alphabet 5x5"
+  game?: string; // 'schulte' | 'minesweeper' | 'sudoku' | 'memory-matrix' | 'snake'
+  mode: string; // Schulte: 'level'|'free'|'letter'; others: game-specific
+  difficulty: string; // e.g., "Level 1 (3x3)", "5x5", "扫雷 [初级]"
   time: number; // Seconds (e.g. 14.32)
   createdAt: number; // epoch timestamp
 }

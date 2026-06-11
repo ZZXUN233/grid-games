@@ -269,6 +269,7 @@ export default function SchulteGrid({
           nickname: userNickname,
           avatarColor: avatarColor,
           avatarEmoji: avatarEmoji,
+          game: 'schulte',
           mode: activeTab,
           difficulty: difficultyStr,
           time: Number(elapsedTime.toFixed(2)),

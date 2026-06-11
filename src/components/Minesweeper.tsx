@@ -291,7 +291,8 @@ export default function Minesweeper({
       nickname: userNickname,
       avatarColor: avatarColor,
       avatarEmoji: avatarEmoji,
-      mode: 'free',
+      game: 'minesweeper',
+      mode: 'minesweeper',
       difficulty: `扫雷 [${difficulty === 'easy' ? '初级' : difficulty === 'medium' ? '中级' : '高级'}]`,
       time: timer,
       createdAt: Date.now()

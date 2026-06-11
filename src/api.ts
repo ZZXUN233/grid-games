@@ -138,8 +138,25 @@ export async function saveScore(score: ScoreRecord): Promise<boolean> {
   }
 }
 
+// Unified game leaderboard — fetch top scores by game type
+export async function fetchGameScores(
+  game: string,
+  difficulty?: string,
+  limitCount = 10
+): Promise<ScoreRecord[]> {
+  try {
+    const params = new URLSearchParams({ limit: String(limitCount) });
+    if (difficulty) params.set('difficulty', difficulty);
+    const res = await fetch(`${API_BASE}/scores/game/${encodeURIComponent(game)}?${params}`);
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
 export async function fetchTopScores(
-  mode: 'level' | 'free' | 'letter',
+  mode: string,
   difficulty: string,
   limitCount = 10
 ): Promise<ScoreRecord[]> {

@@ -417,14 +417,15 @@ export default function Sudoku({
     if (onScoreSubmit) {
       const record: ScoreRecord = {
         id: `score_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`,
-        userId: 'temp_user', // Will map to authentic user-id
+        userId: 'temp_user',
         nickname: userNickname,
         avatarColor: 'emerald',
         avatarEmoji: '🧠',
-        mode: 'free',
-        difficulty: `Sudoku - ${difficulty === 'easy' ? '初级' : difficulty === 'medium' ? '中级' : '大师'}`,
-         time: timer,
-         createdAt: Date.now()
+        game: 'sudoku',
+        mode: 'sudoku',
+        difficulty: `数独 [${difficulty === 'easy' ? '初级' : difficulty === 'medium' ? '中级' : '高级'}]`,
+        time: timer,
+        createdAt: Date.now()
       };
       onScoreSubmit(record);
     }

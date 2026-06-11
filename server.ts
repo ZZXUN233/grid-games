@@ -334,7 +334,48 @@ app.post('/api/scores', async (req, res) => {
   }
 });
 
-// GET /api/top-scores/:mode/:difficulty - Fetch top scores
+// GET /api/scores/game/:game — Unified game leaderboard
+app.get('/api/scores/game/:game', async (req, res) => {
+  try {
+    const { game } = req.params;
+    const difficulty = req.query.difficulty as string || '';
+    const limitCount = parseInt(req.query.limit as string) || 10;
+
+    let query = `SELECT id, user_id as userId, nickname, avatar_color as avatarColor, avatar_emoji as avatarEmoji,
+                        mode, difficulty, time_seconds as time, created_at as createdAt
+                 FROM scores WHERE `;
+    const params: any[] = [];
+
+    if (game === 'schulte') {
+      query += `mode IN ('level', 'free', 'letter')`;
+      if (difficulty) {
+        query += ` AND difficulty = ?`;
+        params.push(difficulty);
+      }
+    } else {
+      // For other games, match by difficulty prefix (game name in brackets)
+      const gamePrefixMap: Record<string, string> = {
+        'minesweeper': '扫雷',
+        'sudoku': '数独',
+        'memory-matrix': '记忆',
+        'snake': '贪吃蛇',
+      };
+      const prefix = gamePrefixMap[game] || game;
+      query += `difficulty LIKE ?`;
+      params.push(`${prefix}%`);
+    }
+
+    query += ` ORDER BY time_seconds ASC LIMIT ${limitCount}`;
+
+    const [rows] = await pool.execute(query, params);
+    res.json(rows);
+  } catch (error: any) {
+    console.error('Error fetching game scores:', error.message);
+    res.status(500).json([]);
+  }
+});
+
+// GET /api/top-scores/:mode/:difficulty — Legacy, kept for backward compat
 app.get('/api/top-scores/:mode/:difficulty', async (req, res) => {
   try {
     const { mode, difficulty } = req.params;
