@@ -239,3 +239,22 @@ export async function voteFeatureRequest(
     return false;
   }
 }
+
+// Submit a new feature request (costs 100 negentropy)
+export async function createFeatureRequest(
+  userId: string,
+  title: string,
+  description: string,
+  type: string
+): Promise<{ success: boolean; featureId?: number; negentropySpent?: number; error?: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/features`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, title, description, type }),
+    });
+    return await res.json();
+  } catch {
+    return { success: false, error: '网络错误' };
+  }
+}

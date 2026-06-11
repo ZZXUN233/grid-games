@@ -470,6 +470,68 @@ app.get('/api/features', async (req, res) => {
   }
 });
 
+// POST /api/features — Submit a new feature request (costs 100 negentropy)
+app.post('/api/features', async (req, res) => {
+  const connection = await pool.getConnection();
+  try {
+    const { userId, title, description, type } = req.body;
+    const SUBMIT_COST = 100; // fixed cost to create a new feature request
+
+    if (!userId) {
+      res.status(400).json({ success: false, error: '请先登录' });
+      return;
+    }
+    if (!title || title.trim().length === 0 || title.length > 64) {
+      res.status(400).json({ success: false, error: '需求标题长度需在 1-64 个字符' });
+      return;
+    }
+
+    await connection.beginTransaction();
+
+    // Check user has enough negentropy
+    const [users] = await connection.execute(
+      'SELECT negentropy FROM users WHERE user_id = ?',
+      [userId]
+    );
+    const userRows = users as any[];
+    if (userRows.length === 0 || (userRows[0].negentropy || 0) < SUBMIT_COST) {
+      await connection.rollback();
+      res.status(400).json({ success: false, error: `负熵不足，提交需求需要消耗 ${SUBMIT_COST} E` });
+      return;
+    }
+
+    // Deduct negentropy
+    await connection.execute(
+      'UPDATE users SET negentropy = negentropy - ?, updated_at = ? WHERE user_id = ?',
+      [SUBMIT_COST, Date.now(), userId]
+    );
+
+    // Create feature request (default voting cost 30, status pending, self-voted)
+    const [result] = await connection.execute(
+      `INSERT INTO feature_requests (title, description, type, cost, votes, status, created_at)
+       VALUES (?, ?, ?, 30, 1, 'pending', ?)`,
+      [title.trim(), description || '', type || 'custom', Date.now()]
+    );
+    const featureId = (result as any).insertId;
+
+    // Auto-vote: submitter implicitly supports their own request
+    await connection.execute(
+      `INSERT INTO feature_votes (feature_id, user_id, negentropy_spent, created_at)
+       VALUES (?, ?, ?, ?)`,
+      [featureId, userId, SUBMIT_COST, Date.now()]
+    );
+
+    await connection.commit();
+    res.json({ success: true, featureId, negentropySpent: SUBMIT_COST });
+  } catch (error: any) {
+    await connection.rollback();
+    console.error('Error creating feature request:', error.message);
+    res.status(500).json({ success: false, error: error.message });
+  } finally {
+    connection.release();
+  }
+});
+
 // POST /api/features/vote - Vote for a feature request (consumes negentropy)
 app.post('/api/features/vote', async (req, res) => {
   const connection = await pool.getConnection();
