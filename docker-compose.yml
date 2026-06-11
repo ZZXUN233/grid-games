@@ -5,6 +5,8 @@ services:
     image: localhost:5000/grid-games:latest
     ports:
       - "3004:3004"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       - NODE_ENV=production
       - PORT=3004
