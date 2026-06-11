@@ -984,6 +984,50 @@ export default function App() {
                     💡 您在此处可以随时自定义角色名、修改头像与背景主题，变更将自适应并实时全大厅、全游戏地实时全局生效。
                   </div>
 
+                  {/* User ID + Share */}
+                  {user.userId && (
+                    <div className="space-y-3 bg-zinc-900/40 rounded-xl p-3.5 border border-zinc-800/50">
+                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
+                        玩家身份标识
+                      </span>
+                      <div className="flex items-center justify-between gap-2">
+                        <span className="text-sm font-mono font-black text-white select-all">{user.userId}</span>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(user.userId);
+                              setUserIdCopied(true);
+                              setTimeout(() => setUserIdCopied(false), 1500);
+                            }}
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white text-[10px] font-bold transition-all cursor-pointer"
+                          >
+                            {userIdCopied ? <Check size={11} className="text-[#3EB489]" /> : <Copy size={11} />}
+                            <span>{userIdCopied ? '已复制' : '复制'}</span>
+                          </button>
+                          <button
+                            onClick={async () => {
+                              const shareUrl = `https://gg.zzxun.cn?invite=${user.userId}`;
+                              const shareText = `来「格子熵」和我一起对抗熵增！\n九款几何网格游戏等你挑战 🎮\n${shareUrl}`;
+                              if (navigator.share) {
+                                try {
+                                  await navigator.share({ title: '格子熵 · Grid Games', text: shareText, url: shareUrl });
+                                } catch {}
+                              } else {
+                                navigator.clipboard.writeText(shareText);
+                                setUserIdCopied(true);
+                                setTimeout(() => setUserIdCopied(false), 1500);
+                              }
+                            }}
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#3EB489]/15 hover:bg-[#3EB489]/25 text-[#3EB489] text-[10px] font-bold transition-all cursor-pointer border border-[#3EB489]/20"
+                          >
+                            <Share2 size={11} />
+                            <span>分享</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {/* Profile Name editor */}
                   {user.userId && (
                     <div className="space-y-1">
