@@ -1007,13 +1007,13 @@ export default function App() {
                           <button
                             onClick={async () => {
                               const shareUrl = `https://gg.zzxun.cn?invite=${user.userId}`;
-                              const shareText = `来「格子熵」和我一起对抗熵增！\n九款几何网格游戏等你挑战 🎮\n${shareUrl}`;
+                              const shareMsg = `来「格子熵」和我一起对抗熵增！🎮 九款几何网格游戏等你挑战`;
                               if (navigator.share) {
                                 try {
-                                  await navigator.share({ title: '格子熵 · Grid Games', text: shareText, url: shareUrl });
+                                  await navigator.share({ title: '格子熵 · Grid Games', text: shareMsg, url: shareUrl });
                                 } catch {}
                               } else {
-                                navigator.clipboard.writeText(shareText);
+                                navigator.clipboard.writeText(`${shareMsg}\n${shareUrl}`);
                                 setUserIdCopied(true);
                                 setTimeout(() => setUserIdCopied(false), 1500);
                               }
