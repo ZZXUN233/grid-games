@@ -103,13 +103,36 @@ CREATE TABLE IF NOT EXISTS `invite_clicks` (
   KEY `idx_ip_ua` (`inviter_user_id`, `clicker_ip`, `clicker_ua`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='邀请点击追踪表（多层反刷校验）';
 
--- 迁移：已有 invite_clicks 表增加 clicker_ua 列
-ALTER TABLE `invite_clicks` ADD COLUMN IF NOT EXISTS `clicker_ua` varchar(200) NOT NULL DEFAULT '' COMMENT '点击者User-Agent指纹' AFTER `clicker_ip`;
+-- ==================== 安全迁移（可反复执行，不报错） ====================
+-- 使用 PREPARE STATEMENT + INFORMATION_SCHEMA 做条件判断
+-- 兼容 MySQL 5.0+，无 DELIMITER/存储过程，mysql2 驱动可直接执行
 
--- ==================== 迁移脚本 (已有数据库升级) ====================
--- 如果 users 表缺少熵字段，执行以下 ALTER
-ALTER TABLE `users`
-  ADD COLUMN IF NOT EXISTS `entropy` int NOT NULL DEFAULT '0' COMMENT '当前混沌熵值' AFTER `password_hash`,
-  ADD COLUMN IF NOT EXISTS `negentropy` int NOT NULL DEFAULT '0' COMMENT '当前负熵余额' AFTER `entropy`,
-  ADD COLUMN IF NOT EXISTS `total_negentropy_generated` int NOT NULL DEFAULT '0' COMMENT '累计产生负熵总量' AFTER `negentropy`,
-  ADD COLUMN IF NOT EXISTS `last_active_date` varchar(10) DEFAULT NULL COMMENT '最后活跃日期 YYYY-MM-DD' AFTER `total_negentropy_generated`;
+-- invite_clicks: 确保 clicker_ua 列存在
+SET @sql = (
+  SELECT IF(
+    COUNT(*) = 0,
+    'ALTER TABLE `invite_clicks` ADD COLUMN `clicker_ua` varchar(200) NOT NULL DEFAULT '' COMMENT ''点击者User-Agent指纹'' AFTER `clicker_ip`',
+    'SELECT ''invite_clicks.clicker_ua already exists, skip'''
+  )
+  FROM INFORMATION_SCHEMA.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'invite_clicks' AND COLUMN_NAME = 'clicker_ua'
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+-- users: 确保 entropy 列存在（增量迁移存量库）
+SET @sql = (
+  SELECT IF(
+    COUNT(*) = 0,
+    CONCAT(
+      'ALTER TABLE `users` ',
+      'ADD COLUMN `entropy` int NOT NULL DEFAULT 0 COMMENT ''当前混沌熵值'' AFTER `password_hash`, ',
+      'ADD COLUMN `negentropy` int NOT NULL DEFAULT 0 COMMENT ''当前负熵余额'' AFTER `entropy`, ',
+      'ADD COLUMN `total_negentropy_generated` int NOT NULL DEFAULT 0 COMMENT ''累计产生负熵总量'' AFTER `negentropy`, ',
+      'ADD COLUMN `last_active_date` varchar(10) DEFAULT NULL COMMENT ''最后活跃日期 YYYY-MM-DD'' AFTER `total_negentropy_generated`'
+    ),
+    'SELECT ''users.entropy already exists, skip'''
+  )
+  FROM INFORMATION_SCHEMA.COLUMNS
+  WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'users' AND COLUMN_NAME = 'entropy'
+);
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
