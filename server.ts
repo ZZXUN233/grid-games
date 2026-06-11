@@ -66,8 +66,8 @@ app.post('/api/auth/register', async (req, res) => {
     if (!nickname || nickname.trim().length === 0 || nickname.length > 16) {
       return res.status(400).json({ success: false, error: '昵称长度需在 1-16 个字符' });
     }
-    if (!password || password.length < 6 || password.length > 32) {
-      return res.status(400).json({ success: false, error: '密码长度需在 6-32 个字符' });
+    if (!password) {
+      return res.status(400).json({ success: false, error: '请输入密码' });
     }
 
     // Generate unique user ID (retry on collision)
@@ -154,8 +154,8 @@ app.post('/api/auth/change-password', async (req, res) => {
     if (!userId || !oldPassword || !newPassword) {
       return res.status(400).json({ success: false, error: '缺少必要参数' });
     }
-    if (newPassword.length < 6 || newPassword.length > 32) {
-      return res.status(400).json({ success: false, error: '新密码长度需在 6-32 个字符' });
+    if (!newPassword) {
+      return res.status(400).json({ success: false, error: '请输入新密码' });
     }
 
     const [rows] = await pool.execute(

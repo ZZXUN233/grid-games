@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { UserProfile, GameTheme } from '../types';
 import { AVATAR_COLORS, AVATAR_EMOJIS, generateRandomProfile } from '../data/names';
-import { updateNickname, updateAvatar, changePassword } from '../api';
+import { updateNickname, updateAvatar, changePassword, sha256 } from '../api';
 import { Sparkles, Edit2, Check, RefreshCw, Key, Eye, EyeOff } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
@@ -69,7 +69,9 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
     if (newPassword !== confirmNewPassword) { setPwdError('两次密码不一致'); return; }
 
     setPwdLoading(true);
-    const result = await changePassword(user.userId, oldPassword, newPassword);
+    const hashedOld = await sha256(oldPassword);
+    const hashedNew = await sha256(newPassword);
+    const result = await changePassword(user.userId, hashedOld, hashedNew);
     setPwdLoading(false);
 
     if (result.success) {

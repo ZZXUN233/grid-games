@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { GameTheme } from '../types';
-import { registerUser, loginUser, AuthUser } from '../api';
+import { registerUser, loginUser, sha256, AuthUser } from '../api';
 import { LogIn, UserPlus, Eye, EyeOff, X } from 'lucide-react';
 
 interface AuthModalProps {
@@ -30,13 +30,14 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
     try {
       if (mode === 'register') {
         if (!nickname.trim()) throw new Error('请输入昵称');
-  if (nickname.length > 16) throw new Error('昵称不能超过 16 个字符');
-        if (password.length < 6) throw new Error('密码至少 6 个字符 ');
+        if (nickname.length > 16) throw new Error('昵称不能超过 16 个字符');
+        if (password.length < 6) throw new Error('密码至少 6 个字符');
         if (password !== confirmPassword) throw new Error('两次密码不一致');
 
-        const result = await registerUser(nickname.trim(), password);
+        const hashedPwd = await sha256(password);
+        const result = await registerUser(nickname.trim(), hashedPwd);
         if (result.success && result.user) {
-          onSuccess(result.user, password);
+          onSuccess(result.user, hashedPwd);
         } else {
           throw new Error(result.error || '注册失败');
         }
@@ -44,9 +45,10 @@ export default function AuthModal({ theme, onSuccess, onClose }: AuthModalProps)
         if (!userId.trim()) throw new Error('请输入用户 ID');
         if (!password) throw new Error('请输入密码');
 
-        const result = await loginUser(userId.trim(), password);
+        const hashedPwd = await sha256(password);
+        const result = await loginUser(userId.trim(), hashedPwd);
         if (result.success && result.user) {
-          onSuccess(result.user, password);
+          onSuccess(result.user, hashedPwd);
         } else {
           throw new Error(result.error || '登录失败');
         }
