@@ -888,7 +888,7 @@ export default function App() {
                               setUserIdCopied(true);
                               setTimeout(() => setUserIdCopied(false), 1500);
                             }}
-                            className="p-0.5 rounded text-zinc-600 hover:text-zinc-300 hover:bg-elevated/50 transition-all cursor-pointer"
+                            className="p-0.5 rounded text-muted hover:text-zinc-300 hover:bg-elevated/50 transition-all cursor-pointer"
                             title="复制用户 ID"
                           >
                             {userIdCopied ? (

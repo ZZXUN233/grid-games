@@ -482,7 +482,7 @@ export default function Game2048({
               exit={{ opacity: 0 }}
               className="absolute inset-0 rounded-2xl bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-10"
             >
-              <Trophy size={42} className="text-zinc-600 mb-3 animate-spin" />
+              <Trophy size={42} className="text-muted mb-3 animate-spin" />
               <h3 className="text-lg font-black text-white uppercase tracking-wider">
                 挑战终结 (Game Over)
               </h3>

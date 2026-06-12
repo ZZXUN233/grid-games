@@ -203,7 +203,7 @@ export default function FeatureRequestPanel({
           className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
             canSubmit
               ? "bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30 active:scale-95"
-              : "bg-zinc-900/30 text-zinc-600 border border-theme cursor-not-allowed"
+              : "bg-zinc-900/30 text-muted border border-theme cursor-not-allowed"
           }`}
         >
           <Plus size={12} />
@@ -378,7 +378,7 @@ export default function FeatureRequestPanel({
         </div>
       )}
 
-      <div className="flex items-center justify-center gap-1 text-[9px] text-zinc-600 pt-1">
+      <div className="flex items-center justify-center gap-1 text-[9px] text-muted pt-1">
         <ArrowRight size={10} />
         <span>上帝正注视着你的需求...</span>
       </div>

@@ -410,7 +410,7 @@ export default function Gomoku({
       <div className="flex items-center justify-between pb-3.5 border-b border-theme w-full px-1">
         <button
           onClick={onGoBack}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary transition-all text-xs font-semibold cursor-pointer active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-theme text-secondary transition-all text-xs font-semibold cursor-pointer active:scale-95"
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -527,7 +527,7 @@ export default function Gomoku({
               <div
                 className={`w-3.5 h-3.5 rounded-full border border-theme shadow-sm ${
                   currentPlayer === "black"
-                    ? "bg-zinc-950 text-white border-theme"
+                    ? "bg-zinc-950 text-theme border-theme"
                     : "bg-white text-zinc-950 border-theme"
                 }`}
               />
@@ -543,7 +543,7 @@ export default function Gomoku({
 
           <button
             onClick={() => resetGame()}
-            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-750 border border-theme text-secondary hover:text-white transition-all cursor-pointer"
+            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-750 border border-theme text-secondary hover:text-theme transition-all cursor-pointer"
             title="重开棋局"
           >
             <RefreshCw size={12} />
@@ -675,7 +675,7 @@ export default function Gomoku({
                     transition={{ type: "spring", stiffness: 450, damping: 20 }}
                     className={`absolute rounded-full flex items-center justify-center shadow-md select-none ring-1 relative ${stoneSizeClass} ${
                       val === "black"
-                        ? "bg-gradient-to-br from-zinc-800 to-zinc-950 text-white ring-zinc-900/60 border border-theme"
+                        ? "bg-gradient-to-br from-zinc-800 to-zinc-950 text-theme ring-zinc-900/60 border border-theme"
                         : "bg-gradient-to-br from-white to-zinc-150 text-zinc-900 ring-zinc-300 border border-theme"
                     }`}
                   >
@@ -716,7 +716,7 @@ export default function Gomoku({
                 size={38}
                 className="text-amber-500 mb-3.5 animate-bounce"
               />
-              <h3 className="text-lg font-black text-white uppercase tracking-wider">
+              <h3 className="text-lg font-black text-theme uppercase tracking-wider">
                 棋局终了
               </h3>
               <p className="text-xs text-theme mt-2 max-w-[280px]">

@@ -440,7 +440,7 @@ export default function Minesweeper({
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
             false
               ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-              : "bg-zinc-800/60 border border-theme hover:bg-zinc-805 hover:text-white text-secondary"
+              : "bg-zinc-800/60 border border-theme hover:bg-zinc-805 hover:text-theme text-secondary"
           }`}
         >
           <ArrowLeft size={13} />
@@ -464,7 +464,7 @@ export default function Minesweeper({
           <div className="flex items-baseline gap-1">
             <span className={`text-xs ${"text-muted"}`}>挑战者：</span>
             <span
-              className={`text-sm font-bold font-mono tracking-wide ${"text-white"}`}
+              className={`text-sm font-bold font-mono tracking-wide text-theme`}
             >
               {userNickname}
             </span>
@@ -542,7 +542,7 @@ export default function Minesweeper({
               />
             </span>
             <span
-              className={`text-xs font-black font-mono leading-none mt-1 ${"text-white"}`}
+              className={`text-xs font-black font-mono leading-none mt-1 ${"text-theme"}`}
             >
               {timer}s
             </span>
@@ -661,7 +661,7 @@ export default function Minesweeper({
                   <Sparkles size={26} />
                 </div>
 
-                <h3 className="text-lg font-black text-white uppercase tracking-wider">
+                <h3 className="text-lg font-black text-theme uppercase tracking-wider">
                   排雷大获全胜！
                 </h3>
                 <p className="text-xs text-secondary mt-2 font-medium">
@@ -702,7 +702,7 @@ export default function Minesweeper({
                     className={`flex-1 py-2 px-4 rounded-xl text-xs font-black shadow active:scale-95 transition-all text-center ${
                       false
                         ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                        : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-theme"
+                        : "bg-zinc-800 hover:bg-zinc-700 hover:text-theme text-theme"
                     }`}
                   >
                     返回大厅
@@ -728,7 +728,7 @@ export default function Minesweeper({
                   <Bomb size={24} />
                 </div>
 
-                <h3 className="text-base font-black text-white uppercase tracking-wider">
+                <h3 className="text-base font-black text-theme uppercase tracking-wider">
                   排雷失误！雷区引爆
                 </h3>
                 <p className="text-xs text-red-200 mt-1.5 leading-relaxed font-medium">
@@ -738,7 +738,7 @@ export default function Minesweeper({
                 <div className="flex gap-2.5 mt-5 w-full">
                   <button
                     onClick={initBlankBoard}
-                    className="flex-1 py-1.5 px-4 rounded-lg text-xs font-black bg-red-630 hover:bg-red-500 text-white bg-red-600 shadow-md cursor-pointer active:scale-95 transition-all"
+                    className="flex-1 py-1.5 px-4 rounded-lg text-xs font-black bg-red-630 hover:bg-red-500 text-theme bg-red-600 shadow-md cursor-pointer active:scale-95 transition-all"
                   >
                     立即重置 (再战)
                   </button>
@@ -747,7 +747,7 @@ export default function Minesweeper({
                     className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-black shadow active:scale-95 transition-all ${
                       false
                         ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                        : "bg-zinc-805 hover:bg-zinc-700/60 hover:text-white text-theme"
+                        : "bg-zinc-805 hover:bg-zinc-700/60 hover:text-theme text-theme"
                     }`}
                   >
                     返回大厅

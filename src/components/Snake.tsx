@@ -211,7 +211,7 @@ export default function Snake({
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-theme text-secondary"}`}
         >
           <ArrowLeft size={13} /> <span>返回大厅</span>
         </button>
@@ -229,7 +229,7 @@ export default function Snake({
       <div className="flex flex-wrap items-center gap-3 px-2 py-1">
         <span className={`text-[10px] ${tm}`}>
           挑战者：
-          <span className="text-xs font-bold font-mono text-white">
+          <span className="text-xs font-bold font-mono text-theme">
             {userNickname}
           </span>
         </span>
@@ -331,7 +331,7 @@ export default function Snake({
               className={`inline-block p-4 rounded-2xl border ${bc} ${"bg-zinc-900/40"}`}
             >
               <div className="text-2xl mb-2">💀</div>
-              <h3 className="text-sm font-black text-white">游戏结束</h3>
+              <h3 className="text-sm font-black text-theme">游戏结束</h3>
               <p className={`text-[10px] mt-1 ${tm}`}>
                 得分: {score} | 最高: {Math.max(best, score)}
               </p>

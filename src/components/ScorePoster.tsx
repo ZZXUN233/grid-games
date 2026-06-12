@@ -388,7 +388,7 @@ export default function ScorePoster({
               <div className="text-3xl font-mono font-bold text-amber-500 mt-1 select-all">
                 {score.time.toFixed(2)} 秒
               </div>
-              <span className="text-[10px] text-zinc-600 font-bold tracking-wider mt-0.5 block uppercase">
+              <span className="text-[10px] text-muted font-bold tracking-wider mt-0.5 block uppercase">
                 Completion Time
               </span>
             </div>
