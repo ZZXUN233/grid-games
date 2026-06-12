@@ -430,9 +430,7 @@ export default function Minesweeper({
   };
 
   return (
-    <div
-      className={`w-full flex flex-col gap-4 select-none ${"text-zinc-300"}`}
-    >
+    <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       {/* Sub-header Navigation row */}
       <div
         className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
@@ -442,7 +440,7 @@ export default function Minesweeper({
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
             false
               ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-805 hover:text-white text-zinc-400"
+              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-805 hover:text-white text-secondary"
           }`}
         >
           <ArrowLeft size={13} />
@@ -452,7 +450,7 @@ export default function Minesweeper({
         <div className="flex items-center gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-indigo-500 animate-pulse" />
           <span
-            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-zinc-500"}`}
+            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-muted"}`}
           >
             扫雷 · COMBAT ENTROPY
           </span>
@@ -464,7 +462,7 @@ export default function Minesweeper({
         {/* Left segment - Nickname & Diff selectors */}
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-1">
-            <span className={`text-xs ${"text-zinc-500"}`}>挑战者：</span>
+            <span className={`text-xs ${"text-muted"}`}>挑战者：</span>
             <span
               className={`text-sm font-bold font-mono tracking-wide ${"text-white"}`}
             >
@@ -485,7 +483,7 @@ export default function Minesweeper({
                       : "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_10px_rgba(99,102,241,0.25)]"
                     : false
                       ? "bg-[#EFEADB]/50 hover:bg-[#E1D6BF] text-[#6C5E53] border-[#DFD3C1]"
-                      : "bg-zinc-900/40 hover:bg-zinc-850 text-zinc-400 border-zinc-800"
+                      : "bg-zinc-900/40 hover:bg-zinc-850 text-secondary border-zinc-800"
                 }`}
               >
                 {diff === "easy"
@@ -505,7 +503,7 @@ export default function Minesweeper({
             className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
           >
             <span
-              className={`text-[8px] uppercase tracking-wider font-bold ${"text-zinc-500"}`}
+              className={`text-[8px] uppercase tracking-wider font-bold ${"text-muted"}`}
             >
               雷数/旗
             </span>
@@ -534,7 +532,7 @@ export default function Minesweeper({
             className={`px-2.5 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
           >
             <span
-              className={`text-[8px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-zinc-500"}`}
+              className={`text-[8px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-muted"}`}
             >
               用时{" "}
               <Clock
@@ -666,14 +664,14 @@ export default function Minesweeper({
                 <h3 className="text-lg font-black text-white uppercase tracking-wider">
                   排雷大获全胜！
                 </h3>
-                <p className="text-xs text-zinc-400 mt-2 font-medium">
+                <p className="text-xs text-secondary mt-2 font-medium">
                   精妙排雷布局无一漏网！完成了本次针对混沌的抵抗，有效阻止了网格熵的增生扩散。
                 </p>
 
                 {/* Score details banner */}
                 <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                   <div>
-                    <span className="text-[10px] text-zinc-500 block leading-none">
+                    <span className="text-[10px] text-muted block leading-none">
                       通关用时
                     </span>
                     <span className="text-sm font-black font-mono text-emerald-400 mt-1 block">
@@ -682,7 +680,7 @@ export default function Minesweeper({
                   </div>
                   <div className="w-px h-6 bg-zinc-800" />
                   <div>
-                    <span className="text-[10px] text-zinc-500 block leading-none">
+                    <span className="text-[10px] text-muted block leading-none">
                       消解负熵
                     </span>
                     <span className="text-sm font-black font-mono text-indigo-400 mt-1 block flex items-center gap-1">
@@ -704,7 +702,7 @@ export default function Minesweeper({
                     className={`flex-1 py-2 px-4 rounded-xl text-xs font-black shadow active:scale-95 transition-all text-center ${
                       false
                         ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                        : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300"
+                        : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-theme"
                     }`}
                   >
                     返回大厅
@@ -749,7 +747,7 @@ export default function Minesweeper({
                     className={`flex-1 py-1.5 px-4 rounded-lg text-xs font-black shadow active:scale-95 transition-all ${
                       false
                         ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                        : "bg-zinc-805 hover:bg-zinc-700/60 hover:text-white text-zinc-300"
+                        : "bg-zinc-805 hover:bg-zinc-700/60 hover:text-white text-theme"
                     }`}
                   >
                     返回大厅
@@ -767,7 +765,7 @@ export default function Minesweeper({
       >
         <div className="flex justify-between items-center px-1">
           <span
-            className={`text-[9px] uppercase tracking-widest font-black ${"text-zinc-500"}`}
+            className={`text-[9px] uppercase tracking-widest font-black ${"text-muted"}`}
           >
             触控手势工作模式
           </span>
@@ -791,7 +789,7 @@ export default function Minesweeper({
                   : "bg-indigo-650 border border-indigo-500 text-white shadow"
                 : false
                   ? "bg-[#EFEADB] text-[#6C5E53]"
-                  : "bg-zinc-800 text-zinc-400"
+                  : "bg-zinc-800 text-secondary"
             }`}
           >
             <Eye size={12} />
@@ -818,7 +816,7 @@ export default function Minesweeper({
         {/* Dynamic usage guidance alerts */}
         {showGuide && (
           <div
-            className={`mt-1 p-2 rounded-lg border text-[10px] leading-normal flex flex-col gap-1 ${"bg-zinc-955/40 border border-zinc-900 text-zinc-400"}`}
+            className={`mt-1 p-2 rounded-lg border text-[10px] leading-normal flex flex-col gap-1 ${"bg-zinc-955/40 border border-zinc-900 text-secondary"}`}
           >
             <p>
               🎁 <strong className="text-indigo-400">首击：</strong>{" "}

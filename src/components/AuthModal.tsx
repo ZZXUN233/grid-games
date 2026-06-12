@@ -154,7 +154,7 @@ export default function AuthModal({
             <button
               type="button"
               onClick={() => setShowPwd(!showPwd)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-zinc-300 cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-zinc-300 cursor-pointer"
             >
               {showPwd ? <EyeOff size={15} /> : <Eye size={15} />}
             </button>

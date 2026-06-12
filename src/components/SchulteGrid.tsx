@@ -388,13 +388,13 @@ export default function SchulteGrid({
   const nextCampaignLevelExists = currentLevelIdx + 1 < CAMPAIGN_LEVELS.length;
 
   return (
-    <div className="w-full flex flex-col gap-5 select-none text-zinc-300">
+    <div className="w-full flex flex-col gap-5 select-none text-theme">
       {/* Dynamic Sub-header */}
       {onGoBack && (
         <div className="flex items-center justify-between pb-3.5 border-b border-zinc-800/60 w-full px-1">
           <button
             onClick={onGoBack}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400 transition-all text-xs font-semibold cursor-pointer active:scale-95"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary transition-all text-xs font-semibold cursor-pointer active:scale-95"
           >
             <ArrowLeft size={13} />
             <span>返回大厅</span>
@@ -402,7 +402,7 @@ export default function SchulteGrid({
 
           <div className="flex items-center gap-1">
             <div className="w-2.5 h-2.5 rounded-full bg-[#3EB489] animate-pulse" />
-            <span className="text-[11px] text-zinc-500 font-mono tracking-wider block uppercase">
+            <span className="text-[11px] text-muted font-mono tracking-wider block uppercase">
               舒尔特专注格盘 (Retina)
             </span>
           </div>
@@ -423,7 +423,7 @@ export default function SchulteGrid({
                 className={`flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
                   activeTab === "level"
                     ? "border-amber-500 text-amber-500"
-                    : "border-transparent text-zinc-400 hover:text-white"
+                    : "border-transparent text-secondary hover:text-white"
                 }`}
               >
                 <Compass size={14} />
@@ -435,7 +435,7 @@ export default function SchulteGrid({
                 className={`flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
                   activeTab === "free"
                     ? "border-amber-500 text-amber-500"
-                    : "border-transparent text-zinc-400 hover:text-white"
+                    : "border-transparent text-secondary hover:text-white"
                 }`}
               >
                 <Grid size={14} />
@@ -447,7 +447,7 @@ export default function SchulteGrid({
                 className={`flex-1 pb-3 text-sm font-bold text-center border-b-2 transition-all flex items-center justify-center gap-1.5 ${
                   activeTab === "letter"
                     ? "border-amber-500 text-amber-500"
-                    : "border-transparent text-zinc-400 hover:text-white"
+                    : "border-transparent text-secondary hover:text-white"
                 }`}
               >
                 <LetterText size={14} />
@@ -505,7 +505,7 @@ export default function SchulteGrid({
                         className={`py-2 text-xs font-mono font-bold rounded-lg transition-all border ${
                           index === currentLevelIdx
                             ? "bg-amber-600 text-zinc-950 font-extrabold border-amber-500 shadow-md scale-105"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:bg-zinc-800 hover:border-zinc-700"
+                            : "bg-zinc-900 border-zinc-800 text-secondary hover:bg-zinc-800 hover:border-zinc-700"
                         }`}
                       >
                         {lvl.levelNumber}
@@ -535,7 +535,7 @@ export default function SchulteGrid({
                         className={`py-2.5 rounded-lg font-mono font-bold text-xs transition-all border ${
                           freeSize === size
                             ? "bg-amber-600 text-zinc-950 font-bold border-amber-500 shadow-md scale-105"
-                            : "bg-zinc-900 border-zinc-800 text-zinc-400 hover:border-zinc-700"
+                            : "bg-zinc-900 border-zinc-800 text-secondary hover:border-zinc-700"
                         }`}
                       >
                         {size} x {size}
@@ -543,7 +543,7 @@ export default function SchulteGrid({
                     ))}
                   </div>
 
-                  <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/10 rounded-lg text-xs leading-relaxed text-zinc-400">
+                  <div className="mt-4 p-3 bg-amber-500/5 border border-amber-500/10 rounded-lg text-xs leading-relaxed text-secondary">
                     ⚡ 5x5 是公认的黄金诊断配置，6x6
                     以上极度考验眼角周边外膜视觉。建议挺拔坐姿，双眼距离屏幕 30
                     厘米以上，固定直视中央！
@@ -570,7 +570,7 @@ export default function SchulteGrid({
                     的纯字母顺序连续指认。这不仅是扫眼测试，更是在由于未知缺失而导致决策犹豫时，诊断心理抗干扰力的绝佳方案！
                   </p>
 
-                  <div className="mt-3.5 flex items-center gap-2 p-2 px-3 bg-zinc-950 rounded border border-zinc-800 text-[11px] text-zinc-400">
+                  <div className="mt-3.5 flex items-center gap-2 p-2 px-3 bg-zinc-950 rounded border border-zinc-800 text-[11px] text-secondary">
                     <CheckCircle size={14} className="text-emerald-500" />
                     <span>
                       顶端状态栏会自动提醒下一个搜寻字母，免去记诵顾虑。
@@ -617,7 +617,7 @@ export default function SchulteGrid({
             {/* Distraction free top target bar */}
             <div className="w-full flex items-center justify-between border-b border-zinc-800/80 pb-3 mb-4">
               <div className="flex items-center gap-2">
-                <span className="text-xs text-zinc-500 font-mono tracking-wider">
+                <span className="text-xs text-muted font-mono tracking-wider">
                   TARGET:
                 </span>
                 <span className="text-lg font-black font-mono text-amber-500 animate-pulse px-2 py-0.5 rounded bg-amber-500/10">
@@ -628,7 +628,7 @@ export default function SchulteGrid({
               {/* Glowing clock timer */}
               <div className="flex items-center gap-3">
                 <div className="text-right">
-                  <span className="text-[10px] text-zinc-500 font-mono block">
+                  <span className="text-[10px] text-muted font-mono block">
                     STATED TIME
                   </span>
                   <span className="text-xl font-mono text-emerald-400 font-extrabold font-semibold">
@@ -659,7 +659,7 @@ export default function SchulteGrid({
 
             {/* Letter Mode alert inside board if active */}
             {activeTab === "letter" && (
-              <div className="w-full mb-3 text-center text-[10px] text-zinc-500 bg-zinc-950/40 p-1.5 rounded transition-all">
+              <div className="w-full mb-3 text-center text-[10px] text-muted bg-zinc-950/40 p-1.5 rounded transition-all">
                 <span>💡 本次已隐藏丢弃英文字母: </span>
                 <strong className="text-rose-400 text-xs font-mono">
                   {discardedLetter}
@@ -669,7 +669,7 @@ export default function SchulteGrid({
             )}
 
             {/* Minimalist interactive grid metrics */}
-            <div className="w-full text-left text-[10px] text-zinc-500 flex items-center justify-between mb-4 px-1">
+            <div className="w-full text-left text-[10px] text-muted flex items-center justify-between mb-4 px-1">
               <span>
                 第 {targetIndex} / {sortedTargets.length} 项
               </span>
@@ -781,7 +781,7 @@ export default function SchulteGrid({
             <button
               id="abort-challenge-btn"
               onClick={terminateGame}
-              className="mt-6 flex items-center gap-1 text-xs text-zinc-500 hover:text-zinc-300 py-2 px-4 rounded hover:bg-white/5 transition-all active:scale-95 border border-zinc-800"
+              className="mt-6 flex items-center gap-1 text-xs text-muted hover:text-zinc-300 py-2 px-4 rounded hover:bg-white/5 transition-all active:scale-95 border border-zinc-800"
             >
               <RotateCcw size={12} />
               <span>退出本次练习 (清零)</span>
@@ -812,7 +812,7 @@ export default function SchulteGrid({
                 {elapsedTime.toFixed(2)}s
               </div>
 
-              <div className="mt-3 pt-3 border-t border-zinc-900 grid grid-cols-2 text-xs text-zinc-400">
+              <div className="mt-3 pt-3 border-t border-zinc-900 grid grid-cols-2 text-xs text-secondary">
                 <div>
                   <span>失误次数</span>
                   <span className="block font-bold text-white font-mono mt-0.5">
@@ -865,7 +865,7 @@ export default function SchulteGrid({
               <button
                 id="lobby-back-btn"
                 onClick={() => setGameState("idle")}
-                className="py-3 px-4 rounded-xl text-xs font-bold text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 transition-all active:scale-95 cursor-pointer"
+                className="py-3 px-4 rounded-xl text-xs font-bold text-secondary hover:text-white bg-zinc-900 border border-zinc-800 transition-all active:scale-95 cursor-pointer"
               >
                 返回挑战大厅 (选关/模式)
               </button>
@@ -900,7 +900,7 @@ export default function SchulteGrid({
               <button
                 id="lobby-failed-back-btn"
                 onClick={() => setGameState("idle")}
-                className="py-3 px-4 rounded-xl text-xs font-medium text-zinc-400 hover:text-white bg-zinc-900 border border-zinc-800 transition-all"
+                className="py-3 px-4 rounded-xl text-xs font-medium text-secondary hover:text-white bg-zinc-900 border border-zinc-800 transition-all"
               >
                 返回训练大厅
               </button>

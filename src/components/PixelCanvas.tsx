@@ -144,7 +144,7 @@ export default function PixelCanvas({
     link.click();
   }, [pixels]);
 
-  const tm = "text-zinc-400";
+  const tm = "text-secondary";
   const bc = "border-zinc-800";
   const bgc = "bg-zinc-900/40";
 
@@ -158,15 +158,13 @@ export default function PixelCanvas({
   );
 
   return (
-    <div
-      className={`w-full flex flex-col gap-4 select-none ${"text-zinc-300"}`}
-    >
+    <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       <div
         className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${bc}`}
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} /> <span>返回大厅</span>
         </button>

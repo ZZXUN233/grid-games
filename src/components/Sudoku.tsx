@@ -562,7 +562,7 @@ export default function Sudoku({
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95 shrink-0 ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-300"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95 shrink-0 ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-theme"}`}
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -589,7 +589,7 @@ export default function Sudoku({
           className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border ${"bg-zinc-950/25 border border-zinc-900/65"}`}
         >
           <span
-            className={`text-xs font-bold font-mono tracking-wide shrink-0 ${"text-zinc-400"}`}
+            className={`text-xs font-bold font-mono tracking-wide shrink-0 ${"text-secondary"}`}
           >
             难度级别:
           </span>
@@ -607,7 +607,7 @@ export default function Sudoku({
                 className={`py-1 px-3 rounded text-[10.5px] font-mono font-bold transition-all cursor-pointer ${
                   difficulty === opt.id
                     ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-500/50 font-black shadow"
-                    : "bg-zinc-900/40 hover:bg-[#2A2A2A] text-zinc-400"
+                    : "bg-zinc-900/40 hover:bg-[#2A2A2A] text-secondary"
                 }`}
               >
                 {opt.label}
@@ -617,7 +617,7 @@ export default function Sudoku({
         </div>
 
         <div
-          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border text-xs font-mono ${"bg-zinc-950/25 border border-zinc-900/65 text-zinc-400 font-mono"}`}
+          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border text-xs font-mono ${"bg-zinc-950/25 border border-zinc-900/65 text-secondary font-mono"}`}
         >
           <div className="flex items-center gap-2">
             <span>实时检查冲突:</span>
@@ -626,7 +626,7 @@ export default function Sudoku({
               className={`p-1 px-2 text-[10px] rounded font-bold transition-all cursor-pointer ${
                 autoHighlightErrors
                   ? "bg-red-500/15 text-red-500 border border-red-500/30"
-                  : "bg-zinc-900 text-zinc-500 border border-zinc-800"
+                  : "bg-zinc-900 text-muted border border-zinc-800"
               }`}
             >
               {autoHighlightErrors ? "已开启" : "已关闭"}
@@ -671,7 +671,7 @@ export default function Sudoku({
                 <h3 className="text-lg font-black text-white tracking-wide">
                   恭喜！谜题解开
                 </h3>
-                <p className="text-xs text-zinc-400 mt-1 max-w-[280px]">
+                <p className="text-xs text-secondary mt-1 max-w-[280px]">
                   用时{" "}
                   <strong className="text-emerald-400">
                     {formatTime(timer)}
@@ -680,7 +680,7 @@ export default function Sudoku({
                 </p>
 
                 {/* Reward Indicator */}
-                <div className="mt-4 px-4 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-300 flex items-center gap-2">
+                <div className="mt-4 px-4 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs font-bold text-theme flex items-center gap-2">
                   <Zap className="text-amber-400 animate-pulse" size={13} />
                   <span>
                     释放负熵 -
@@ -702,7 +702,7 @@ export default function Sudoku({
                   </button>
                   <button
                     onClick={onGoBack}
-                    className={`py-1.5 px-4 rounded-lg text-xs font-black shadow active:scale-95 transition-all ${"bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300"}`}
+                    className={`py-1.5 px-4 rounded-lg text-xs font-black shadow active:scale-95 transition-all ${"bg-zinc-800 hover:bg-zinc-700 hover:text-white text-theme"}`}
                   >
                     返回
                   </button>
@@ -742,7 +742,7 @@ export default function Sudoku({
                   >
                     {/* Pencil notes small grid */}
                     {cell.value === 0 && cell.notes.length > 0 ? (
-                      <div className="absolute inset-0.5 grid grid-cols-3 gap-0.5 p-[1px] leading-none text-[8.5px] sm:text-[10px] md:text-[11px] text-zinc-500 font-mono tracking-tighter select-none pointer-events-none">
+                      <div className="absolute inset-0.5 grid grid-cols-3 gap-0.5 p-[1px] leading-none text-[8.5px] sm:text-[10px] md:text-[11px] text-muted font-mono tracking-tighter select-none pointer-events-none">
                         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
                           <span
                             key={`note-${n}`}
@@ -786,7 +786,7 @@ export default function Sudoku({
             className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border ${"bg-zinc-900/60 border border-zinc-800/80"}`}
           >
             <div
-              className={`flex items-center gap-1.5 font-mono text-xs ${"text-zinc-500"}`}
+              className={`flex items-center gap-1.5 font-mono text-xs ${"text-muted"}`}
             >
               <span>用时:</span>
               <strong className={`text-sm ${"text-white"}`}>
@@ -799,7 +799,7 @@ export default function Sudoku({
               <button
                 onClick={handleUndo}
                 disabled={history.length === 0}
-                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ${"bg-zinc-950 text-zinc-400 hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
+                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ${"bg-zinc-950 text-secondary hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
                 title="撤销上一步操作"
               >
                 <RotateCcw size={13} />
@@ -821,7 +821,7 @@ export default function Sudoku({
 
               <button
                 onClick={() => initGame(difficulty)}
-                className={`p-1.5 rounded border transition-all cursor-pointer ${"bg-zinc-950 text-zinc-400 hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
+                className={`p-1.5 rounded border transition-all cursor-pointer ${"bg-zinc-950 text-secondary hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
                 title="完全重新加载本局"
               >
                 <RefreshCw size={13} />
@@ -835,13 +835,13 @@ export default function Sudoku({
             className={`w-full py-2 px-4 rounded-xl border font-bold flex items-center justify-between text-xs transition-all cursor-pointer ${
               notesMode
                 ? "bg-amber-500/20 border-amber-500/80 text-amber-303 shadow-md ring-1 ring-amber-500/30"
-                : "bg-zinc-900/40 border-zinc-800 text-zinc-400 hover:border-zinc-700/80"
+                : "bg-zinc-900/40 border-zinc-800 text-secondary hover:border-zinc-700/80"
             }`}
           >
             <div className="flex items-center gap-2">
               <PenTool
                 size={14}
-                className={notesMode ? "text-amber-400" : "text-zinc-500"}
+                className={notesMode ? "text-amber-400" : "text-muted"}
               />
               <span>草稿模式 (Pencil Notes)</span>
             </div>
@@ -889,7 +889,7 @@ export default function Sudoku({
           </div>
 
           <div
-            className={`mt-1 p-2.5 rounded-lg border text-[10px] leading-normal flex items-start gap-1.5 ${"bg-zinc-955/40 border border-zinc-900 text-zinc-500"}`}
+            className={`mt-1 p-2.5 rounded-lg border text-[10px] leading-normal flex items-start gap-1.5 ${"bg-zinc-955/40 border border-zinc-900 text-muted"}`}
           >
             <AlertTriangle
               size={13}

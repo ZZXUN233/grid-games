@@ -368,7 +368,7 @@ export default function Leaderboard({
       };
     return {
       emoji: "",
-      cls: "text-zinc-500 font-mono font-bold",
+      cls: "text-muted font-mono font-bold",
       border: "border-zinc-800/40 bg-zinc-900/10",
     };
   };
@@ -397,7 +397,7 @@ export default function Leaderboard({
         <button
           onClick={() => setSyncCount((c) => c + 1)}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1 text-xs rounded bg-white/5 border border-zinc-800 text-zinc-400 hover:bg-white/10 hover:border-zinc-700 active:scale-95 transition-all self-start sm:self-center cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1 text-xs rounded bg-white/5 border border-zinc-800 text-secondary hover:bg-white/10 hover:border-zinc-700 active:scale-95 transition-all self-start sm:self-center cursor-pointer"
         >
           <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
           <span>{loading ? "同步中..." : "刷新排行"}</span>
@@ -411,7 +411,7 @@ export default function Leaderboard({
           className={`py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             leaderboardMode === "entropy"
               ? "bg-[#3EB489] text-zinc-950 shadow-md scale-[1.02]"
-              : "text-zinc-400 hover:text-white"
+              : "text-secondary hover:text-white"
           }`}
         >
           <Orbit
@@ -426,7 +426,7 @@ export default function Leaderboard({
           className={`py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
             leaderboardMode === "games"
               ? "bg-amber-600 text-zinc-950 shadow-md scale-[1.02]"
-              : "text-zinc-400 hover:text-white"
+              : "text-secondary hover:text-white"
           }`}
         >
           <Flame size={13} />
@@ -478,7 +478,7 @@ export default function Leaderboard({
                       {record.nickname}
                     </span>
                     <span
-                      className={`text-[9px] font-medium leading-tight block mt-0.5 ${isSelf ? "text-[#3EB489]" : "text-zinc-500"}`}
+                      className={`text-[9px] font-medium leading-tight block mt-0.5 ${isSelf ? "text-[#3EB489]" : "text-muted"}`}
                     >
                       {isSelf ? `YOU · ${labelStr}` : labelStr}
                     </span>
@@ -490,7 +490,7 @@ export default function Leaderboard({
                   >
                     +{record.negentropy || 0} 负熵
                   </span>
-                  <span className="text-[9px] text-zinc-500 font-mono mt-1 leading-none block">
+                  <span className="text-[9px] text-muted font-mono mt-1 leading-none block">
                     熵值降至: {Math.max(-999, 100 - (record.negentropy || 0))}
                   </span>
                 </div>
@@ -515,7 +515,7 @@ export default function Leaderboard({
                   className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition-all cursor-pointer ${
                     isActive
                       ? "bg-white/10 text-white border border-white/20 shadow-sm"
-                      : "text-zinc-500 hover:text-zinc-300 border border-transparent"
+                      : "text-muted hover:text-zinc-300 border border-transparent"
                   }`}
                   style={
                     isActive
@@ -544,7 +544,7 @@ export default function Leaderboard({
                   className={`px-2.5 py-1 text-[10px] rounded-lg font-bold transition-all cursor-pointer ${
                     selectedDifficulty === d.value
                       ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                      : "bg-zinc-900/40 text-zinc-500 border border-zinc-800 hover:text-zinc-300"
+                      : "bg-zinc-900/40 text-muted border border-zinc-800 hover:text-zinc-300"
                   }`}
                 >
                   {d.label}
@@ -556,7 +556,7 @@ export default function Leaderboard({
           {/* Ranking list */}
           <div className="space-y-1.5">
             {finalScores.length === 0 ? (
-              <div className="py-10 text-center text-xs text-zinc-500">
+              <div className="py-10 text-center text-xs text-muted">
                 暂无记录，等待你来创下首个榜单纪录！
               </div>
             ) : (
@@ -591,7 +591,7 @@ export default function Leaderboard({
                         </span>
                       </div>
                       <div className="truncate">
-                        <span className="font-semibold text-zinc-200 block truncate leading-tight">
+                        <span className="font-semibold text-theme block truncate leading-tight">
                           {record.nickname}
                         </span>
                         {isSelf && (
@@ -605,7 +605,7 @@ export default function Leaderboard({
                       <span className="font-mono text-sm font-bold text-amber-500 leading-none">
                         {record.time.toFixed(2)}s
                       </span>
-                      <span className="text-[9px] text-zinc-500 font-mono mt-0.5 leading-none block">
+                      <span className="text-[9px] text-muted font-mono mt-0.5 leading-none block">
                         {new Date(record.createdAt).toLocaleDateString(
                           undefined,
                           { month: "2-digit", day: "2-digit" }

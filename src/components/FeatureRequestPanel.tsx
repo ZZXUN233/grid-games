@@ -1,7 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import { FeatureRequest } from '../types';
-import { fetchFeatureRequests, voteFeatureRequest, createFeatureRequest } from '../api';
-import { Lightbulb, Zap, CheckCircle, Clock, XCircle, Sparkles, ThumbsUp, ArrowRight, Plus, Send } from 'lucide-react';
+import React, { useState, useEffect } from "react";
+import { FeatureRequest } from "../types";
+import {
+  fetchFeatureRequests,
+  voteFeatureRequest,
+  createFeatureRequest,
+} from "../api";
+import {
+  Lightbulb,
+  Zap,
+  CheckCircle,
+  Clock,
+  XCircle,
+  Sparkles,
+  ThumbsUp,
+  ArrowRight,
+  Plus,
+  Send,
+} from "lucide-react";
 
 interface FeatureRequestPanelProps {
   userId: string;
@@ -12,37 +27,68 @@ interface FeatureRequestPanelProps {
 const SUBMIT_COST = 100; // negentropy cost to create a new feature request
 
 const TYPE_LABELS: Record<string, string> = {
-  theme: '主题',
-  difficulty: '难度',
-  leaderboard: '排行榜',
-  effect: '特效',
-  game_mode: '游戏模式',
-  avatar: '头像',
-  custom: '自定义',
+  theme: "主题",
+  difficulty: "难度",
+  leaderboard: "排行榜",
+  effect: "特效",
+  game_mode: "游戏模式",
+  avatar: "头像",
+  custom: "自定义",
 };
 
-const TYPE_OPTIONS = ['theme', 'difficulty', 'leaderboard', 'effect', 'game_mode', 'avatar', 'custom'];
+const TYPE_OPTIONS = [
+  "theme",
+  "difficulty",
+  "leaderboard",
+  "effect",
+  "game_mode",
+  "avatar",
+  "custom",
+];
 
-const STATUS_CONFIG: Record<string, { label: string; className: string; icon: React.ElementType }> = {
-  pending: { label: '待响应', className: 'text-amber-500 bg-amber-500/10', icon: Clock },
-  in_progress: { label: '开发中', className: 'text-blue-500 bg-blue-500/10', icon: Sparkles },
-  done: { label: '已实现', className: 'text-[#3EB489] bg-[#3EB489]/10', icon: CheckCircle },
-  rejected: { label: '已驳回', className: 'text-zinc-500 bg-zinc-500/10', icon: XCircle },
+const STATUS_CONFIG: Record<
+  string,
+  { label: string; className: string; icon: React.ElementType }
+> = {
+  pending: {
+    label: "待响应",
+    className: "text-amber-500 bg-amber-500/10",
+    icon: Clock,
+  },
+  in_progress: {
+    label: "开发中",
+    className: "text-blue-500 bg-blue-500/10",
+    icon: Sparkles,
+  },
+  done: {
+    label: "已实现",
+    className: "text-[#3EB489] bg-[#3EB489]/10",
+    icon: CheckCircle,
+  },
+  rejected: {
+    label: "已驳回",
+    className: "text-muted bg-zinc-500/10",
+    icon: XCircle,
+  },
 };
 
-export default function FeatureRequestPanel({ userId, negentropy, onNegentropyChange }: FeatureRequestPanelProps) {
+export default function FeatureRequestPanel({
+  userId,
+  negentropy,
+  onNegentropyChange,
+}: FeatureRequestPanelProps) {
   const [features, setFeatures] = useState<FeatureRequest[]>([]);
   const [loading, setLoading] = useState(false);
   const [votingId, setVotingId] = useState<number | null>(null);
 
   // New feature submission form state
   const [showForm, setShowForm] = useState(false);
-  const [newTitle, setNewTitle] = useState('');
-  const [newDesc, setNewDesc] = useState('');
-  const [newType, setNewType] = useState('custom');
+  const [newTitle, setNewTitle] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [newType, setNewType] = useState("custom");
   const [submitLoading, setSubmitLoading] = useState(false);
-  const [submitError, setSubmitError] = useState('');
-  const [submitSuccess, setSubmitSuccess] = useState('');
+  const [submitError, setSubmitError] = useState("");
+  const [submitSuccess, setSubmitSuccess] = useState("");
 
   const loadFeatures = async () => {
     setLoading(true);
@@ -68,33 +114,40 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
   };
 
   const handleSubmitFeature = async () => {
-    setSubmitError('');
-    setSubmitSuccess('');
+    setSubmitError("");
+    setSubmitSuccess("");
 
     if (!newTitle.trim()) {
-      setSubmitError('请输入需求标题');
+      setSubmitError("请输入需求标题");
       return;
     }
     if (negentropy < SUBMIT_COST) {
-      setSubmitError(`负熵不足，提交需求需要 ${SUBMIT_COST} E（当前余额: ${negentropy} E）`);
+      setSubmitError(
+        `负熵不足，提交需求需要 ${SUBMIT_COST} E（当前余额: ${negentropy} E）`
+      );
       return;
     }
 
     setSubmitLoading(true);
-    const result = await createFeatureRequest(userId, newTitle.trim(), newDesc.trim(), newType);
+    const result = await createFeatureRequest(
+      userId,
+      newTitle.trim(),
+      newDesc.trim(),
+      newType
+    );
     setSubmitLoading(false);
 
     if (result.success) {
       setSubmitSuccess(`需求已提交！消耗 ${SUBMIT_COST} E，等待其他人投票`);
-      setNewTitle('');
-      setNewDesc('');
-      setNewType('custom');
+      setNewTitle("");
+      setNewDesc("");
+      setNewType("custom");
       setShowForm(false);
       onNegentropyChange(SUBMIT_COST);
       await loadFeatures();
-      setTimeout(() => setSubmitSuccess(''), 5000);
+      setTimeout(() => setSubmitSuccess(""), 5000);
     } else {
-      setSubmitError(result.error || '提交失败');
+      setSubmitError(result.error || "提交失败");
     }
   };
 
@@ -102,7 +155,9 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
     const config = STATUS_CONFIG[feature.status] || STATUS_CONFIG.pending;
     const IconComp = config.icon;
     return (
-      <span className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 ${config.className}`}>
+      <span
+        className={`text-[9px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5 ${config.className}`}
+      >
         <IconComp size={9} />
         {config.label}
       </span>
@@ -118,26 +173,37 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
           <div className="w-6.5 h-6.5 bg-amber-500/10 rounded-lg border border-amber-500/20 flex items-center justify-center text-amber-500">
             <Lightbulb size={13} />
           </div>
-          <span className="text-xs font-black text-white tracking-tight">需求工厂</span>
+          <span className="text-xs font-black text-white tracking-tight">
+            需求工厂
+          </span>
         </div>
-        <span className="text-[9.5px] text-zinc-400 font-medium">
-          负熵余额: <span className="text-[#3EB489] font-black">{negentropy} E</span>
+        <span className="text-[9.5px] text-secondary font-medium">
+          负熵余额:{" "}
+          <span className="text-[#3EB489] font-black">{negentropy} E</span>
         </span>
       </div>
 
-      <div className="text-[10px] text-zinc-500 leading-relaxed bg-zinc-950/30 rounded-xl p-3 border border-zinc-800/20">
-        投票消耗需求标价 E；<strong className="text-amber-400">提交新需求消耗 {SUBMIT_COST} E</strong>，自动含一票。
+      <div className="text-[10px] text-muted leading-relaxed bg-zinc-950/30 rounded-xl p-3 border border-zinc-800/20">
+        投票消耗需求标价 E；
+        <strong className="text-amber-400">
+          提交新需求消耗 {SUBMIT_COST} E
+        </strong>
+        ，自动含一票。
       </div>
 
       {/* Submit new feature button */}
       {!showForm && (
         <button
-          onClick={() => { setShowForm(true); setSubmitError(''); setSubmitSuccess(''); }}
+          onClick={() => {
+            setShowForm(true);
+            setSubmitError("");
+            setSubmitSuccess("");
+          }}
           disabled={!canSubmit}
           className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
             canSubmit
-              ? 'bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30 active:scale-95'
-              : 'bg-zinc-900/30 text-zinc-600 border border-zinc-800/30 cursor-not-allowed'
+              ? "bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30 active:scale-95"
+              : "bg-zinc-900/30 text-zinc-600 border border-zinc-800/30 cursor-not-allowed"
           }`}
         >
           <Plus size={12} />
@@ -149,10 +215,12 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
       {showForm && (
         <div className="bg-zinc-950/50 rounded-xl p-3 border border-amber-500/20 space-y-3">
           <div className="flex items-center justify-between">
-            <span className="text-[11px] font-black text-amber-400">提交新需求</span>
+            <span className="text-[11px] font-black text-amber-400">
+              提交新需求
+            </span>
             <button
               onClick={() => setShowForm(false)}
-              className="p-0.5 rounded text-zinc-500 hover:text-zinc-300 cursor-pointer"
+              className="p-0.5 rounded text-muted hover:text-zinc-300 cursor-pointer"
             >
               <XCircle size={14} />
             </button>
@@ -160,7 +228,7 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
 
           {/* Type selector */}
           <div>
-            <label className="text-[9px] text-zinc-500 block mb-1">需求类型</label>
+            <label className="text-[9px] text-muted block mb-1">需求类型</label>
             <div className="flex flex-wrap gap-1">
               {TYPE_OPTIONS.map((t) => (
                 <button
@@ -168,8 +236,8 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
                   onClick={() => setNewType(t)}
                   className={`px-2 py-0.5 rounded text-[9px] font-bold transition-all cursor-pointer ${
                     newType === t
-                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                      : 'bg-zinc-800/40 text-zinc-500 border border-zinc-700/30 hover:text-zinc-300'
+                      ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
+                      : "bg-zinc-800/40 text-muted border border-zinc-700/30 hover:text-zinc-300"
                   }`}
                 >
                   {TYPE_LABELS[t] || t}
@@ -180,7 +248,7 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
 
           {/* Title */}
           <div>
-            <label className="text-[9px] text-zinc-500 block mb-1">需求标题</label>
+            <label className="text-[9px] text-muted block mb-1">需求标题</label>
             <input
               type="text"
               value={newTitle}
@@ -193,7 +261,9 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
 
           {/* Description */}
           <div>
-            <label className="text-[9px] text-zinc-500 block mb-1">补充说明（可选）</label>
+            <label className="text-[9px] text-muted block mb-1">
+              补充说明（可选）
+            </label>
             <textarea
               value={newDesc}
               onChange={(e) => setNewDesc(e.target.value)}
@@ -205,10 +275,14 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
 
           {/* Messages */}
           {submitError && (
-            <div className="text-[10px] text-red-400 bg-red-950/30 rounded-lg p-2 border border-red-500/20">{submitError}</div>
+            <div className="text-[10px] text-red-400 bg-red-950/30 rounded-lg p-2 border border-red-500/20">
+              {submitError}
+            </div>
           )}
           {submitSuccess && (
-            <div className="text-[10px] text-[#3EB489] bg-[#3EB489]/10 rounded-lg p-2 border border-[#3EB489]/20">{submitSuccess}</div>
+            <div className="text-[10px] text-[#3EB489] bg-[#3EB489]/10 rounded-lg p-2 border border-[#3EB489]/20">
+              {submitSuccess}
+            </div>
           )}
 
           {/* Submit button */}
@@ -230,12 +304,15 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
       )}
 
       {loading && features.length === 0 ? (
-        <div className="text-center py-6 text-zinc-500 text-xs">加载中...</div>
+        <div className="text-center py-6 text-muted text-xs">加载中...</div>
       ) : (
         <div className="space-y-2 max-h-[320px] overflow-y-auto pr-1">
           {features.map((feature) => {
             const StatusComp = () => StatusIcon(feature);
-            const canVote = !feature.userVoted && negentropy >= feature.cost && feature.status === 'pending';
+            const canVote =
+              !feature.userVoted &&
+              negentropy >= feature.cost &&
+              feature.status === "pending";
             const voted = feature.userVoted;
 
             return (
@@ -246,23 +323,33 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <h4 className="text-xs font-black text-white truncate">{feature.title}</h4>
+                      <h4 className="text-xs font-black text-white truncate">
+                        {feature.title}
+                      </h4>
                       <StatusComp />
                     </div>
-                    <p className="text-[9.5px] text-zinc-500 line-clamp-1">{feature.description}</p>
+                    <p className="text-[9.5px] text-muted line-clamp-1">
+                      {feature.description}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-800/20">
                   <div className="flex items-center gap-2 text-[10px]">
-                    <span className="flex items-center gap-0.5 text-zinc-400">
+                    <span className="flex items-center gap-0.5 text-secondary">
                       <ThumbsUp size={10} />
-                      <span className="font-mono font-bold text-zinc-300">{feature.votes}</span>
+                      <span className="font-mono font-bold text-theme">
+                        {feature.votes}
+                      </span>
                     </span>
                     <span className="text-zinc-600">·</span>
-                    <span className="text-zinc-500">{TYPE_LABELS[feature.type] || feature.type}</span>
+                    <span className="text-muted">
+                      {TYPE_LABELS[feature.type] || feature.type}
+                    </span>
                     <span className="text-zinc-600">·</span>
-                    <span className="font-mono text-amber-500/80 font-bold">{feature.cost} E</span>
+                    <span className="font-mono text-amber-500/80 font-bold">
+                      {feature.cost} E
+                    </span>
                   </div>
 
                   {voted ? (
@@ -276,12 +363,12 @@ export default function FeatureRequestPanel({ userId, negentropy, onNegentropyCh
                       disabled={votingId === feature.id}
                       className="text-[9px] font-black text-white bg-amber-600 hover:bg-amber-500 disabled:opacity-50 px-2 py-0.5 rounded-lg transition-all flex items-center gap-0.5 cursor-pointer"
                     >
-                      {votingId === feature.id ? '...' : '投票'}
+                      {votingId === feature.id ? "..." : "投票"}
                       <Zap size={9} />
                     </button>
                   ) : (
                     <span className="text-[9px] text-zinc-600">
-                      {feature.status !== 'pending' ? '' : '负熵不足'}
+                      {feature.status !== "pending" ? "" : "负熵不足"}
                     </span>
                   )}
                 </div>

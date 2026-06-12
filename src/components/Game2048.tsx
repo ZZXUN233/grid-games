@@ -378,16 +378,14 @@ export default function Game2048({
   };
 
   return (
-    <div
-      className={`w-full flex flex-col gap-5 select-none ${"text-zinc-300"}`}
-    >
+    <div className={`w-full flex flex-col gap-5 select-none ${"text-theme"}`}>
       {/* Dynamic Sub-header */}
       <div
         className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -396,7 +394,7 @@ export default function Game2048({
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
           <span
-            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-zinc-500"}`}
+            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-muted"}`}
           >
             2048 合并微挑战
           </span>
@@ -406,7 +404,7 @@ export default function Game2048({
       {/* Profile & Grid Status */}
       <div className="flex items-center justify-between px-2 py-1">
         <div className="flex flex-col">
-          <span className={`text-xs leading-none ${"text-zinc-500"}`}>
+          <span className={`text-xs leading-none ${"text-muted"}`}>
             当前挑战者
           </span>
           <span
@@ -422,7 +420,7 @@ export default function Game2048({
             className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
           >
             <span
-              className={`text-[9px] uppercase tracking-wider font-bold ${"text-zinc-500"}`}
+              className={`text-[9px] uppercase tracking-wider font-bold ${"text-muted"}`}
             >
               分数
             </span>
@@ -436,7 +434,7 @@ export default function Game2048({
             className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
           >
             <span
-              className={`text-[9px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-zinc-500"}`}
+              className={`text-[9px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-muted"}`}
             >
               最佳{" "}
               <Trophy size={8} className="text-[#8B5A2B] sm:text-amber-500" />
@@ -488,7 +486,7 @@ export default function Game2048({
               <h3 className="text-lg font-black text-white uppercase tracking-wider">
                 挑战终结 (Game Over)
               </h3>
-              <p className="text-xs text-zinc-400 mt-2 max-w-[220px]">
+              <p className="text-xs text-secondary mt-2 max-w-[220px]">
                 没有格子可以合并了！本次游戏得分{" "}
                 <span className="text-amber-500 font-extrabold">{score}</span>
               </p>
@@ -534,7 +532,7 @@ export default function Game2048({
         className={`max-w-[200px] mx-auto w-full flex flex-col gap-1 items-center p-2 rounded-xl border ${"bg-zinc-900/30 border border-zinc-800/40"}`}
       >
         <span
-          className={`text-[9px] uppercase tracking-widest block font-bold mb-1 ${"text-zinc-500"}`}
+          className={`text-[9px] uppercase tracking-widest block font-bold mb-1 ${"text-muted"}`}
         >
           方向虚拟手柄
         </span>
@@ -542,7 +540,7 @@ export default function Game2048({
         <button
           onClick={() => move("UP")}
           disabled={gameOver}
-          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
+          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
         >
           <ArrowUp size={14} />
         </button>
@@ -550,28 +548,28 @@ export default function Game2048({
           <button
             onClick={() => move("LEFT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
           >
             <ArrowLeft size={14} />
           </button>
           <button
             onClick={() => move("DOWN")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
           >
             <ArrowDown size={14} />
           </button>
           <button
             onClick={() => move("RIGHT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
           >
             <ArrowRightIcon size={14} />
           </button>
         </div>
 
         <p
-          className={`text-[9px] text-center font-mono mt-2 tracking-wide leading-none ${"text-zinc-500"}`}
+          className={`text-[9px] text-center font-mono mt-2 tracking-wide leading-none ${"text-muted"}`}
         >
           键盘 WASD / 键盘方向键亦可操控
         </p>

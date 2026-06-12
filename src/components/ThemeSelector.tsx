@@ -21,7 +21,7 @@ export default function ThemeSelector({
         <h4 className={`text-sm font-bold tracking-tight text-theme`}>
           护眼视觉主题
         </h4>
-        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-zinc-400 font-mono">
+        <span className="text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-secondary font-mono">
           {THEMES.length} PRESETS
         </span>
       </div>
@@ -62,11 +62,11 @@ export default function ThemeSelector({
 
               <div className="flex-1 min-w-0">
                 <span
-                  className={`text-xs font-bold leading-tight block ${isActive ? "text-theme" : "text-zinc-300"}`}
+                  className={`text-xs font-bold leading-tight block ${isActive ? "text-theme" : "text-theme"}`}
                 >
                   {t.name}
                 </span>
-                <span className="text-[10px] text-zinc-500 leading-tight block truncate">
+                <span className="text-[10px] text-muted leading-tight block truncate">
                   {t.description}
                 </span>
               </div>

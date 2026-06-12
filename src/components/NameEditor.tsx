@@ -198,7 +198,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
           <button
             id="random-profile-btn"
             onClick={handleRandomize}
-            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-transparent hover:border-white/10 bg-white/5 active:scale-95 hover:bg-white/10 transition-all text-zinc-300 font-medium`}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-xs rounded-lg border border-transparent hover:border-white/10 bg-white/5 active:scale-95 hover:bg-white/10 transition-all text-theme font-medium`}
             title="随机摇号新形象"
           >
             <RefreshCw size={13} className="animate-spin-slow" />
@@ -310,7 +310,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
                 <button
                   type="button"
                   onClick={() => setShowPwdOld(!showPwdOld)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted cursor-pointer"
                 >
                   {showPwdOld ? <EyeOff size={12} /> : <Eye size={12} />}
                 </button>
@@ -327,7 +327,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
                 <button
                   type="button"
                   onClick={() => setShowPwdNew(!showPwdNew)}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 text-zinc-500 cursor-pointer"
+                  className="absolute right-2 top-1/2 -translate-y-1/2 text-muted cursor-pointer"
                 >
                   {showPwdNew ? <EyeOff size={12} /> : <Eye size={12} />}
                 </button>

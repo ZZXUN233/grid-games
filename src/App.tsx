@@ -593,7 +593,7 @@ export default function App() {
               className="w-full flex flex-col gap-4 mt-2"
             >
               {/* Header Bar */}
-              <div className="flex items-center justify-between flex-nowrap gap-2 pb-3.5 border-b border-zinc-800/60 w-full px-1">
+              <div className="flex items-center justify-between flex-nowrap gap-2 pb-3.5 border-b border-theme/60 w-full px-1">
                 <div className="flex items-center gap-2.5 min-w-0 shrink">
                   <div className="w-8.5 h-8.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/25 flex items-center justify-center text-[#3EB489] font-black text-base select-none shrink-0">
                     <Grid
@@ -603,10 +603,10 @@ export default function App() {
                     />
                   </div>
                   <div className="min-w-0">
-                    <h1 className="text-sm md:text-base font-extrabold tracking-tight text-white select-none leading-none uppercase truncate">
+                    <h1 className="text-sm md:text-base font-extrabold tracking-tight text-theme select-none leading-none uppercase truncate">
                       格子熵 · Grid Entropy
                     </h1>
-                    <span className="text-[9px] md:text-[10px] text-zinc-500 font-mono tracking-wider block leading-none mt-1 truncate">
+                    <span className="text-[9px] md:text-[10px] text-muted font-mono tracking-wider block leading-none mt-1 truncate">
                       九宫格平面网格聚合对抗熵增空间
                     </span>
                   </div>
@@ -615,7 +615,7 @@ export default function App() {
                 {/* Dark/light mode toggle */}
                 <button
                   onClick={() => setIsDarkMode((prev) => !prev)}
-                  className="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-zinc-300 group"
+                  className="p-2 rounded-xl bg-elevated/60 border border-theme/50 hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
                   title={isDarkMode ? "切换到浅色模式" : "切换到深色模式"}
                 >
                   {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
@@ -625,7 +625,7 @@ export default function App() {
                 <button
                   id="mobile-drawer-trigger"
                   onClick={() => setIsDrawerOpen(true)}
-                  className="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-zinc-300 group"
+                  className="p-2 rounded-xl bg-elevated/60 border border-theme/50 hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
                   title="大厅及主题配置"
                 >
                   <Settings
@@ -654,7 +654,7 @@ export default function App() {
                 className="space-y-5"
               >
                 {/* 🌌 对抗熵增 - Entropy Dashboard */}
-                <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 max-w-2xl mx-auto flex flex-col gap-3.5 shadow-xl select-none">
+                <div className="bg-elevated/40 border border-theme/80 rounded-2xl p-4.5 max-w-2xl mx-auto flex flex-col gap-3.5 shadow-xl select-none">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6.5 h-6.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/20 flex items-center justify-center text-[#3EB489]">
@@ -664,7 +664,7 @@ export default function App() {
                           style={{ animationDuration: "6s" }}
                         />
                       </div>
-                      <span className="text-xs font-black text-white tracking-tight">
+                      <span className="text-xs font-black text-theme tracking-tight">
                         熵 · 系统状态
                       </span>
                     </div>
@@ -702,7 +702,7 @@ export default function App() {
 
                   {/* Entropy Level Bar */}
                   <div className="space-y-1.5">
-                    <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
+                    <div className="flex justify-between text-[11px] font-semibold text-secondary">
                       <span>
                         {(user.entropy || 0) <= 0
                           ? "系统已恢复秩序"
@@ -712,12 +712,12 @@ export default function App() {
                               ? `混沌熵值 · 持续增长中 (+1/分钟)`
                               : `混沌熵值 · 加速膨胀中 (+1/分钟)`}
                       </span>
-                      <span className="font-mono text-zinc-300 font-bold">
+                      <span className="font-mono text-theme font-bold">
                         {user.entropy || 0} E
                       </span>
                     </div>
 
-                    <div className="h-2 rounded-full bg-zinc-800/60 overflow-hidden relative border border-zinc-950">
+                    <div className="h-2 rounded-full bg-elevated/60 overflow-hidden relative border border-zinc-950">
                       <div
                         className="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500"
                         style={{
@@ -728,38 +728,38 @@ export default function App() {
                   </div>
 
                   {/* Detail Row: Negentropy balance + Total generated */}
-                  <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium pt-3.5 border-t border-zinc-800/40 text-zinc-400">
-                    <div className="bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/20 flex flex-col gap-0.5">
-                      <span className="text-[9px] text-zinc-500 block">
+                  <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium pt-3.5 border-t border-theme/40 text-secondary">
+                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme/20 flex flex-col gap-0.5">
+                      <span className="text-[9px] text-muted block">
                         负熵余额
                       </span>
-                      <span className="font-mono text-xs font-black text-white flex items-center gap-1.5 mt-0.5">
+                      <span className="font-mono text-xs font-black text-theme flex items-center gap-1.5 mt-0.5">
                         <span
                           className={
                             (user.negentropy || 0) > 0
                               ? "text-[#3EB489]"
-                              : "text-zinc-500"
+                              : "text-muted"
                           }
                         >
                           {user.negentropy || 0} E
                         </span>
                         {(user.negentropy || 0) > 0 && (
-                          <span className="text-[8.5px] font-normal text-zinc-500 leading-tight">
+                          <span className="text-[8.5px] font-normal text-muted leading-tight">
                             可用于提交需求
                           </span>
                         )}
                       </span>
                     </div>
 
-                    <div className="bg-zinc-950/40 p-2.5 rounded-xl border border-zinc-800/20 flex flex-col gap-0.5">
-                      <span className="text-[9px] text-zinc-500 block">
+                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme/20 flex flex-col gap-0.5">
+                      <span className="text-[9px] text-muted block">
                         累计产出负熵
                       </span>
-                      <span className="font-mono text-xs font-black text-white flex items-center gap-1 mt-0.5">
+                      <span className="font-mono text-xs font-black text-theme flex items-center gap-1 mt-0.5">
                         <span className="text-teal-400">
                           {user.totalNegentropyGenerated || 0} E
                         </span>
-                        <span className="text-[9px] font-normal text-zinc-500">
+                        <span className="text-[9px] font-normal text-muted">
                           (整理格子获得)
                         </span>
                       </span>
@@ -792,7 +792,7 @@ export default function App() {
                         className={`group relative rounded-2xl p-3 flex flex-col justify-between border select-none transition-all duration-300 min-h-[135px] sm:min-h-[145px] md:min-h-[155px] ${
                           isPlayable
                             ? `bg-gradient-to-b ${slot.bgClass} cursor-pointer active:scale-95 shadow-lg shadow-black/30`
-                            : "bg-zinc-900/15 border-zinc-900/40 opacity-40 cursor-not-allowed"
+                            : "bg-elevated/15 border-zinc-900/40 opacity-40 cursor-not-allowed"
                         }`}
                       >
                         {/* Status tag & alignment layout row */}
@@ -823,7 +823,7 @@ export default function App() {
                                   e.stopPropagation();
                                   setActiveSettingsGameId(slot.id);
                                 }}
-                                className="p-1.5 rounded-md bg-zinc-950/60 hover:bg-zinc-800 hover:text-emerald-400 text-zinc-400 border border-zinc-800/60 transition-all cursor-pointer relative z-20"
+                                className="p-1.5 rounded-md bg-card/60 hover:bg-elevated hover:text-emerald-400 text-secondary border border-theme/60 transition-all cursor-pointer relative z-20"
                                 title="参数与规格配置"
                               >
                                 <Settings
@@ -848,10 +848,10 @@ export default function App() {
 
                         {/* Perfectly Aligned Title & Description using standardized min-height bounds */}
                         <div className="space-y-1 text-left mt-1.5">
-                          <h3 className="text-xs sm:text-[13px] font-black text-white group-hover:text-[#3EB489] transition-colors leading-tight flex items-center min-h-[30px] sm:min-h-[34px] line-clamp-2">
+                          <h3 className="text-xs sm:text-[13px] font-black text-theme group-hover:text-[#3EB489] transition-colors leading-tight flex items-center min-h-[30px] sm:min-h-[34px] line-clamp-2">
                             {slot.title}
                           </h3>
-                          <p className="text-[10px] sm:text-[11px] text-zinc-500 leading-normal line-clamp-2 min-h-[28px] sm:min-h-[32px] font-sans font-medium">
+                          <p className="text-[10px] sm:text-[11px] text-muted leading-normal line-clamp-2 min-h-[28px] sm:min-h-[32px] font-sans font-medium">
                             {slot.desc}
                           </p>
                         </div>
@@ -866,20 +866,20 @@ export default function App() {
                 </div>
 
                 {/* Quick Player Profile card under the portal */}
-                <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/30 rounded-xl border border-zinc-800/50 max-w-lg mx-auto">
+                <div className="flex items-center justify-between px-4 py-3 bg-elevated/30 rounded-xl border border-theme/50 max-w-lg mx-auto">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-base select-none shrink-0">
                       {user.avatarEmoji || "🕹️"}
                     </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-black text-white font-mono truncate">
+                        <span className="text-xs font-black text-theme font-mono truncate">
                           {user.nickname || "载入中..."}
                         </span>
                       </div>
                       {user.userId && (
                         <div className="flex items-center gap-1 mt-0.5">
-                          <span className="text-[10px] text-zinc-500 font-mono select-all">
+                          <span className="text-[10px] text-muted font-mono select-all">
                             {user.userId}
                           </span>
                           <button
@@ -888,7 +888,7 @@ export default function App() {
                               setUserIdCopied(true);
                               setTimeout(() => setUserIdCopied(false), 1500);
                             }}
-                            className="p-0.5 rounded text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all cursor-pointer"
+                            className="p-0.5 rounded text-zinc-600 hover:text-zinc-300 hover:bg-elevated/50 transition-all cursor-pointer"
                             title="复制用户 ID"
                           >
                             {userIdCopied ? (
@@ -904,14 +904,14 @@ export default function App() {
                   <div className="flex items-cnter gap-1.5 shrink-0">
                     <button
                       onClick={() => setIsDrawerOpen(true)}
-                      className="text-[10px] py-1 px-2.5 rounded-md bg-zinc-800 hover:bg-zinc-700 font-bold text-zinc-400 hover:text-zinc-200 cursor-pointer active:scale-95 transition-all"
+                      className="text-[10px] py-1 px-2.5 rounded-md bg-elevated hover:bg-zinc-700 font-bold text-secondary hover:text-zinc-200 cursor-pointer active:scale-95 transition-all"
                     >
                       修改别名/主题
                     </button>
                     {isLoggedInState ? (
                       <button
                         onClick={handleLogout}
-                        className="text-[10px] py-1 px-2 rounded-md bg-zinc-800/50 hover:bg-rose-800/50 font-bold text-zinc-500 hover:text-rose-300 cursor-pointer active:scale-95 transition-all"
+                        className="text-[10px] py-1 px-2 rounded-md bg-elevated/50 hover:bg-rose-800/50 font-bold text-muted hover:text-rose-300 cursor-pointer active:scale-95 transition-all"
                         title="注销当前账号"
                       >
                         注销
@@ -1079,9 +1079,9 @@ export default function App() {
             <div
               className={`w-full max-w-2xl rounded-2xl p-4.5 card-theme transition-colors duration-300`}
             >
-              <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-zinc-800/60">
+              <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-theme/60">
                 <Trophy size={15} className="text-amber-500 animate-bounce" />
-                <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                <h4 className="text-xs font-extrabold text-theme uppercase tracking-wider">
                   格子熵对抗排行荣誉碑 (每日解熵与高速格盘)
                 </h4>
               </div>
@@ -1145,16 +1145,16 @@ export default function App() {
                 className={`fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] z-50 p-5 overflow-y-auto bg-theme border-l border-theme shadow-2xl flex flex-col select-none`}
               >
                 {/* Header of Menu */}
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-zinc-800/40">
+                <div className="flex items-center justify-between pb-4 mb-5 border-b border-theme/40">
                   <div className="flex items-center gap-2">
                     <Trophy size={16} className="text-[#3EB489]" />
-                    <span className="text-sm font-extrabold text-white font-sans tracking-wide">
+                    <span className="text-sm font-extrabold text-theme font-sans tracking-wide">
                       训练控制中心
                     </span>
                   </div>
                   <button
                     onClick={() => setIsDrawerOpen(false)}
-                    className="p-1 px-2.5 rounded-lg bg-zinc-800/50 text-zinc-400 hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer font-bold border border-zinc-700/40"
+                    className="p-1 px-2.5 rounded-lg bg-elevated/50 text-secondary hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer font-bold border border-theme/40"
                   >
                     <X size={14} />
                     <span>收起</span>
@@ -1163,19 +1163,19 @@ export default function App() {
 
                 {/* Body elements of Drawer */}
                 <div className="space-y-6 pb-16 flex-1">
-                  <div className="bg-[#3EB489]/5 p-3 rounded-xl border border-[#3EB489]/15 text-[10px] leading-relaxed text-zinc-400">
+                  <div className="bg-[#3EB489]/5 p-3 rounded-xl border border-[#3EB489]/15 text-[10px] leading-relaxed text-secondary">
                     💡
                     您在此处可以随时自定义角色名、修改头像与背景主题，变更将自适应并实时全大厅、全游戏地实时全局生效。
                   </div>
 
                   {/* User ID + Share */}
                   {user.userId && (
-                    <div className="space-y-3 bg-zinc-900/40 rounded-xl p-3.5 border border-zinc-800/50">
-                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
+                    <div className="space-y-3 bg-elevated/40 rounded-xl p-3.5 border border-theme/50">
+                      <span className="text-[10px] text-muted uppercase tracking-widest block font-bold">
                         玩家身份标识
                       </span>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-mono font-black text-white select-all">
+                        <span className="text-sm font-mono font-black text-theme select-all">
                           {user.userId}
                         </span>
                         <div className="flex items-center gap-1 shrink-0">
@@ -1185,7 +1185,7 @@ export default function App() {
                               setUserIdCopied(true);
                               setTimeout(() => setUserIdCopied(false), 1500);
                             }}
-                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white text-[10px] font-bold transition-all cursor-pointer"
+                            className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-elevated hover:bg-zinc-700 text-secondary hover:text-white text-[10px] font-bold transition-all cursor-pointer"
                           >
                             {userIdCopied ? (
                               <Check size={11} className="text-[#3EB489]" />
@@ -1227,7 +1227,7 @@ export default function App() {
                   {/* Profile Name editor */}
                   {user.userId && (
                     <div className="space-y-1">
-                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold px-1 mb-1">
+                      <span className="text-[10px] text-muted uppercase tracking-widest block font-bold px-1 mb-1">
                         玩家个性设置
                       </span>
                       <NameEditor
@@ -1243,28 +1243,26 @@ export default function App() {
                     (inviteStats.totalClicks > 0 ||
                       inviteStats.totalReward > 0) && (
                       <div className="space-y-2 bg-amber-500/5 rounded-xl p-3.5 border border-amber-500/15">
-                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
+                        <span className="text-[10px] text-muted uppercase tracking-widest block font-bold">
                           邀请贡献统计
                         </span>
                         <div className="grid grid-cols-2 gap-2 text-[11px]">
-                          <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
-                            <div className="text-lg font-black text-white">
+                          <div className="bg-card/40 rounded-lg p-2 text-center">
+                            <div className="text-lg font-black text-theme">
                               {inviteStats.totalClicks}
                             </div>
-                            <div className="text-[9px] text-zinc-500">
-                              次点击
-                            </div>
+                            <div className="text-[9px] text-muted">次点击</div>
                           </div>
-                          <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
+                          <div className="bg-card/40 rounded-lg p-2 text-center">
                             <div className="text-lg font-black text-[#3EB489]">
                               +{inviteStats.totalReward}
                             </div>
-                            <div className="text-[9px] text-zinc-500">
+                            <div className="text-[9px] text-muted">
                               负熵收益
                             </div>
                           </div>
                         </div>
-                        <p className="text-[9px] text-zinc-500 leading-relaxed">
+                        <p className="text-[9px] text-muted leading-relaxed">
                           每有一个人通过你的分享链接访问，你将获得 +5 负熵（24h
                           同 IP 去重）
                         </p>
@@ -1273,7 +1271,7 @@ export default function App() {
 
                   {/* Themes list selector */}
                   <div className="space-y-1">
-                    <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold px-1 mb-1">
+                    <span className="text-[10px] text-muted uppercase tracking-widest block font-bold px-1 mb-1">
                       极简视力主题
                     </span>
                     <ThemeSelector
@@ -1309,16 +1307,16 @@ export default function App() {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
                 transition={{ type: "spring", damping: 24, stiffness: 210 }}
-                className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[420px] z-50 rounded-2xl border border-zinc-850 bg-zinc-950 p-5 shadow-2xl select-none bg-theme`}
+                className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[420px] z-50 rounded-2xl border border-theme bg-card p-5 shadow-2xl select-none bg-theme`}
               >
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-800/60">
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-theme/60">
                   <div className="flex items-center gap-2">
                     <Settings
                       className="text-emerald-400 animate-spin-slow"
                       size={16}
                     />
-                    <span className="text-sm font-black text-white tracking-wide">
+                    <span className="text-sm font-black text-theme tracking-wide">
                       {activeSettingsGameId === "gomoku" &&
                         "五子连珠 (Gobang) 偏好设置"}
                       {activeSettingsGameId === "sudoku" &&
@@ -1333,7 +1331,7 @@ export default function App() {
                   </div>
                   <button
                     onClick={() => setActiveSettingsGameId(null)}
-                    className="p-1 rounded-lg hover:bg-zinc-800 text-zinc-500 hover:text-white transition-all cursor-pointer"
+                    className="p-1 rounded-lg hover:bg-elevated text-muted hover:text-white transition-all cursor-pointer"
                   >
                     <X size={14} />
                   </button>
@@ -1345,7 +1343,7 @@ export default function App() {
                     <>
                       {/* Grid Size Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           棋盘规格 (Board size & lines)
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1361,14 +1359,14 @@ export default function App() {
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 gomokuSettings.gridSize === size
                                   ? "bg-emerald-500/20 text-emerald-300 border-emerald-500"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {size} x {size}
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           *
                           对应初级、标准与专业围棋标准，更高规格要求更大博弈视野与后视深度。
                         </p>
@@ -1376,7 +1374,7 @@ export default function App() {
 
                       {/* Difficulty Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           智能黑洞白子 AI 智商（Difficulty）
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1399,14 +1397,14 @@ export default function App() {
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 gomokuSettings.difficulty === diff.id
                                   ? "bg-purple-500/20 text-purple-300 border-purple-500"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {diff.label}
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           * 大师模式下，AI 白子会预判并切断您的每一条死/活三 or
                           死/活四路线，博弈挑战性拉满。
                         </p>
@@ -1418,7 +1416,7 @@ export default function App() {
                     <>
                       {/* Difficulty Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           数独难度设定 (Difficulty)
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1441,14 +1439,14 @@ export default function App() {
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 sudokuSettings.difficulty === diff.id
                                   ? "bg-emerald-500/20 text-emerald-300 border-emerald-500"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {diff.label}
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           *
                           初级暴露较多已知数值以供探索；中等要求基础三链锁；大师深度测试数独的隐性唯余与链排。
                         </p>
@@ -1460,7 +1458,7 @@ export default function App() {
                     <>
                       {/* Difficulty Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           扫雷雷盘规则设定 (Difficulty)
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1483,14 +1481,14 @@ export default function App() {
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer leading-tight ${
                                 minesweeperSettings.difficulty === diff.id
                                   ? "bg-[#F43F5E]/20 text-rose-300 border-[#F43F5E]"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {diff.label}
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           *
                           初级便于视力敏捷训练；中级带有中等排斥链推理；高级测试极佳的空间对焦张力与深逻辑连通。
                         </p>
@@ -1502,7 +1500,7 @@ export default function App() {
                     <>
                       {/* Spawn Mode Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           新牌生成机制 (Tile Spawn Engine)
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
@@ -1525,7 +1523,7 @@ export default function App() {
                               className={`py-2 px-1 rounded-lg text-xs font-black border transition-all cursor-pointer leading-tight ${
                                 game2048Settings.spawnMode === mode.id
                                   ? "bg-amber-500/20 text-amber-303 border-amber-500"
-                                  : "bg-zinc-900/40 text-zinc-405 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-zinc-405 border-theme hover:bg-elevated"
                               }`}
                             >
                               {mode.label}
@@ -1540,7 +1538,7 @@ export default function App() {
 
                       {/* Starter blocks config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           开局奖励区块数 (Starter Blocks)
                         </label>
                         <div className="grid grid-cols-3 gap-2">
@@ -1556,14 +1554,14 @@ export default function App() {
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 game2048Settings.starterCount === count
                                   ? "bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {count} 块卡牌
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           *
                           开局加载出的空闲奖励牌数量，较多数量可支持高级博局迅速衔接合并。
                         </p>
@@ -1575,7 +1573,7 @@ export default function App() {
                     <>
                       {/* Default Dimension Config */}
                       <div className="space-y-2">
-                        <label className="text-[10px] text-zinc-400 font-bold uppercase tracking-wider block">
+                        <label className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
                           自由训练 舒尔特网格维度 (Dimension size)
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5 animate-pulse-none">
@@ -1588,14 +1586,14 @@ export default function App() {
                               className={`py-2 px-1 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 schulteSettings.defaultDimension === dim
                                   ? "bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]"
-                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
+                                  : "bg-elevated/40 text-secondary border-theme hover:bg-elevated"
                               }`}
                             >
                               {dim} x {dim}
                             </button>
                           ))}
                         </div>
-                        <p className="text-[9px] text-zinc-500">
+                        <p className="text-[9px] text-muted">
                           *
                           舒尔特最核心的视力自由训练参数。3x3为热身，5x5为国际测试标准，6x6测试并拓展极限界。
                         </p>
@@ -1605,7 +1603,7 @@ export default function App() {
                 </div>
 
                 {/* Footer Save button */}
-                <div className="mt-6 pt-3 border-t border-zinc-800/40 flex justify-end">
+                <div className="mt-6 pt-3 border-t border-theme/40 flex justify-end">
                   <button
                     onClick={() => setActiveSettingsGameId(null)}
                     className="py-1.5 px-4 rounded-lg text-xs font-bold bg-[#3EB489] hover:bg-[#3d9f7c] text-zinc-950 active:scale-95 transition-all shadow-md cursor-pointer flex items-center gap-1"

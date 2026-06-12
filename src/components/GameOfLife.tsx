@@ -324,22 +324,20 @@ export default function GameOfLife({
     }
   }, [generation, entropyAwarded, onConsumeEntropy]);
 
-  const txtMuted = "text-zinc-400";
+  const txtMuted = "text-secondary";
   const txtMain = "text-white";
   const borderCls = "border-zinc-800";
   const bgCard = "bg-zinc-900/40";
 
   return (
-    <div
-      className={`w-full flex flex-col gap-4 select-none ${"text-zinc-300"}`}
-    >
+    <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       {/* Header */}
       <div
         className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${borderCls}`}
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} /> <span>返回大厅</span>
         </button>
@@ -413,7 +411,7 @@ export default function GameOfLife({
         <button
           onClick={stepOnce}
           disabled={running}
-          className="p-2 rounded-lg bg-zinc-800/50 text-zinc-400 hover:text-white cursor-pointer disabled:opacity-30 transition-all active:scale-90"
+          className="p-2 rounded-lg bg-zinc-800/50 text-secondary hover:text-white cursor-pointer disabled:opacity-30 transition-all active:scale-90"
         >
           <StepForward size={16} />
         </button>
@@ -422,7 +420,7 @@ export default function GameOfLife({
             setRunning(false);
             loadPreset("random");
           }}
-          className="p-2 rounded-lg bg-zinc-800/50 text-zinc-400 hover:text-amber-400 cursor-pointer transition-all active:scale-90"
+          className="p-2 rounded-lg bg-zinc-800/50 text-secondary hover:text-amber-400 cursor-pointer transition-all active:scale-90"
         >
           <RotateCcw size={16} />
         </button>
@@ -506,7 +504,7 @@ export default function GameOfLife({
         </div>
         {showGuide && (
           <div
-            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-zinc-900 text-zinc-400"}`}
+            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-zinc-900 text-secondary"}`}
           >
             <p>
               🧬 <strong>生命游戏：</strong>{" "}

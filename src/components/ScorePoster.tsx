@@ -1,7 +1,7 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { ScoreRecord, GameTheme } from '../types';
-import { Download, Copy, Check, Share2, Award, Eye, Heart } from 'lucide-react';
-import { motion } from 'motion/react';
+import React, { useRef, useState, useEffect } from "react";
+import { ScoreRecord, GameTheme } from "../types";
+import { Download, Copy, Check, Share2, Award, Eye, Heart } from "lucide-react";
+import { motion } from "motion/react";
 
 interface ScorePosterProps {
   score: ScoreRecord;
@@ -9,39 +9,93 @@ interface ScorePosterProps {
   onClose: () => void;
 }
 
-export default function ScorePoster({ score, theme, onClose }: ScorePosterProps) {
+export default function ScorePoster({
+  score,
+  theme,
+  onClose,
+}: ScorePosterProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const [copied, setCopied] = useState(false);
   const [downloading, setDownloading] = useState(false);
 
   // Generate an encouraging visual rating based on the completion speed
-  const getRatingAndEncouragement = (time: number, mode: string, diff: string) => {
-    if (mode === 'letter') {
-      if (time < 20) return { stars: '⭐⭐⭐⭐⭐', text: '空间神童！Alpha 级多维感知力', badge: '最强大脑' };
-      if (time < 35) return { stars: '⭐⭐⭐⭐', text: '灵敏非凡！视野感知超越常人', badge: '空间猎手' };
-      return { stars: '⭐⭐⭐', text: '渐入佳境！专注力与字母搜索同步提升', badge: '字母挑战者' };
+  const getRatingAndEncouragement = (
+    time: number,
+    mode: string,
+    diff: string
+  ) => {
+    if (mode === "letter") {
+      if (time < 20)
+        return {
+          stars: "⭐⭐⭐⭐⭐",
+          text: "空间神童！Alpha 级多维感知力",
+          badge: "最强大脑",
+        };
+      if (time < 35)
+        return {
+          stars: "⭐⭐⭐⭐",
+          text: "灵敏非凡！视野感知超越常人",
+          badge: "空间猎手",
+        };
+      return {
+        stars: "⭐⭐⭐",
+        text: "渐入佳境！专注力与字母搜索同步提升",
+        badge: "字母挑战者",
+      };
     }
-    
+
     // Level or Free numerical modes
-    const size = diff.includes('3x3') ? 9 : diff.includes('4x4') ? 16 : diff.includes('5x5') ? 25 : diff.includes('6x6') ? 36 : 49;
+    const size = diff.includes("3x3")
+      ? 9
+      : diff.includes("4x4")
+        ? 16
+        : diff.includes("5x5")
+          ? 25
+          : diff.includes("6x6")
+            ? 36
+            : 49;
     const avgTimePerGrid = time / size;
 
     if (avgTimePerGrid < 0.6) {
-      return { stars: '⭐⭐⭐⭐⭐', text: '神之一星！视野雷达，瞬时全幅极速摄入', badge: '视野掌控者' };
+      return {
+        stars: "⭐⭐⭐⭐⭐",
+        text: "神之一星！视野雷达，瞬时全幅极速摄入",
+        badge: "视野掌控者",
+      };
     } else if (avgTimePerGrid < 1.0) {
-      return { stars: '⭐⭐⭐⭐', text: '专注大咖！手眼极速协同，行云流水', badge: '极速先锋' };
+      return {
+        stars: "⭐⭐⭐⭐",
+        text: "专注大咖！手眼极速协同，行云流水",
+        badge: "极速先锋",
+      };
     } else if (avgTimePerGrid < 1.6) {
-      return { stars: '⭐⭐⭐', text: '眼力优秀！视网膜周边阅读与瞬时识别契合', badge: '眼力先锋' };
+      return {
+        stars: "⭐⭐⭐",
+        text: "眼力优秀！视网膜周边阅读与瞬时识别契合",
+        badge: "眼力先锋",
+      };
     } else {
-      return { stars: '⭐⭐', text: '沉稳而行！心跳规律，在宁静中累积专注', badge: '心静如水' };
+      return {
+        stars: "⭐⭐",
+        text: "沉稳而行！心跳规律，在宁静中累积专注",
+        badge: "心静如水",
+      };
     }
   };
 
-  const evalStats = getRatingAndEncouragement(score.time, score.mode, score.difficulty);
+  const evalStats = getRatingAndEncouragement(
+    score.time,
+    score.mode,
+    score.difficulty
+  );
 
   const getShareText = () => {
     return `⏱️ 舒尔特方格 (Schulte Grid) 挑战成功！\n👤 选手: ${score.nickname}\n🎯 模式: ${
-      score.mode === 'level' ? '闯关突破' : score.mode === 'letter' ? '字母空间感知' : '自由定制'
+      score.mode === "level"
+        ? "闯关突破"
+        : score.mode === "letter"
+          ? "字母空间感知"
+          : "自由定制"
     } (${score.difficulty})\n⚡ 耗时: ${score.time.toFixed(2)} 秒 (${evalStats.badge})\n🔥 专注评级: ${evalStats.stars}\n\n在宁静深处，聚集非凡专注。你也来测测你的空间感知与扫视眼力吧！`;
   };
 
@@ -63,7 +117,7 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
       return;
     }
 
-    const ctx = canvas.getContext('2d');
+    const ctx = canvas.getContext("2d");
     if (!ctx) {
       setDownloading(false);
       return;
@@ -74,22 +128,22 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
     canvas.height = 880;
 
     // Outer Background Base Fill
-    ctx.fillStyle = '#0F0F11'; // Elegant deep off-black
+    ctx.fillStyle = "#0F0F11"; // Elegant deep off-black
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     // Decorative ambient glowing curves using safe native paths
     ctx.beginPath();
     ctx.arc(320, -100, 480, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(217, 118, 6, 0.08)'; // Golden warm glow
+    ctx.fillStyle = "rgba(217, 118, 6, 0.08)"; // Golden warm glow
     ctx.fill();
 
     // Golden boundary frame
-    ctx.strokeStyle = '#2E2214';
+    ctx.strokeStyle = "#2E2214";
     ctx.lineWidth = 2;
     ctx.strokeRect(20, 20, canvas.width - 40, canvas.height - 40);
-    
+
     // Thin outer frame accent
-    ctx.strokeStyle = '#D97706';
+    ctx.strokeStyle = "#D97706";
     ctx.lineWidth = 1;
     ctx.globalAlpha = 0.5;
     ctx.strokeRect(30, 30, canvas.width - 60, canvas.height - 60);
@@ -97,36 +151,44 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
 
     // Corner decorative markers
     const size = 15;
-    ctx.strokeStyle = '#D97706';
+    ctx.strokeStyle = "#D97706";
     ctx.lineWidth = 3;
     // Top-Left marker
     ctx.beginPath();
-    ctx.moveTo(35, 35 + size); ctx.lineTo(35, 35); ctx.lineTo(35 + size, 35);
+    ctx.moveTo(35, 35 + size);
+    ctx.lineTo(35, 35);
+    ctx.lineTo(35 + size, 35);
     ctx.stroke();
     // Top-Right marker
     ctx.beginPath();
-    ctx.moveTo(605 - size, 35); ctx.lineTo(605, 35); ctx.lineTo(605, 35 + size);
+    ctx.moveTo(605 - size, 35);
+    ctx.lineTo(605, 35);
+    ctx.lineTo(605, 35 + size);
     ctx.stroke();
     // Bottom-Left
     ctx.beginPath();
-    ctx.moveTo(35, 845 - size); ctx.lineTo(35, 845); ctx.lineTo(35 + size, 845);
+    ctx.moveTo(35, 845 - size);
+    ctx.lineTo(35, 845);
+    ctx.lineTo(35 + size, 845);
     ctx.stroke();
     // Bottom-Right
     ctx.beginPath();
-    ctx.moveTo(605 - size, 845); ctx.lineTo(605, 845); ctx.lineTo(605, 845 - size);
+    ctx.moveTo(605 - size, 845);
+    ctx.lineTo(605, 845);
+    ctx.lineTo(605, 845 - size);
     ctx.stroke();
 
     // 1. Title Section
-    ctx.fillStyle = '#E4E4E7';
+    ctx.fillStyle = "#E4E4E7";
     ctx.font = 'bold 36px "System-UI", -apple-system, sans-serif';
-    ctx.textAlign = 'center';
-    ctx.fillText('舒 尔 特 方 格 成 绩 单', 320, 110);
-    ctx.font = '14px monospace';
-    ctx.fillStyle = '#71717A';
-    ctx.fillText('SCHULTE CONCENTRATION DIAGNOSTIC', 320, 138);
+    ctx.textAlign = "center";
+    ctx.fillText("舒 尔 特 方 格 成 绩 单", 320, 110);
+    ctx.font = "14px monospace";
+    ctx.fillStyle = "#71717A";
+    ctx.fillText("SCHULTE CONCENTRATION DIAGNOSTIC", 320, 138);
 
     // Dynamic separator line
-    ctx.strokeStyle = 'rgba(217, 118, 6, 0.2)';
+    ctx.strokeStyle = "rgba(217, 118, 6, 0.2)";
     ctx.lineWidth = 1;
     ctx.beginPath();
     ctx.moveTo(120, 160);
@@ -142,21 +204,21 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
     ctx.fillStyle = score.avatarColor;
     ctx.fill();
     ctx.lineWidth = 4;
-    ctx.strokeStyle = '#18181C';
+    ctx.strokeStyle = "#18181C";
     ctx.stroke();
 
     // Render Emoji on top of the circle
     ctx.font = '64px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
-    ctx.textBaseline = 'middle';
-    ctx.textAlign = 'center';
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
     ctx.fillText(score.avatarEmoji, avatarX, avatarY + 4);
 
     // 3. Player Nickname
-    ctx.fillStyle = '#FFFFFF';
+    ctx.fillStyle = "#FFFFFF";
     ctx.font = 'bold 26px "System-UI", sans-serif';
     ctx.fillText(score.nickname, 320, 340);
-    ctx.font = '12px monospace';
-    ctx.fillStyle = '#D97706';
+    ctx.font = "12px monospace";
+    ctx.fillStyle = "#D97706";
     ctx.fillText(`UID: ${score.userId.toUpperCase()}`, 320, 365);
 
     // 4. Large Stat Clock Panel
@@ -164,79 +226,90 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
     const rectY = 390;
     const rectW = 440;
     const rectH = 180;
-    ctx.fillStyle = '#141416';
+    ctx.fillStyle = "#141416";
     ctx.fillRect(rectX, rectY, rectW, rectH);
-    ctx.strokeStyle = '#27272A';
+    ctx.strokeStyle = "#27272A";
     ctx.lineWidth = 1.5;
     ctx.strokeRect(rectX, rectY, rectW, rectH);
 
     // Content inside panel: Mode & Difficulty
     ctx.font = '14px "System-UI", sans-serif';
-    ctx.fillStyle = '#A1A1AA';
-    ctx.fillText(`挑战模式: ${score.mode === 'level' ? '闯关卡' : score.mode === 'letter' ? '字母空间感知' : '自由练习'}`, 320, 425);
+    ctx.fillStyle = "#A1A1AA";
+    ctx.fillText(
+      `挑战模式: ${score.mode === "level" ? "闯关卡" : score.mode === "letter" ? "字母空间感知" : "自由练习"}`,
+      320,
+      425
+    );
     ctx.font = 'bold 18px "System-UI", sans-serif';
-    ctx.fillStyle = '#E4E4E7';
+    ctx.fillStyle = "#E4E4E7";
     ctx.fillText(`【 ${score.difficulty} 】`, 320, 452);
 
     // Time Value representation
     ctx.font = 'bold 64px "Monaco", "Courier New", monospace';
-    ctx.fillStyle = '#FFA000'; // Eye-friendly radiant golden
+    ctx.fillStyle = "#FFA000"; // Eye-friendly radiant golden
     ctx.fillText(`${score.time.toFixed(2)}`, 320, 522);
-    
+
     // Label "秒 (Seconds)"
     ctx.font = '13px "System-UI", sans-serif';
-    ctx.fillStyle = '#71717A';
-    ctx.fillText('COMPLETION TIME (SECONDS)', 320, 550);
+    ctx.fillStyle = "#71717A";
+    ctx.fillText("COMPLETION TIME (SECONDS)", 320, 550);
 
     // 5. Rating Comments Section
     ctx.font = '24px "Apple Color Emoji", "Segoe UI Emoji", sans-serif';
     ctx.fillText(evalStats.stars, 320, 605);
     ctx.font = 'bold 18px "System-UI", sans-serif';
-    ctx.fillStyle = '#34D399'; // Positive Emerald Feedback
+    ctx.fillStyle = "#34D399"; // Positive Emerald Feedback
     ctx.fillText(`称号 : ${evalStats.badge}`, 320, 638);
-    
+
     ctx.font = '14px "System-UI", sans-serif';
-    ctx.fillStyle = '#D4D4D8';
-    
+    ctx.fillStyle = "#D4D4D8";
+
     // Wrap encouragement text cleanly if too long
     const encouragement = evalStats.text;
     ctx.fillText(encouragement, 320, 670);
 
     // 6. Footer section with decorative QR area or scan instructions
     const scanY = 750;
-    
+
     // Abstract geometric design representing "Focus Radar/Schulte grid" inside footer
     ctx.lineWidth = 1;
-    ctx.strokeStyle = '#27272A';
+    ctx.strokeStyle = "#27272A";
     for (let i = 0; i < 4; i++) {
-      ctx.strokeRect(40 + (i * 12), scanY - 5, 10, 10);
+      ctx.strokeRect(40 + i * 12, scanY - 5, 10, 10);
     }
-    
-    ctx.textAlign = 'left';
+
+    ctx.textAlign = "left";
     ctx.font = '12px "System-UI", sans-serif';
-    ctx.fillStyle = '#A1A1AA';
-    ctx.fillText('舒尔特专注力视觉训练评估网格', 95, scanY - 3);
+    ctx.fillStyle = "#A1A1AA";
+    ctx.fillText("舒尔特专注力视觉训练评估网格", 95, scanY - 3);
     ctx.font = '10px "System-UI", sans-serif';
-    ctx.fillStyle = '#52525B';
-    ctx.fillText('通过外周扫视视网膜周边阅读与极速手眼反应进行专注力评级', 95, scanY + 12);
+    ctx.fillStyle = "#52525B";
+    ctx.fillText(
+      "通过外周扫视视网膜周边阅读与极速手眼反应进行专注力评级",
+      95,
+      scanY + 12
+    );
 
     // Date mark on the right
-    ctx.textAlign = 'right';
-    const dateFormatted = new Date(score.createdAt).toLocaleDateString('zh-CN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-    ctx.font = '11px monospace';
-    ctx.fillStyle = '#71717A';
+    ctx.textAlign = "right";
+    const dateFormatted = new Date(score.createdAt).toLocaleDateString(
+      "zh-CN",
+      {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    );
+    ctx.font = "11px monospace";
+    ctx.fillStyle = "#71717A";
     ctx.fillText(dateFormatted, 600, scanY + 8);
 
     // Create image download link
     try {
-      const dataUrl = canvas.toDataURL('image/png');
-      const link = document.createElement('a');
+      const dataUrl = canvas.toDataURL("image/png");
+      const link = document.createElement("a");
       link.download = `Schulte_Score_${score.difficulty}_${score.time.toFixed(2)}s.png`;
       link.href = dataUrl;
       link.click();
@@ -264,7 +337,7 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
           <button
             id="close-poster-btn"
             onClick={onClose}
-            className="text-zinc-400 hover:text-zinc-200 py-1 px-2.5 rounded-lg bg-zinc-800/40 hover:bg-zinc-800/80 border border-zinc-700/30 transition-all text-xs flex items-center gap-1 cursor-pointer font-medium"
+            className="text-secondary hover:text-zinc-200 py-1 px-2.5 rounded-lg bg-zinc-800/40 hover:bg-zinc-800/80 border border-zinc-700/30 transition-all text-xs flex items-center gap-1 cursor-pointer font-medium"
           >
             <span>返回大厅</span>
             <span className="font-bold">✕</span>
@@ -280,10 +353,10 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
               <Heart size={16} />
             </div>
 
-            <span className="text-[10px] text-zinc-500 font-mono tracking-widest uppercase mb-1">
+            <span className="text-[10px] text-muted font-mono tracking-widest uppercase mb-1">
               Schulte Diagnostic Report
             </span>
-            <h4 className="text-md font-extrabold text-zinc-300 tracking-wider mb-4">
+            <h4 className="text-md font-extrabold text-theme tracking-wider mb-4">
               舒尔特方格专注力评估
             </h4>
 
@@ -295,13 +368,22 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
               <span>{score.avatarEmoji}</span>
             </div>
 
-            <span className="text-sm font-semibold text-white">{score.nickname}</span>
-            <span className="text-[10px] text-zinc-500 font-mono">UID: {score.userId}</span>
+            <span className="text-sm font-semibold text-white">
+              {score.nickname}
+            </span>
+            <span className="text-[10px] text-muted font-mono">
+              UID: {score.userId}
+            </span>
 
             {/* Middle scoreboard */}
             <div className="my-5 py-3.5 px-6 rounded-lg bg-zinc-950/85 border border-zinc-900 w-full max-w-xs">
-              <span className="text-xs text-zinc-400 font-medium block">
-                {score.mode === 'level' ? '闯关突破' : score.mode === 'letter' ? '字母空间感知' : '自由定制'} ({score.difficulty})
+              <span className="text-xs text-secondary font-medium block">
+                {score.mode === "level"
+                  ? "闯关突破"
+                  : score.mode === "letter"
+                    ? "字母空间感知"
+                    : "自由定制"}{" "}
+                ({score.difficulty})
               </span>
               <div className="text-3xl font-mono font-bold text-amber-500 mt-1 select-all">
                 {score.time.toFixed(2)} 秒
@@ -318,7 +400,7 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
                 {evalStats.badge}
               </span>
             </div>
-            <p className="text-xs text-zinc-400 leading-relaxed max-w-sm">
+            <p className="text-xs text-secondary leading-relaxed max-w-sm">
               “{evalStats.text}”
             </p>
 
@@ -332,13 +414,13 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
 
           {/* Social Media Copy-Paste Card Text */}
           <div className="w-full mt-4 bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl text-left">
-            <span className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider block mb-1">
+            <span className="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">
               文字版格式 (适于粘贴微信/微博)
             </span>
             <textarea
               readOnly
               value={getShareText()}
-              className="w-full h-24 bg-transparent border-0 text-zinc-400 text-xs resize-none focus:outline-none focus:ring-0 placeholder-zinc-700 leading-relaxed font-sans"
+              className="w-full h-24 bg-transparent border-0 text-secondary text-xs resize-none focus:outline-none focus:ring-0 placeholder-zinc-700 leading-relaxed font-sans"
               onClick={(e) => (e.target as HTMLTextAreaElement).select()}
             />
           </div>
@@ -370,7 +452,7 @@ export default function ScorePoster({ score, theme, onClose }: ScorePosterProps)
               className={`flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-bold rounded-xl text-zinc-950 transition-colors active:scale-95 bg-amber-500 hover:bg-amber-400 cursor-pointer`}
             >
               <Download size={14} />
-              <span>{downloading ? '生成海报中...' : '保存成绩海报'}</span>
+              <span>{downloading ? "生成海报中..." : "保存成绩海报"}</span>
             </button>
           </div>
 

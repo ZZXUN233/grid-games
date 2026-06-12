@@ -400,9 +400,7 @@ export default function MemoryMatrix({
   };
 
   return (
-    <div
-      className={`w-full flex flex-col gap-4 select-none ${"text-zinc-300"}`}
-    >
+    <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       {/* Sub-header Navigation row */}
       <div
         className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
@@ -412,7 +410,7 @@ export default function MemoryMatrix({
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
             false
               ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"
+              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"
           }`}
         >
           <ArrowLeft size={13} />
@@ -424,7 +422,7 @@ export default function MemoryMatrix({
             className={`w-2.5 h-2.5 rounded-full animate-pulse ${phase === "flash" ? "bg-amber-500" : phase === "recall" ? "bg-emerald-500" : "bg-indigo-500"}`}
           />
           <span
-            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-zinc-500"}`}
+            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-muted"}`}
           >
             记忆矩阵 · VISUAL CACHE
           </span>
@@ -436,7 +434,7 @@ export default function MemoryMatrix({
         {/* Left segment - Player info & round stats */}
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-1">
-            <span className={`text-xs ${"text-zinc-500"}`}>挑战者：</span>
+            <span className={`text-xs ${"text-muted"}`}>挑战者：</span>
             <span
               className={`text-sm font-bold font-mono tracking-wide ${"text-white"}`}
             >
@@ -450,7 +448,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
-                  : "bg-zinc-900/60 border-zinc-800 text-zinc-300"
+                  : "bg-zinc-900/60 border-zinc-800 text-theme"
               }`}
             >
               <Target size={10} />
@@ -461,7 +459,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
-                  : "bg-zinc-900/60 border-zinc-800 text-zinc-300"
+                  : "bg-zinc-900/60 border-zinc-800 text-theme"
               }`}
             >
               <Layers size={10} />
@@ -478,7 +476,7 @@ export default function MemoryMatrix({
                     : "bg-emerald-900/30 border-emerald-700/50 text-emerald-400"
                   : false
                     ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
-                    : "bg-zinc-900/60 border-zinc-800 text-zinc-400"
+                    : "bg-zinc-900/60 border-zinc-800 text-secondary"
               }`}
             >
               <Zap size={10} className={streak >= 2 ? "animate-pulse" : ""} />
@@ -489,7 +487,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
-                  : "bg-zinc-900/60 border-zinc-800 text-zinc-400"
+                  : "bg-zinc-900/60 border-zinc-800 text-secondary"
               }`}
             >
               <Star size={10} />
@@ -503,7 +501,7 @@ export default function MemoryMatrix({
           className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
         >
           <span
-            className={`text-[8px] uppercase tracking-wider font-bold ${"text-zinc-500"}`}
+            className={`text-[8px] uppercase tracking-wider font-bold ${"text-muted"}`}
           >
             回忆用时
           </span>
@@ -571,7 +569,7 @@ export default function MemoryMatrix({
           </div>
 
           {phase === "recall" && (
-            <span className={`text-[10px] font-bold ${"text-zinc-500"}`}>
+            <span className={`text-[10px] font-bold ${"text-muted"}`}>
               已选择 {selectedCount}/{targetIds.size}
             </span>
           )}
@@ -769,7 +767,7 @@ export default function MemoryMatrix({
                     <h3 className="text-lg font-black text-white uppercase tracking-wider">
                       完美回忆！
                     </h3>
-                    <p className="text-xs text-zinc-400 mt-2 font-medium">
+                    <p className="text-xs text-secondary mt-2 font-medium">
                       成功在 {gridSize}x{gridSize} 网格中精准定位了所有{" "}
                       {targetIds.size} 个目标块， 视觉空间暂存器表现卓越！
                     </p>
@@ -777,7 +775,7 @@ export default function MemoryMatrix({
                     {/* Score details */}
                     <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">
+                        <span className="text-[10px] text-muted block leading-none">
                           回忆用时
                         </span>
                         <span className="text-sm font-black font-mono text-emerald-400 mt-1 block">
@@ -786,7 +784,7 @@ export default function MemoryMatrix({
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">
+                        <span className="text-[10px] text-muted block leading-none">
                           消解负熵
                         </span>
                         <span className="text-sm font-black font-mono text-indigo-400 mt-1 block flex items-center gap-1">
@@ -796,7 +794,7 @@ export default function MemoryMatrix({
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">
+                        <span className="text-[10px] text-muted block leading-none">
                           当前连胜
                         </span>
                         <span className="text-sm font-black font-mono text-amber-400 mt-1 block">
@@ -838,7 +836,7 @@ export default function MemoryMatrix({
                     <h3 className="text-lg font-black text-white uppercase tracking-wider">
                       空间记忆偏差
                     </h3>
-                    <p className="text-xs text-zinc-400 mt-2 font-medium">
+                    <p className="text-xs text-secondary mt-2 font-medium">
                       未能完全复现 {targetIds.size}{" "}
                       个目标的空间格局。工作记忆对焦需要重新校准。
                     </p>
@@ -846,7 +844,7 @@ export default function MemoryMatrix({
                     {/* Missed targets summary */}
                     <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">
+                        <span className="text-[10px] text-muted block leading-none">
                           正确回忆
                         </span>
                         <span className="text-sm font-black font-mono text-emerald-400 mt-1 block">
@@ -855,10 +853,10 @@ export default function MemoryMatrix({
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">
+                        <span className="text-[10px] text-muted block leading-none">
                           回忆用时
                         </span>
-                        <span className="text-sm font-black font-mono text-zinc-300 mt-1 block">
+                        <span className="text-sm font-black font-mono text-theme mt-1 block">
                           {recallTime}s
                         </span>
                       </div>
@@ -879,7 +877,7 @@ export default function MemoryMatrix({
                         className={`flex-1 py-2 px-4 rounded-xl text-xs font-black shadow active:scale-95 transition-all text-center ${
                           false
                             ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                            : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300"
+                            : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-theme"
                         }`}
                       >
                         保持当前阶数
@@ -892,7 +890,7 @@ export default function MemoryMatrix({
                 <div className="flex gap-2.5 mt-3 w-full">
                   <button
                     onClick={handleReset}
-                    className="flex-1 py-2 px-4 rounded-lg text-[10px] font-bold bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-1"
+                    className="flex-1 py-2 px-4 rounded-lg text-[10px] font-bold bg-zinc-800 hover:bg-zinc-700 text-secondary hover:text-white cursor-pointer active:scale-95 transition-all flex items-center justify-center gap-1"
                   >
                     <RefreshCw size={12} />
                     <span>重置 (从3目标开始)</span>
@@ -902,7 +900,7 @@ export default function MemoryMatrix({
                     className={`flex-1 py-2 px-4 rounded-lg text-[10px] font-bold shadow active:scale-95 transition-all text-center ${
                       false
                         ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-                        : "bg-zinc-800/50 hover:bg-zinc-700/60 hover:text-white text-zinc-400"
+                        : "bg-zinc-800/50 hover:bg-zinc-700/60 hover:text-white text-secondary"
                     }`}
                   >
                     返回大厅
@@ -920,7 +918,7 @@ export default function MemoryMatrix({
       >
         <div className="flex justify-between items-center px-1">
           <span
-            className={`text-[9px] uppercase tracking-widest font-black ${"text-zinc-500"}`}
+            className={`text-[9px] uppercase tracking-widest font-black ${"text-muted"}`}
           >
             玩法说明
           </span>
@@ -940,7 +938,7 @@ export default function MemoryMatrix({
             className={`mt-0.5 p-2.5 rounded-lg border text-[10px] leading-relaxed flex flex-col gap-1.5 ${
               false
                 ? "bg-[#FAF6EE]/80 border-[#E1D4C0] text-[#6C5E53]"
-                : "bg-zinc-950/40 border-zinc-900 text-zinc-400"
+                : "bg-zinc-950/40 border-zinc-900 text-secondary"
             }`}
           >
             <p>
