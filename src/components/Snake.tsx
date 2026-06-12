@@ -48,6 +48,8 @@ export default function Snake({
   const [obs, setObs] = useState<{ r: number; c: number }[]>([]);
   const [obsOn, setObsOn] = useState(false);
   const [guide, setGuide] = useState(false);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cellSize, setCellSize] = useState(12);
 
   const dR = useRef(dir);
   const cR = useRef(cells);
@@ -201,6 +203,19 @@ export default function Snake({
     return () => clearInterval(id);
   }, [run, dead, onConsumeEntropy, spawn]);
 
+  // Responsive cell size
+  useEffect(() => {
+    const updateSize = () => {
+      if (!gridRef.current) return;
+      const w = gridRef.current.clientWidth;
+      const gaps = 1 * (N - 1);
+      setCellSize(Math.max(4, Math.floor((w - gaps) / N)));
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
   const tm = "text-secondary";
   const bc = "border-theme";
 
@@ -272,112 +287,149 @@ export default function Snake({
         </button>
         <span className={`text-[8px] ${tm}`}>障碍</span>
       </div>
-      <div className="flex justify-center">
-        <div
-          className="inline-block p-1.5 rounded-2xl border"
-          style={{
-            backgroundColor: "#09090B",
-            borderColor: "rgba(39,39,42,0.5)",
-          }}
-        >
+      {/* Main area: grid + sidebar */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full">
+        {/* Grid */}
+        <div className="flex-1 flex justify-center min-w-0">
           <div
-            className="grid gap-[1px]"
-            style={{ gridTemplateColumns: `repeat(${N},1fr)` }}
-          >
-            {Array.from({ length: N * N }).map((_, i) => {
-              const r = Math.floor(i / N),
-                c = i % N;
-              const isH = cells.length && cells[0].r === r && cells[0].c === c;
-              const bi = cells.findIndex((x) => x.r === r && x.c === c);
-              const isF = !isH && food.r === r && food.c === c;
-              const isO = obs.some((x) => x.r === r && x.c === c);
-              let bg = "#18181B";
-              if (isO) bg = "#292524";
-              else if (isF) bg = "#F59E0B";
-              else if (bi >= 0) {
-                const t = cells.length > 1 ? bi / (cells.length - 1) : 0;
-                bg = `rgb(${Math.round(220 - t * 130)},${Math.round(70 + t * 100)},${Math.round(140 - t * 80)})`;
-              }
-              return (
-                <div
-                  key={i}
-                  className="rounded-sm transition-all duration-100"
-                  style={{
-                    width: 14,
-                    height: 14,
-                    backgroundColor: bg,
-                    boxShadow: isH
-                      ? `0 0 6px ${"rgba(16,185,129,0.5)"}`
-                      : isF
-                        ? `0 0 8px ${"rgba(245,158,11,0.5)"}`
-                        : "none",
-                    transform: isH ? "scale(1.1)" : "scale(1)",
-                  }}
-                />
-              );
-            })}
-          </div>
-        </div>
-      </div>
-      <AnimatePresence>
-        {dead && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="text-center py-4"
+            ref={gridRef}
+            className="w-full max-w-[min(calc(100vw-2rem),480px)] aspect-square p-1.5 rounded-2xl border"
+            style={{
+              backgroundColor: "#09090B",
+              borderColor: "rgba(39,39,42,0.5)",
+            }}
           >
             <div
-              className={`inline-block p-4 rounded-2xl border ${bc} ${"bg-zinc-900/40"}`}
+              className="grid"
+              style={{
+                gridTemplateColumns: `repeat(${N},${cellSize}px)`,
+                gap: "1px",
+              }}
             >
-              <div className="text-2xl mb-2">💀</div>
-              <h3 className="text-sm font-black text-theme">游戏结束</h3>
-              <p className={`text-[10px] mt-1 ${tm}`}>
-                得分: {score} | 最高: {Math.max(best, score)}
-              </p>
+              {Array.from({ length: N * N }).map((_, i) => {
+                const r = Math.floor(i / N),
+                  c = i % N;
+                const isH =
+                  cells.length && cells[0].r === r && cells[0].c === c;
+                const bi = cells.findIndex((x) => x.r === r && x.c === c);
+                const isF = !isH && food.r === r && food.c === c;
+                const isO = obs.some((x) => x.r === r && x.c === c);
+                let bg = "#18181B";
+                if (isO) bg = "#292524";
+                else if (isF) bg = "#F59E0B";
+                else if (bi >= 0) {
+                  const t = cells.length > 1 ? bi / (cells.length - 1) : 0;
+                  bg = `rgb(${Math.round(220 - t * 130)},${Math.round(70 + t * 100)},${Math.round(140 - t * 80)})`;
+                }
+                return (
+                  <div
+                    key={i}
+                    className="rounded-sm transition-all duration-100"
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                      backgroundColor: bg,
+                      boxShadow: isH
+                        ? `0 0 6px rgba(16,185,129,0.5)`
+                        : isF
+                          ? `0 0 8px rgba(245,158,11,0.5)`
+                          : "none",
+                      transform: isH ? "scale(1.1)" : "scale(1)",
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar */}
+        <div className="flex flex-col gap-3 lg:w-56 shrink-0">
+          {/* Controls + Stats */}
+          <div className="flex flex-col gap-3 p-3 rounded-xl border border-theme bg-zinc-900/40">
+            <div className="flex items-center gap-2">
               <button
                 onClick={start}
-                className="mt-3 px-4 py-1.5 rounded-lg text-xs font-black bg-emerald-500 text-zinc-950 cursor-pointer active:scale-95 transition-all"
+                className="flex-1 py-2 rounded-lg text-xs font-black cursor-pointer active:scale-95 transition-all bg-emerald-600 text-white"
               >
-                再来一局
+                {run ? "重新开始" : dead ? "再玩一局" : "开始游戏"}
+              </button>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => {
+                    if (!run) setObsOn(!obsOn);
+                  }}
+                  className="p-2 rounded-lg text-[9px] font-bold border cursor-pointer transition-all active:scale-95 bg-zinc-900/40 border-theme text-secondary"
+                  title="障碍模式"
+                >
+                  <Skull size={14} />
+                </button>
+                <span className="text-[8px] text-secondary">障碍</span>
+              </div>
+            </div>
+            <div className="flex gap-3 text-[10px] text-secondary">
+              <span>
+                挑战者：<strong className="text-theme">{userNickname}</strong>
+              </span>
+              <span className="text-rose-400 font-black">得分: {score}</span>
+              <span className="text-amber-400 font-black">最高: {best}</span>
+            </div>
+          </div>
+
+          {/* Game Over */}
+          <AnimatePresence>
+            {dead && (
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="p-3 rounded-xl border border-theme bg-zinc-900/40 text-center"
+              >
+                <div className="text-2xl mb-1">💀</div>
+                <h3 className="text-sm font-black text-theme">游戏结束</h3>
+                <p className="text-[10px] mt-1 text-secondary">
+                  得分: {score} | 最高: {Math.max(best, score)}
+                </p>
+                <button
+                  onClick={start}
+                  className="mt-2 px-4 py-1.5 rounded-lg text-xs font-black bg-emerald-500 text-zinc-950 cursor-pointer active:scale-95 transition-all"
+                >
+                  再来一局
+                </button>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Guide */}
+          <div className="p-2.5 rounded-xl border border-theme bg-zinc-900/40">
+            <div className="flex justify-between items-center">
+              <span className="text-[9px] uppercase tracking-widest font-black text-secondary">
+                玩法说明
+              </span>
+              <button
+                onClick={() => setGuide(!guide)}
+                className="text-[9px] font-bold text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
+              >
+                <Info size={9} /> <span>{guide ? "收起" : "展开"}</span>
               </button>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-      <div
-        className={`max-w-sm mx-auto w-full p-2.5 rounded-xl border ${bc} ${"bg-zinc-900/40"}`}
-      >
-        <div className="flex justify-between items-center">
-          <span
-            className={`text-[9px] uppercase tracking-widest font-black ${tm}`}
-          >
-            玩法说明
-          </span>
-          <button
-            onClick={() => setGuide(!guide)}
-            className="text-[9px] font-bold text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
-          >
-            <Info size={9} /> <span>{guide ? "收起" : "展开"}</span>
-          </button>
-        </div>
-        {guide && (
-          <div
-            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-theme text-secondary"}`}
-          >
-            <p>
-              🎮 <strong>操作：</strong> 方向键 / WASD 控制。支持输入缓冲，快速
-              90 度折返。
-            </p>
-            <p>
-              🧱 <strong>障碍模式：</strong>{" "}
-              随机生成不可穿透废墟，压缩安全路径。
-            </p>
-            <p>
-              🔥 <strong>负熵：</strong> 结算时分 × 0.5 折算负熵。
-            </p>
+            {guide && (
+              <div className="mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed bg-zinc-950/40 border-theme text-secondary">
+                <p>
+                  🎮 <strong>操作：</strong> 方向键 / WASD
+                  控制。支持输入缓冲，快速 90 度折返。
+                </p>
+                <p>
+                  🧱 <strong>障碍模式：</strong>{" "}
+                  随机生成不可穿透废墟，压缩安全路径。
+                </p>
+                <p>
+                  🔥 <strong>负熵：</strong> 结算时分 × 0.5 折算负熵。
+                </p>
+              </div>
+            )}
           </div>
-        )}
+        </div>
       </div>
     </div>
   );

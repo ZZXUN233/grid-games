@@ -65,6 +65,8 @@ export default function PixelCanvas({
   const [drafts, setDrafts] = useState<string[]>([]);
   const [saved, setSaved] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cellSize, setCellSize] = useState(10);
 
   // Load drafts
   useEffect(() => {
@@ -143,6 +145,20 @@ export default function PixelCanvas({
     link.href = canvas.toDataURL();
     link.click();
   }, [pixels]);
+
+  // Responsive cell size
+  useEffect(() => {
+    const updateSize = () => {
+      if (!gridRef.current) return;
+      const w = gridRef.current.clientWidth;
+      const gap = showGrid ? 1 : 0;
+      const gaps = gap * (N - 1);
+      setCellSize(Math.max(4, Math.floor((w - gaps) / N)));
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, [showGrid]);
 
   const tm = "text-secondary";
   const bc = "border-theme";
@@ -235,77 +251,143 @@ export default function PixelCanvas({
       </div>
 
       {/* Pixel grid */}
-      {saved && (
-        <div
-          className={`text-center text-[10px] font-bold ${"text-emerald-400"}`}
-        >
-          草稿已保存！
-        </div>
-      )}
-
-      <div className="flex justify-center">
-        <div
-          className="inline-block p-1.5 rounded-2xl border"
-          style={{
-            backgroundColor: "#09090B",
-            borderColor: "rgba(39,39,42,0.5)",
-          }}
-        >
+      {/* Main area: grid + sidebar */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full">
+        {/* Grid */}
+        <div className="flex-1 flex justify-center min-w-0">
           <div
-            className="grid"
+            ref={gridRef}
+            className="w-full max-w-[min(calc(100vw-2rem),480px)] aspect-square p-1.5 rounded-2xl border"
             style={{
-              gridTemplateColumns: `repeat(${N},1fr)`,
-              gap: showGrid ? "1px" : "0",
+              backgroundColor: "#09090B",
+              borderColor: "rgba(39,39,42,0.5)",
             }}
           >
-            {pixels.map((row, r) =>
-              row.map((c, ci) => (
-                <div
-                  key={`${r}-${ci}`}
-                  onClick={() => paint(r, ci)}
-                  onMouseEnter={(e) => {
-                    if (e.buttons > 0 && tool !== "bucket") paint(r, ci);
-                  }}
-                  className={showGrid ? "rounded-sm" : ""}
-                  style={{
-                    width: 14,
-                    height: 14,
-                    backgroundColor: c,
-                    cursor: "pointer",
-                  }}
-                />
-              ))
-            )}
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: `repeat(${N}, ${cellSize}px)`,
+                gap: showGrid ? "1px" : "0",
+              }}
+            >
+              {pixels.map((row, r) =>
+                row.map((c, ci) => (
+                  <div
+                    key={`${r}-${ci}`}
+                    onClick={() => paint(r, ci)}
+                    onMouseEnter={(e) => {
+                      if (e.buttons > 0 && tool !== "bucket") paint(r, ci);
+                    }}
+                    className={showGrid ? "rounded-sm" : ""}
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                      backgroundColor: c,
+                      cursor: "pointer",
+                    }}
+                  />
+                ))
+              )}
+            </div>
           </div>
+        </div>
+
+        {/* Sidebar: palette + tools */}
+        <div className="flex flex-col gap-3 lg:w-48 shrink-0">
+          {/* Toolbar */}
+          <div
+            className={`flex lg:flex-col items-center gap-2 p-2.5 rounded-xl border ${bc} ${bgc}`}
+          >
+            <div className="flex lg:flex-col gap-1.5">
+              {toolBtn("pen", <Palette size={14} />)}
+              {toolBtn("eraser", <Eraser size={14} />)}
+              {toolBtn("bucket", <PaintBucket size={14} />)}
+            </div>
+            <div className="w-px lg:w-full h-6 lg:h-px bg-zinc-800" />
+            <div className="flex lg:flex-col gap-1.5">
+              <button
+                onClick={clearCanvas}
+                className={`p-2 rounded-lg border cursor-pointer transition-all active:scale-95 ${bgc} ${bc} ${tm}`}
+                title="清空"
+              >
+                <Eraser size={14} />
+              </button>
+              <button
+                onClick={() => setShowGrid(!showGrid)}
+                className={`p-2 rounded-lg border cursor-pointer transition-all active:scale-95 ${showGrid ? "bg-emerald-500 text-zinc-950" : `${bgc} ${bc} ${tm}`}`}
+                title="网格"
+              >
+                <Grid size={14} />
+              </button>
+              <button
+                onClick={saveDraft}
+                className={`p-2 rounded-lg border cursor-pointer transition-all active:scale-95 ${bgc} ${bc} ${tm}`}
+                title="保存草稿"
+              >
+                <Save size={14} />
+              </button>
+              <button
+                onClick={exportPng}
+                className={`p-2 rounded-lg border cursor-pointer transition-all active:scale-95 ${bgc} ${bc} ${tm}`}
+                title="导出PNG"
+              >
+                <Download size={14} />
+              </button>
+            </div>
+          </div>
+
+          {/* Color palette */}
+          <div
+            className={`flex flex-wrap gap-1.5 justify-center p-2.5 rounded-xl border ${bc} ${bgc}`}
+          >
+            {PALETTE.map((c) => (
+              <button
+                key={c}
+                onClick={() => setColor(c)}
+                className="w-5 h-5 rounded-lg cursor-pointer transition-all active:scale-90 hover:scale-110"
+                style={{
+                  backgroundColor: c,
+                  boxShadow:
+                    color === c
+                      ? `0 0 0 2px #34D399, 0 0 8px rgba(52,211,153,0.4)`
+                      : "none",
+                }}
+              />
+            ))}
+          </div>
+
+          {saved && (
+            <div className="text-center text-[10px] font-bold text-emerald-400">
+              草稿已保存！
+            </div>
+          )}
+
+          {/* Drafts */}
+          {drafts.length > 0 && (
+            <div className={`p-2.5 rounded-xl border ${bc} ${bgc}`}>
+              <span
+                className={`text-[9px] uppercase tracking-widest font-black ${tm}`}
+              >
+                本地草稿 ({drafts.length})
+              </span>
+              <div className="flex flex-wrap gap-1.5 mt-1.5">
+                {drafts
+                  .slice(-5)
+                  .reverse()
+                  .map((key) => (
+                    <button
+                      key={key}
+                      onClick={() => loadDraft(key)}
+                      className={`px-2 py-0.5 text-[9px] font-bold rounded-lg border cursor-pointer ${bgc} ${bc} ${tm} hover:text-emerald-400`}
+                    >
+                      🎨 {key.slice(-6)}
+                    </button>
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Drafts */}
-      {drafts.length > 0 && (
-        <div
-          className={`max-w-sm mx-auto w-full p-2.5 rounded-xl border ${bc} ${bgc}`}
-        >
-          <span
-            className={`text-[9px] uppercase tracking-widest font-black ${tm}`}
-          >
-            本地草稿 ({drafts.length})
-          </span>
-          <div className="flex flex-wrap gap-1.5 mt-1.5">
-            {drafts
-              .slice(-5)
-              .reverse()
-              .map((key) => (
-                <button
-                  key={key}
-                  onClick={() => loadDraft(key)}
-                  className={`px-2 py-0.5 text-[9px] font-bold rounded-lg border cursor-pointer ${bgc} ${bc} ${tm} hover:text-emerald-400`}
-                >
-                  🎨 {key.slice(-6)}
-                </button>
-              ))}
-          </div>
-        </div>
-      )}
 
       <canvas ref={canvasRef} className="hidden" />
     </div>

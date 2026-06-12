@@ -22,7 +22,7 @@ interface GameOfLifeProps {
 }
 
 const GRID_SIZE = 40;
-const CELL_SIZE = 14;
+const CELL_GAP = 1;
 
 // Preset patterns
 const PRESETS: Record<string, { name: string; cells: [number, number][] }> = {
@@ -188,6 +188,8 @@ export default function GameOfLife({
   runningRef.current = running;
   const speedRef = useRef(speed);
   speedRef.current = speed;
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [cellSize, setCellSize] = useState(10);
 
   // Init random grid
   const initRandom = useCallback(() => {
@@ -324,6 +326,19 @@ export default function GameOfLife({
     }
   }, [generation, entropyAwarded, onConsumeEntropy]);
 
+  // Responsive cell size
+  useEffect(() => {
+    const updateSize = () => {
+      if (!gridRef.current) return;
+      const w = gridRef.current.clientWidth;
+      const gaps = CELL_GAP * (GRID_SIZE - 1);
+      setCellSize(Math.max(4, Math.floor((w - gaps) / GRID_SIZE)));
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => window.removeEventListener("resize", updateSize);
+  }, []);
+
   const txtMuted = "text-secondary";
   const txtMain = "text-white";
   const borderCls = "border-theme";
@@ -442,85 +457,162 @@ export default function GameOfLife({
         </div>
       </div>
 
-      {/* Grid container */}
-      <div className="flex justify-center">
-        <div
-          className="inline-block p-1.5 rounded-2xl border"
-          style={{
-            backgroundColor: "#09090B",
-            borderColor: "rgba(39,39,42,0.5)",
-          }}
-        >
+      {/* Main area: grid + controls side by side (lg) or stacked (sm) */}
+      <div className="flex flex-col lg:flex-row gap-4 w-full">
+        {/* Grid */}
+        <div className="flex-1 flex justify-center min-w-0">
           <div
-            className="grid gap-[1px]"
-            style={{ gridTemplateColumns: `repeat(${GRID_SIZE}, 1fr)` }}
+            ref={gridRef}
+            className="w-full max-w-[min(calc(100vw-2rem),480px)] aspect-square p-1 rounded-2xl border"
+            style={{
+              backgroundColor: "#09090B",
+              borderColor: "rgba(39,39,42,0.5)",
+            }}
           >
-            {grid.map((row, r) =>
-              row.map((alive, c) => (
-                <div
-                  key={`${r}-${c}`}
-                  onClick={() => toggleCell(r, c)}
-                  className="cursor-pointer transition-all duration-200 rounded-sm"
-                  style={{
-                    width: CELL_SIZE,
-                    height: CELL_SIZE,
-                    backgroundColor: alive ? "#34D399" : "#18181B",
-                    boxShadow: alive
-                      ? `0 0 4px ${"rgba(52,211,153,0.25)"}`
-                      : "none",
-                  }}
-                />
-              ))
+            <div
+              className="grid"
+              style={{
+                gridTemplateColumns: `repeat(${GRID_SIZE}, ${cellSize}px)`,
+                gap: `${CELL_GAP}px`,
+              }}
+            >
+              {grid.map((row, r) =>
+                row.map((alive, c) => (
+                  <div
+                    key={`${r}-${c}`}
+                    onClick={() => toggleCell(r, c)}
+                    className="cursor-pointer transition-all duration-200 rounded-sm"
+                    style={{
+                      width: cellSize,
+                      height: cellSize,
+                      backgroundColor: alive ? "#34D399" : "#18181B",
+                      boxShadow: alive
+                        ? `0 0 4px ${"rgba(52,211,153,0.25)"}`
+                        : "none",
+                    }}
+                  />
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/* Sidebar controls (right on lg, below on sm) */}
+        <div className="flex flex-col gap-3 lg:w-56 shrink-0">
+          {/* Controls */}
+          <div
+            className={`flex lg:flex-col items-center lg:items-stretch justify-center gap-2 p-3 rounded-xl border ${borderCls} ${bgCard}`}
+          >
+            <div className="flex items-center justify-center gap-2">
+              <button
+                onClick={() => setRunning(!running)}
+                className={`p-2.5 rounded-lg text-xs font-black cursor-pointer transition-all active:scale-90 ${
+                  running
+                    ? "bg-amber-500 text-zinc-950 shadow-lg"
+                    : "bg-emerald-500 text-zinc-950"
+                }`}
+              >
+                {running ? <Pause size={18} /> : <Play size={18} />}
+              </button>
+              <button
+                onClick={stepOnce}
+                disabled={running}
+                className="p-2.5 rounded-lg bg-zinc-800/50 text-secondary hover:text-white cursor-pointer disabled:opacity-30 transition-all active:scale-90"
+              >
+                <StepForward size={18} />
+              </button>
+              <button
+                onClick={() => {
+                  setRunning(false);
+                  loadPreset("random");
+                }}
+                className="p-2.5 rounded-lg bg-zinc-800/50 text-secondary hover:text-amber-400 cursor-pointer transition-all active:scale-90"
+              >
+                <RotateCcw size={18} />
+              </button>
+            </div>
+            <div className="flex lg:flex-col items-center gap-2 lg:gap-1">
+              <span className={`text-[9px] font-mono ${txtMuted}`}>速度</span>
+              <input
+                type="range"
+                min="1"
+                max="10"
+                value={speed}
+                onChange={(e) => setSpeed(Number(e.target.value))}
+                className="w-20 lg:w-full h-1 accent-emerald-500 cursor-pointer"
+              />
+              <span
+                className={`text-[9px] font-mono font-bold ${"text-emerald-400"}`}
+              >
+                {speed}x
+              </span>
+            </div>
+          </div>
+
+          {/* Stats */}
+          <div
+            className={`flex lg:flex-col gap-2 p-3 rounded-xl border ${borderCls} ${bgCard}`}
+          >
+            <div className="flex items-center gap-1.5">
+              <span className={`text-[10px] ${txtMuted}`}>挑战者：</span>
+              <span className={`text-xs font-bold font-mono ${txtMain}`}>
+                {userNickname}
+              </span>
+            </div>
+            <div className="flex items-center gap-3">
+              <span
+                className={`text-[9px] font-mono font-bold ${"text-emerald-400"}`}
+              >
+                ♾ {generation} 代
+              </span>
+              <span
+                className={`text-[9px] font-mono font-bold ${"text-indigo-400"}`}
+              >
+                ● {grid.flat().filter(Boolean).length} 活
+              </span>
+            </div>
+          </div>
+
+          {/* Entropy reward notice */}
+          {entropyAwarded && (
+            <div
+              className={`text-center text-[10px] font-bold py-1 ${"text-emerald-400"} animate-pulse`}
+            >
+              已达成稳定环状态，负熵已消解
+            </div>
+          )}
+
+          {/* Guide */}
+          <div className={`p-2.5 rounded-xl border ${borderCls} ${bgCard}`}>
+            <div className="flex justify-between items-center">
+              <span
+                className={`text-[9px] uppercase tracking-widest font-black ${txtMuted}`}
+              >
+                玩法说明
+              </span>
+              <button
+                onClick={() => setShowGuide(!showGuide)}
+                className="text-[9px] font-bold text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
+              >
+                <Info size={9} /> <span>{showGuide ? "收起" : "展开"}</span>
+              </button>
+            </div>
+            {showGuide && (
+              <div
+                className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-theme text-secondary"}`}
+              >
+                <p>
+                  🧬 <strong>生命游戏：</strong>{" "}
+                  每个元胞的生死取决于相邻元胞数。活元胞 2-3
+                  个邻居存活，死元胞恰好 3 个邻居则新生。
+                </p>
+                <p className="mt-1">
+                  ⏱ 演化 50/100/200 代稳定后可获得负熵消解奖励。
+                </p>
+              </div>
             )}
           </div>
         </div>
-      </div>
-
-      {/* Entropy reward notice */}
-      {entropyAwarded && (
-        <div
-          className={`text-center text-[10px] font-bold py-1 ${"text-emerald-400"} animate-pulse`}
-        >
-          已达成稳定环状态，负熵已消解
-        </div>
-      )}
-
-      {/* Guide */}
-      <div
-        className={`max-w-sm mx-auto w-full p-2.5 rounded-xl border ${borderCls} ${bgCard}`}
-      >
-        <div className="flex justify-between items-center">
-          <span
-            className={`text-[9px] uppercase tracking-widest font-black ${txtMuted}`}
-          >
-            玩法说明
-          </span>
-          <button
-            onClick={() => setShowGuide(!showGuide)}
-            className="text-[9px] font-bold text-indigo-400 hover:underline flex items-center gap-0.5 cursor-pointer"
-          >
-            <Info size={9} /> <span>{showGuide ? "收起" : "展开"}</span>
-          </button>
-        </div>
-        {showGuide && (
-          <div
-            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-theme text-secondary"}`}
-          >
-            <p>
-              🧬 <strong>生命游戏：</strong>{" "}
-              每个元胞的生死取决于相邻元胞数。活元胞 2-3 个邻居存活，死元胞恰好
-              3 个邻居则新生。
-            </p>
-            <p>
-              🎭 <strong>预设：</strong>{" "}
-              滑翔机、脉冲器、高斯帕机枪等经典模式可直接加载观赏。
-            </p>
-            <p>
-              � <strong>熵奖励：</strong> 在冥想观测模式下，演化达到 50/100/200
-              代并进入稳定环状态时，结算渐进式负熵抗熵回馈。
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
