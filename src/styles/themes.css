@@ -1,0 +1,421 @@
+/* ============================================================
+   Theme CSS Variables — Grid Entropy (格子熵)
+   Each theme has a dark variant (default) and light variant.
+   Apply via: <html data-theme="minimalism" data-dark="true">
+   ============================================================ */
+
+:root,
+[data-theme="minimalism"][data-dark="true"] {
+  --color-bg: #121212;
+  --color-bg-card: #1a1a1a;
+  --color-bg-elevated: #2a2a2a;
+  --color-bg-overlay: #0d0d0d;
+  --color-bg-inset: #0a0a0a;
+
+  --color-text: #ffffff;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #6b6b6b;
+
+  --color-border: #262626;
+  --color-border-hover: #3a3a3a;
+
+  --color-accent: #3eb489;
+  --color-accent-hover: #4cd0a0;
+  --color-accent-bg: rgba(62, 180, 137, 0.1);
+  --color-accent-border: rgba(62, 180, 137, 0.25);
+
+  --color-grid-bg: #1e1e1e;
+  --color-grid-border: #2e2e2e;
+  --color-grid-hover-bg: #2d2d2d;
+  --color-grid-hover-border: #3eb489;
+  --color-grid-active-bg: #3eb489;
+  --color-grid-active-border: #3eb489;
+  --color-grid-active-text: #121212;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.4);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.6);
+  --color-grid-wrong-text: #f87171;
+
+  --color-danger: #ef4444;
+  --color-warning: #f59e0b;
+  --color-success: #3eb489;
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+  --color-rank-1: #fbbf24;
+  --color-rank-2: #a1a1aa;
+  --color-rank-3: #d97706;
+}
+
+[data-theme="minimalism"][data-dark="false"] {
+  --color-bg: #f5f7f6;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #e8edea;
+  --color-bg-overlay: #f0f2f1;
+  --color-bg-inset: #e0e5e2;
+
+  --color-text: #1a1a1a;
+  --color-text-secondary: #4a4a4a;
+  --color-text-muted: #7a7a7a;
+
+  --color-border: #d4dad7;
+  --color-border-hover: #bcc4c0;
+
+  --color-accent: #3eb489;
+  --color-accent-hover: #35a07a;
+  --color-accent-bg: rgba(62, 180, 137, 0.08);
+  --color-accent-border: rgba(62, 180, 137, 0.2);
+
+  --color-grid-bg: #eef1ef;
+  --color-grid-border: #d4dad7;
+  --color-grid-hover-bg: #e3e8e5;
+  --color-grid-hover-border: #3eb489;
+  --color-grid-active-bg: #3eb489;
+  --color-grid-active-border: #3eb489;
+  --color-grid-active-text: #ffffff;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #dc2626;
+
+  --color-danger: #dc2626;
+  --color-warning: #d97706;
+  --color-success: #3eb489;
+
+  --color-overlay: rgba(0, 0, 0, 0.4);
+  --color-rank-1: #f59e0b;
+  --color-rank-2: #6b7280;
+  --color-rank-3: #b45309;
+}
+
+/* ======================== 深邃炭黑 ======================== */
+[data-theme="charcoal"][data-dark="true"] {
+  --color-bg: #121214;
+  --color-bg-card: #18181c;
+  --color-bg-elevated: #222226;
+  --color-bg-overlay: #0e0e10;
+  --color-bg-inset: #09090b;
+
+  --color-text: #f4f4f5;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted: #6b6b73;
+
+  --color-border: #27272a;
+  --color-border-hover: #3f3f46;
+
+  --color-accent: #d97706;
+  --color-accent-hover: #f59e0b;
+  --color-accent-bg: rgba(217, 118, 6, 0.1);
+  --color-accent-border: rgba(217, 118, 6, 0.25);
+
+  --color-grid-bg: #222226;
+  --color-grid-border: #303036;
+  --color-grid-hover-bg: #2e2e36;
+  --color-grid-hover-border: #d97706;
+  --color-grid-active-bg: rgba(217, 118, 6, 0.2);
+  --color-grid-active-border: #d97706;
+  --color-grid-active-text: #fbbf24;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.4);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.6);
+  --color-grid-wrong-text: #f87171;
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="charcoal"][data-dark="false"] {
+  --color-bg: #f4f4f5;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #e4e4e7;
+  --color-bg-overlay: #fafafa;
+  --color-bg-inset: #d4d4d8;
+
+  --color-text: #18181b;
+  --color-text-secondary: #52525b;
+  --color-text-muted: #71717a;
+
+  --color-border: #d4d4d8;
+  --color-border-hover: #a1a1aa;
+
+  --color-accent: #d97706;
+  --color-accent-hover: #b45309;
+  --color-accent-bg: rgba(217, 118, 6, 0.08);
+  --color-accent-border: rgba(217, 118, 6, 0.2);
+
+  --color-grid-bg: #e8e8ea;
+  --color-grid-border: #d4d4d8;
+  --color-grid-hover-bg: #dcdcdf;
+  --color-grid-hover-border: #d97706;
+  --color-grid-active-bg: rgba(217, 118, 6, 0.15);
+  --color-grid-active-border: #d97706;
+  --color-grid-active-text: #92400e;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #dc2626;
+
+  --color-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* ======================== 森林绿洲 ======================== */
+[data-theme="forest"][data-dark="true"] {
+  --color-bg: #0e1613;
+  --color-bg-card: #13221c;
+  --color-bg-elevated: #193227;
+  --color-bg-overlay: #0a100d;
+  --color-bg-inset: #060a08;
+
+  --color-text: #f0fdf4;
+  --color-text-secondary: #86efac;
+  --color-text-muted: #4a7c65;
+
+  --color-border: #1e3a2f;
+  --color-border-hover: #2d5a48;
+
+  --color-accent: #10b981;
+  --color-accent-hover: #34d399;
+  --color-accent-bg: rgba(16, 185, 129, 0.1);
+  --color-accent-border: rgba(16, 185, 129, 0.25);
+
+  --color-grid-bg: #193227;
+  --color-grid-border: #244a3a;
+  --color-grid-hover-bg: #234537;
+  --color-grid-hover-border: #10b981;
+  --color-grid-active-bg: rgba(16, 185, 129, 0.2);
+  --color-grid-active-border: #10b981;
+  --color-grid-active-text: #34d399;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.4);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.6);
+  --color-grid-wrong-text: #fda4af;
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="forest"][data-dark="false"] {
+  --color-bg: #ecfdf5;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #d1fae5;
+  --color-bg-overlay: #f0fdf6;
+  --color-bg-inset: #a7f3d0;
+
+  --color-text: #064e3b;
+  --color-text-secondary: #065f46;
+  --color-text-muted: #5b8c74;
+
+  --color-border: #a7f3d0;
+  --color-border-hover: #6ee7b7;
+
+  --color-accent: #059669;
+  --color-accent-hover: #047857;
+  --color-accent-bg: rgba(5, 150, 105, 0.08);
+  --color-accent-border: rgba(5, 150, 105, 0.2);
+
+  --color-grid-bg: #d1fae5;
+  --color-grid-border: #a7f3d0;
+  --color-grid-hover-bg: #bbf7d0;
+  --color-grid-hover-border: #10b981;
+  --color-grid-active-bg: #059669;
+  --color-grid-active-border: #059669;
+  --color-grid-active-text: #ffffff;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #dc2626;
+
+  --color-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* ======================== 温暖摩卡 ======================== */
+[data-theme="mocha"][data-dark="true"] {
+  --color-bg: #171311;
+  --color-bg-card: #201a17;
+  --color-bg-elevated: #2a231f;
+  --color-bg-overlay: #0f0c0a;
+  --color-bg-inset: #0a0807;
+
+  --color-text: #fdf8f5;
+  --color-text-secondary: #d5c3b6;
+  --color-text-muted: #8f7a6d;
+
+  --color-border: #392e2a;
+  --color-border-hover: #54433c;
+
+  --color-accent: #f4a261;
+  --color-accent-hover: #e76f51;
+  --color-accent-bg: rgba(244, 162, 97, 0.1);
+  --color-accent-border: rgba(244, 162, 97, 0.25);
+
+  --color-grid-bg: #2a231f;
+  --color-grid-border: #423530;
+  --color-grid-hover-bg: #3a302b;
+  --color-grid-hover-border: #f4a261;
+  --color-grid-active-bg: rgba(244, 162, 97, 0.2);
+  --color-grid-active-border: #f4a261;
+  --color-grid-active-text: #ffb703;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.3);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.5);
+  --color-grid-wrong-text: #fca5a5;
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="mocha"][data-dark="false"] {
+  --color-bg: #fdf8f5;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #f5ede7;
+  --color-bg-overlay: #faf5f0;
+  --color-bg-inset: #ede0d8;
+
+  --color-text: #2d221d;
+  --color-text-secondary: #5c4a40;
+  --color-text-muted: #8f7a6d;
+
+  --color-border: #e1d4cb;
+  --color-border-hover: #c9b5a8;
+
+  --color-accent: #e76f51;
+  --color-accent-hover: #c75a3f;
+  --color-accent-bg: rgba(231, 111, 81, 0.08);
+  --color-accent-border: rgba(231, 111, 81, 0.2);
+
+  --color-grid-bg: #f5ede7;
+  --color-grid-border: #e1d4cb;
+  --color-grid-hover-bg: #ede0d8;
+  --color-grid-hover-border: #e76f51;
+  --color-grid-active-bg: #e76f51;
+  --color-grid-active-border: #e76f51;
+  --color-grid-active-text: #ffffff;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #dc2626;
+
+  --color-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* ======================== 浩瀚深蓝 ======================== */
+[data-theme="cobalt"][data-dark="true"] {
+  --color-bg: #0b0f19;
+  --color-bg-card: #10172a;
+  --color-bg-elevated: #1e293b;
+  --color-bg-overlay: #070b12;
+  --color-bg-inset: #04070c;
+
+  --color-text: #f1f5f9;
+  --color-text-secondary: #94a3b8;
+  --color-text-muted: #64748b;
+
+  --color-border: #1e293b;
+  --color-border-hover: #334155;
+
+  --color-accent: #38bdf8;
+  --color-accent-hover: #7dd3fc;
+  --color-accent-bg: rgba(56, 189, 248, 0.1);
+  --color-accent-border: rgba(56, 189, 248, 0.25);
+
+  --color-grid-bg: #1e293b;
+  --color-grid-border: #334155;
+  --color-grid-hover-bg: #253248;
+  --color-grid-hover-border: #38bdf8;
+  --color-grid-active-bg: rgba(56, 189, 248, 0.2);
+  --color-grid-active-border: #38bdf8;
+  --color-grid-active-text: #38bdf8;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.4);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.6);
+  --color-grid-wrong-text: #fca5a5;
+
+  --color-overlay: rgba(0, 0, 0, 0.75);
+}
+
+[data-theme="cobalt"][data-dark="false"] {
+  --color-bg: #f0f4ff;
+  --color-bg-card: #ffffff;
+  --color-bg-elevated: #dbeafe;
+  --color-bg-overlay: #f5f8ff;
+  --color-bg-inset: #bfdbfe;
+
+  --color-text: #0f172a;
+  --color-text-secondary: #334155;
+  --color-text-muted: #64748b;
+
+  --color-border: #cbd5e1;
+  --color-border-hover: #94a3b8;
+
+  --color-accent: #0ea5e9;
+  --color-accent-hover: #0284c7;
+  --color-accent-bg: rgba(14, 165, 233, 0.08);
+  --color-accent-border: rgba(14, 165, 233, 0.2);
+
+  --color-grid-bg: #e0e7ff;
+  --color-grid-border: #c7d2fe;
+  --color-grid-hover-bg: #c7d2fe;
+  --color-grid-hover-border: #0ea5e9;
+  --color-grid-active-bg: #0ea5e9;
+  --color-grid-active-border: #0ea5e9;
+  --color-grid-active-text: #ffffff;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #dc2626;
+
+  --color-overlay: rgba(0, 0, 0, 0.3);
+}
+
+/* ======================== 抗疲劳书卷 ======================== */
+[data-theme="sepia-light"][data-dark="true"] {
+  --color-bg: #1a1612;
+  --color-bg-card: #221d18;
+  --color-bg-elevated: #2d2620;
+  --color-bg-overlay: #110e0b;
+  --color-bg-inset: #0a0806;
+
+  --color-text: #f0e6d8;
+  --color-text-secondary: #bfaa96;
+  --color-text-muted: #7a6b5e;
+
+  --color-border: #3a3028;
+  --color-border-hover: #56483b;
+
+  --color-accent: #c9955e;
+  --color-accent-hover: #b88450;
+  --color-accent-bg: rgba(201, 149, 94, 0.1);
+  --color-accent-border: rgba(201, 149, 94, 0.25);
+
+  --color-grid-bg: #2d2620;
+  --color-grid-border: #3a3028;
+  --color-grid-hover-bg: #362e27;
+  --color-grid-hover-border: #c9955e;
+  --color-grid-active-bg: rgba(201, 149, 94, 0.2);
+  --color-grid-active-border: #c9955e;
+  --color-grid-active-text: #f0dcc0;
+  --color-grid-wrong-bg: rgba(127, 29, 29, 0.3);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.5);
+  --color-grid-wrong-text: #fca5a5;
+
+  --color-overlay: rgba(0, 0, 0, 0.7);
+}
+
+[data-theme="sepia-light"][data-dark="false"] {
+  --color-bg: #f4efe6;
+  --color-bg-card: #faf6ee;
+  --color-bg-elevated: #efeadd;
+  --color-bg-overlay: #f5f0e8;
+  --color-bg-inset: #e4ddd0;
+
+  --color-text: #2d2a26;
+  --color-text-secondary: #6c5e53;
+  --color-text-muted: #8e8175;
+
+  --color-border: #e1d4c0;
+  --color-border-hover: #cebea6;
+
+  --color-accent: #8b5a2b;
+  --color-accent-hover: #a06d3b;
+  --color-accent-bg: rgba(139, 90, 43, 0.08);
+  --color-accent-border: rgba(139, 90, 43, 0.2);
+
+  --color-grid-bg: #efeadd;
+  --color-grid-border: #dfd3c1;
+  --color-grid-hover-bg: #e6ddcd;
+  --color-grid-hover-border: #8b5a2b;
+  --color-grid-active-bg: rgba(139, 90, 43, 0.12);
+  --color-grid-active-border: #8b5a2b;
+  --color-grid-active-text: #6b4220;
+  --color-grid-wrong-bg: rgba(239, 68, 68, 0.08);
+  --color-grid-wrong-border: rgba(239, 68, 68, 0.4);
+  --color-grid-wrong-text: #b91c1c;
+
+  --color-overlay: rgba(0, 0, 0, 0.25);
+}

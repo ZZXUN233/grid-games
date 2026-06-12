@@ -1,19 +1,37 @@
 @import "tailwindcss";
 
 @keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-4px); }
-  40%, 80% { transform: translateX(4px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
 }
 
 @keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-4px); }
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
 }
 
 @keyframes spin-slow {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 .animate-shake {
@@ -28,6 +46,119 @@
   animation: spin-slow 8s linear infinite;
 }
 
+/* ===================== Theme CSS variable utility classes ===================== */
+
+/* Backgrounds */
+.bg-theme {
+  background-color: var(--color-bg);
+}
+.bg-card {
+  background-color: var(--color-bg-card);
+}
+.bg-elevated {
+  background-color: var(--color-bg-elevated);
+}
+.bg-overlay {
+  background-color: var(--color-bg-overlay);
+}
+.bg-inset {
+  background-color: var(--color-bg-inset);
+}
+.bg-accent {
+  background-color: var(--color-accent);
+}
+.bg-accent-bg {
+  background-color: var(--color-accent-bg);
+}
+
+/* Text */
+.text-theme {
+  color: var(--color-text);
+}
+.text-secondary {
+  color: var(--color-text-secondary);
+}
+.text-muted {
+  color: var(--color-text-muted);
+}
+.text-accent {
+  color: var(--color-accent);
+}
+.text-danger {
+  color: var(--color-danger);
+}
+.text-warning {
+  color: var(--color-warning);
+}
+.text-success {
+  color: var(--color-success);
+}
+
+/* Borders */
+.border-theme {
+  border-color: var(--color-border);
+}
+.border-accent {
+  border-color: var(--color-accent);
+}
+.border-accent-border {
+  border-color: var(--color-accent-border);
+}
+
+/* Accent button */
+.btn-accent {
+  background-color: var(--color-accent);
+  color: var(--color-bg);
+  font-weight: 700;
+  transition: all 0.2s;
+}
+.btn-accent:hover {
+  background-color: var(--color-accent-hover);
+}
+
+/* Grid cells */
+.grid-cell {
+  background-color: var(--color-grid-bg);
+  border-color: var(--color-grid-border);
+  color: var(--color-text);
+  transition: all 0.2s;
+}
+.grid-cell:hover {
+  background-color: var(--color-grid-hover-bg);
+  border-color: var(--color-grid-hover-border);
+}
+.grid-cell-active {
+  background-color: var(--color-grid-active-bg);
+  border-color: var(--color-grid-active-border);
+  color: var(--color-grid-active-text);
+  font-weight: 700;
+  box-shadow: 0 0 20px color-mix(in srgb, var(--color-accent) 35%, transparent);
+  cursor: default;
+}
+.grid-cell-wrong {
+  background-color: var(--color-grid-wrong-bg);
+  border-color: var(--color-grid-wrong-border);
+  color: var(--color-grid-wrong-text);
+  font-weight: 500;
+}
+.text-grid-wrong {
+  color: var(--color-grid-wrong-text);
+}
+.bg-grid-wrong-bg {
+  background-color: var(--color-grid-wrong-bg);
+}
+
+/* Card panes */
+.card-theme {
+  background-color: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+}
+
+/* Drawer / modal overlay */
+.overlay-bg {
+  background-color: var(--color-overlay);
+}
+
 /* Custom linear line clamps for multiline text */
 .lines-clamp-1 {
   display: -webkit-box;
@@ -35,4 +166,3 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
-

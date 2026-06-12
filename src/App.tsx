@@ -1,34 +1,40 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { UserProfile, ScoreRecord, GameTheme } from './types';
-import { THEMES } from './data/themes';
-import { generateRandomProfile } from './data/names';
-import { saveScore, saveEntropyRecord, recordInviteClick, fetchInviteStats } from './api';
-import { fetchProfile, AuthUser } from './api';
-import NameEditor from './components/NameEditor';
-import AuthModal from './components/AuthModal';
-import ThemeSelector from './components/ThemeSelector';
-import SchulteGrid from './components/SchulteGrid';
-import Leaderboard from './components/Leaderboard';
-import ScorePoster from './components/ScorePoster';
-import Game2048 from './components/Game2048';
-import Gomoku from './components/Gomoku';
-import Sudoku from './components/Sudoku';
-import Minesweeper from './components/Minesweeper';
-import MemoryMatrix from './components/MemoryMatrix';
-import GameOfLife from './components/GameOfLife';
-import PixelCanvas from './components/PixelCanvas';
-import Snake from './components/Snake';
-import FeatureRequestPanel from './components/FeatureRequestPanel';
-import { 
-  Trophy, 
-  Share2, 
-  HelpCircle, 
-  Info, 
-  ChevronDown, 
-  ChevronUp, 
-  Menu, 
-  X, 
-  Grid, 
+import React, { useState, useEffect, useCallback } from "react";
+import { UserProfile, ScoreRecord, GameTheme } from "./types";
+import { THEMES } from "./data/themes";
+import { generateRandomProfile } from "./data/names";
+import {
+  saveScore,
+  saveEntropyRecord,
+  recordInviteClick,
+  fetchInviteStats,
+} from "./api";
+import { fetchProfile, AuthUser } from "./api";
+import NameEditor from "./components/NameEditor";
+import AuthModal from "./components/AuthModal";
+import ThemeSelector from "./components/ThemeSelector";
+import SchulteGrid from "./components/SchulteGrid";
+import Leaderboard from "./components/Leaderboard";
+import ScorePoster from "./components/ScorePoster";
+import Game2048 from "./components/Game2048";
+import Gomoku from "./components/Gomoku";
+import Sudoku from "./components/Sudoku";
+import Minesweeper from "./components/Minesweeper";
+import MemoryMatrix from "./components/MemoryMatrix";
+import GameOfLife from "./components/GameOfLife";
+import PixelCanvas from "./components/PixelCanvas";
+import Snake from "./components/Snake";
+import FeatureRequestPanel from "./components/FeatureRequestPanel";
+import "./styles/themes.css";
+import {
+  Trophy,
+  Share2,
+  HelpCircle,
+  Info,
+  ChevronDown,
+  ChevronUp,
+  Menu,
+  X,
+  Grid,
   Target,
   Hash,
   CircleDot,
@@ -43,26 +49,29 @@ import {
   Sparkles,
   Settings,
   Copy,
-  Check
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+  Check,
+  Sun,
+  Moon,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function App() {
   // Global profile & visual theme state
   const [user, setUser] = useState<UserProfile>({
-    userId: '',
-    nickname: '',
-    avatarColor: '',
-    avatarEmoji: '',
+    userId: "",
+    nickname: "",
+    avatarColor: "",
+    avatarEmoji: "",
     entropy: 0,
     negentropy: 0,
     totalNegentropyGenerated: 0,
-    lastActiveDate: '',
+    lastActiveDate: "",
   });
-  const [themeId, setThemeId] = useState<string>('minimalism');
+  const [themeId, setThemeId] = useState<string>("minimalism");
+  const [isDarkMode, setIsDarkMode] = useState(true);
   const [localScores, setLocalScores] = useState<ScoreRecord[]>([]);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  
+
   // Game router state
   // null = Lobby (九宫格 Portal), 'schulte' = Schulte Pro, '2048' = 2048, 'gomoku' = Gomoku 五子棋
   const [selectedGameId, setSelectedGameId] = useState<string | null>(null);
@@ -70,11 +79,11 @@ export default function App() {
   // Custom Game configurations state
   const [gomokuSettings, setGomokuSettings] = useState({
     gridSize: 11, // 11, 13, 15
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    difficulty: "medium" as "easy" | "medium" | "hard",
   });
 
   const [game2048Settings, setGame2048Settings] = useState({
-    spawnMode: 'normal' as 'normal' | 'chaos' | 'hell',
+    spawnMode: "normal" as "normal" | "chaos" | "hell",
     starterCount: 2,
   });
 
@@ -83,15 +92,17 @@ export default function App() {
   });
 
   const [sudokuSettings, setSudokuSettings] = useState({
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    difficulty: "medium" as "easy" | "medium" | "hard",
   });
 
   const [minesweeperSettings, setMinesweeperSettings] = useState({
-    difficulty: 'medium' as 'easy' | 'medium' | 'hard',
+    difficulty: "medium" as "easy" | "medium" | "hard",
   });
 
-  const [activeSettingsGameId, setActiveSettingsGameId] = useState<string | null>(null);
-  
+  const [activeSettingsGameId, setActiveSettingsGameId] = useState<
+    string | null
+  >(null);
+
   // For Schulte focus/playing state to hide secondary outer layouts
   const [isSchulteInnerPlaying, setIsSchulteInnerPlaying] = useState(false);
   const [recentScore, setRecentScore] = useState<ScoreRecord | null>(null);
@@ -101,122 +112,149 @@ export default function App() {
   // Load state on mount
   useEffect(() => {
     (async () => {
-    // 1. Theme Configuration loading
-    const cachedTh = localStorage.getItem('schulte_theme_id');
-    if (cachedTh && THEMES.some((t) => t.id === cachedTh)) {
-      setThemeId(cachedTh);
-    }
-
-    // 2. Load saved user session: try auth session first, fallback to legacy profile
-    const authSession = localStorage.getItem('gridgame_auth_session');
-    let loadedUser: UserProfile | null = null;
-    const todayStr = new Date().toISOString().split('T')[0];
-
-    if (authSession) {
-      try {
-        const session = JSON.parse(authSession);
-        if (session.userId && session.password) {
-          // Try to restore session by fetching profile from server
-          const profileRes = await fetchProfile(session.userId);
-          if (profileRes.success && profileRes.user) {
-            const p = profileRes.user;
-            loadedUser = {
-              userId: p.userId,
-              nickname: p.nickname,
-              avatarColor: p.avatarColor,
-              avatarEmoji: p.avatarEmoji,
-              entropy: p.entropy ?? 0,
-              negentropy: p.negentropy ?? 0,
-              totalNegentropyGenerated: p.totalNegentropyGenerated ?? 0,
-              lastActiveDate: p.lastActiveDate || todayStr,
-            };
-            setIsLoggedInState(true);
-          }
-        }
-      } catch (e) {
-        // fall through
+      // 1. Theme Configuration loading
+      const cachedTh = localStorage.getItem("schulte_theme_id");
+      if (cachedTh && THEMES.some((t) => t.id === cachedTh)) {
+        setThemeId(cachedTh);
       }
-    }
 
-    // Fallback to old profile format
-    if (!loadedUser) {
-      const cachedProf = localStorage.getItem('schulte_profile');
-      if (cachedProf) {
+      // 2. Load saved user session: try auth session first, fallback to legacy profile
+      const authSession = localStorage.getItem("gridgame_auth_session");
+      let loadedUser: UserProfile | null = null;
+      const todayStr = new Date().toISOString().split("T")[0];
+
+      if (authSession) {
         try {
-          const parsed = JSON.parse(cachedProf);
-          if (parsed.userId && parsed.nickname) {
-            loadedUser = { ...parsed };
+          const session = JSON.parse(authSession);
+          if (session.userId && session.password) {
+            // Try to restore session by fetching profile from server
+            const profileRes = await fetchProfile(session.userId);
+            if (profileRes.success && profileRes.user) {
+              const p = profileRes.user;
+              loadedUser = {
+                userId: p.userId,
+                nickname: p.nickname,
+                avatarColor: p.avatarColor,
+                avatarEmoji: p.avatarEmoji,
+                entropy: p.entropy ?? 0,
+                negentropy: p.negentropy ?? 0,
+                totalNegentropyGenerated: p.totalNegentropyGenerated ?? 0,
+                lastActiveDate: p.lastActiveDate || todayStr,
+              };
+              setIsLoggedInState(true);
+            }
           }
         } catch (e) {
-          // ignore
+          // fall through
         }
       }
-    }
 
-    if (!loadedUser) {
-      loadedUser = generateRandomProfile();
-    }
-
-    if (loadedUser) {
-      if (loadedUser.entropy === undefined) loadedUser.entropy = 0;
-      if (loadedUser.negentropy === undefined) loadedUser.negentropy = 0;
-      if (loadedUser.totalNegentropyGenerated === undefined) loadedUser.totalNegentropyGenerated = 0;
-      if (!loadedUser.lastActiveDate) loadedUser.lastActiveDate = todayStr;
-
-      // Daily entropy increase calculation
-      if (loadedUser.lastActiveDate !== todayStr) {
-        const lastDate = new Date(loadedUser.lastActiveDate);
-        const today = new Date(todayStr);
-        const daysSinceLastActive = Math.max(1, Math.floor((today.getTime() - lastDate.getTime()) / 86400000));
-
-        // Each day away: entropy increases by 20, reduced by the negentropy earned that day
-        let totalEntropyIncrease = 0;
-        let remainingNegentropy = loadedUser.negentropy || 0;
-
-        for (let d = 0; d < daysSinceLastActive; d++) {
-          const dayEntropyIncrease = 20;
-          const offset = Math.min(remainingNegentropy, dayEntropyIncrease);
-          totalEntropyIncrease += dayEntropyIncrease - offset;
-          remainingNegentropy -= offset;
+      // Fallback to old profile format
+      if (!loadedUser) {
+        const cachedProf = localStorage.getItem("schulte_profile");
+        if (cachedProf) {
+          try {
+            const parsed = JSON.parse(cachedProf);
+            if (parsed.userId && parsed.nickname) {
+              loadedUser = { ...parsed };
+            }
+          } catch (e) {
+            // ignore
+          }
         }
-
-        loadedUser.entropy = Math.max(0, (loadedUser.entropy || 0) + totalEntropyIncrease);
-        loadedUser.negentropy = remainingNegentropy; // leftover after offsetting all days
-        loadedUser.lastActiveDate = todayStr;
-        localStorage.setItem('schulte_profile', JSON.stringify(loadedUser));
       }
-      setUser(loadedUser);
-    }
 
-    // 3. Load locally stored high scores
-    const cachedScores = localStorage.getItem('schulte_local_scores');
-    if (cachedScores) {
-      try {
-        setLocalScores(JSON.parse(cachedScores));
-      } catch (e) {
-        setLocalScores([]);
+      if (!loadedUser) {
+        loadedUser = generateRandomProfile();
       }
-    }
+
+      if (loadedUser) {
+        if (loadedUser.entropy === undefined) loadedUser.entropy = 0;
+        if (loadedUser.negentropy === undefined) loadedUser.negentropy = 0;
+        if (loadedUser.totalNegentropyGenerated === undefined)
+          loadedUser.totalNegentropyGenerated = 0;
+        if (!loadedUser.lastActiveDate) loadedUser.lastActiveDate = todayStr;
+
+        // Daily entropy increase calculation
+        if (loadedUser.lastActiveDate !== todayStr) {
+          const lastDate = new Date(loadedUser.lastActiveDate);
+          const today = new Date(todayStr);
+          const daysSinceLastActive = Math.max(
+            1,
+            Math.floor((today.getTime() - lastDate.getTime()) / 86400000)
+          );
+
+          // Each day away: entropy increases by 20, reduced by the negentropy earned that day
+          let totalEntropyIncrease = 0;
+          let remainingNegentropy = loadedUser.negentropy || 0;
+
+          for (let d = 0; d < daysSinceLastActive; d++) {
+            const dayEntropyIncrease = 20;
+            const offset = Math.min(remainingNegentropy, dayEntropyIncrease);
+            totalEntropyIncrease += dayEntropyIncrease - offset;
+            remainingNegentropy -= offset;
+          }
+
+          loadedUser.entropy = Math.max(
+            0,
+            (loadedUser.entropy || 0) + totalEntropyIncrease
+          );
+          loadedUser.negentropy = remainingNegentropy; // leftover after offsetting all days
+          loadedUser.lastActiveDate = todayStr;
+          localStorage.setItem("schulte_profile", JSON.stringify(loadedUser));
+        }
+        setUser(loadedUser);
+      }
+
+      // 3. Load locally stored high scores
+      const cachedScores = localStorage.getItem("schulte_local_scores");
+      if (cachedScores) {
+        try {
+          setLocalScores(JSON.parse(cachedScores));
+        } catch (e) {
+          setLocalScores([]);
+        }
+      }
     })();
   }, []);
 
+  // Apply theme and dark mode to <html>
+  useEffect(() => {
+    const storedDark = localStorage.getItem("schulte_dark_mode");
+    if (storedDark !== null) {
+      setIsDarkMode(storedDark === "true");
+    }
+  }, []);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", themeId);
+    document.documentElement.setAttribute("data-dark", String(isDarkMode));
+    localStorage.setItem("schulte_dark_mode", String(isDarkMode));
+    localStorage.setItem("schulte_theme_id", themeId);
+  }, [themeId, isDarkMode]);
+
   // Invite tracking: detect ?invite=<userId> param and reward inviter
-  const [inviteStats, setInviteStats] = useState<{ totalClicks: number; totalReward: number }>({ totalClicks: 0, totalReward: 0 });
-  const [inviteToast, setInviteToast] = useState('');
+  const [inviteStats, setInviteStats] = useState<{
+    totalClicks: number;
+    totalReward: number;
+  }>({ totalClicks: 0, totalReward: 0 });
+  const [inviteToast, setInviteToast] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const inviterId = params.get('invite');
+    const inviterId = params.get("invite");
     if (inviterId && user.userId && inviterId !== user.userId) {
       recordInviteClick(inviterId, user.userId).then((res) => {
         if (res.rewarded) {
-          setInviteToast(`🎁 已为邀请者 ${inviterId} 贡献 +${res.reward || 5} 负熵！`);
+          setInviteToast(
+            `🎁 已为邀请者 ${inviterId} 贡献 +${res.reward || 5} 负熵！`
+          );
         }
       });
       // Clean URL without reload
       const url = new URL(window.location.href);
-      url.searchParams.delete('invite');
-      window.history.replaceState({}, '', url.toString());
+      url.searchParams.delete("invite");
+      window.history.replaceState({}, "", url.toString());
     }
   }, [user.userId]);
 
@@ -230,7 +268,7 @@ export default function App() {
   // Clear invite toast after 5s
   useEffect(() => {
     if (inviteToast) {
-      const t = setTimeout(() => setInviteToast(''), 5000);
+      const t = setTimeout(() => setInviteToast(""), 5000);
       return () => clearTimeout(t);
     }
   }, [inviteToast]);
@@ -248,7 +286,7 @@ export default function App() {
           ...prevUser,
           entropy: (prevUser.entropy || 0) + 1,
         };
-        localStorage.setItem('schulte_profile', JSON.stringify(updated));
+        localStorage.setItem("schulte_profile", JSON.stringify(updated));
         return updated;
       });
     }, 60000); // every 60 seconds
@@ -256,13 +294,20 @@ export default function App() {
     const syncInterval = setInterval(() => {
       const u = userRef.current;
       if (!u.userId) return;
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = new Date().toISOString().split("T")[0];
       // Sync to entropy leaderboard
-      saveEntropyRecord(u.userId, u.nickname, u.avatarColor, u.avatarEmoji, todayStr, u.negentropy || 0);
+      saveEntropyRecord(
+        u.userId,
+        u.nickname,
+        u.avatarColor,
+        u.avatarEmoji,
+        todayStr,
+        u.negentropy || 0
+      );
       // Sync full entropy state to users table
-      fetch('/api/entropy/sync', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+      fetch("/api/entropy/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           userId: u.userId,
           entropy: u.entropy || 0,
@@ -281,16 +326,16 @@ export default function App() {
 
   const handleUserChange = (updatedUser: UserProfile) => {
     setUser(updatedUser);
-    localStorage.setItem('schulte_profile', JSON.stringify(updatedUser));
+    localStorage.setItem("schulte_profile", JSON.stringify(updatedUser));
   };
 
   const handleThemeChange = (newThemeId: string) => {
     setThemeId(newThemeId);
-    localStorage.setItem('schulte_theme_id', newThemeId);
+    localStorage.setItem("schulte_theme_id", newThemeId);
   };
 
   const handleAuthSuccess = (authUser: AuthUser, password?: string) => {
-    const todayStr = new Date().toISOString().split('T')[0];
+    const todayStr = new Date().toISOString().split("T")[0];
     const profile: UserProfile = {
       userId: authUser.userId,
       nickname: authUser.nickname,
@@ -304,16 +349,19 @@ export default function App() {
     setUser(profile);
     setShowAuth(false);
     setIsLoggedInState(true);
-    localStorage.setItem('schulte_profile', JSON.stringify(profile));
+    localStorage.setItem("schulte_profile", JSON.stringify(profile));
     if (password) {
-      localStorage.setItem('gridgame_auth_session', JSON.stringify({ userId: authUser.userId, password }));
+      localStorage.setItem(
+        "gridgame_auth_session",
+        JSON.stringify({ userId: authUser.userId, password })
+      );
     }
   };
 
   const handleLogout = () => {
     setUser(generateRandomProfile());
-    localStorage.removeItem('gridgame_auth_session');
-    localStorage.removeItem('schulte_profile');
+    localStorage.removeItem("gridgame_auth_session");
+    localStorage.removeItem("schulte_profile");
     setIsLoggedInState(false);
   };
 
@@ -322,7 +370,7 @@ export default function App() {
 
   // Track login state on mount
   useEffect(() => {
-    setIsLoggedInState(!!localStorage.getItem('gridgame_auth_session'));
+    setIsLoggedInState(!!localStorage.getItem("gridgame_auth_session"));
   }, []);
 
   const handleOpenAuth = () => {
@@ -338,20 +386,24 @@ export default function App() {
   const consumeEntropy = useCallback(async (negentropyReward: number) => {
     setUser((prevUser) => {
       if (!prevUser.userId) return prevUser;
-      const todayStr = new Date().toISOString().split('T')[0];
+      const todayStr = new Date().toISOString().split("T")[0];
       const nextNegentropy = (prevUser.negentropy || 0) + negentropyReward;
-      const nextTotalGenerated = (prevUser.totalNegentropyGenerated || 0) + negentropyReward;
+      const nextTotalGenerated =
+        (prevUser.totalNegentropyGenerated || 0) + negentropyReward;
       // Playing costs base entropy; negentropy offsets it
-      const netEntropy = Math.max(0, (prevUser.entropy || 0) + GAME_BASE_COST - negentropyReward);
+      const netEntropy = Math.max(
+        0,
+        (prevUser.entropy || 0) + GAME_BASE_COST - negentropyReward
+      );
       const updated = {
         ...prevUser,
         negentropy: nextNegentropy,
         totalNegentropyGenerated: nextTotalGenerated,
         entropy: netEntropy,
-        lastActiveDate: todayStr
+        lastActiveDate: todayStr,
       };
 
-      localStorage.setItem('schulte_profile', JSON.stringify(updated));
+      localStorage.setItem("schulte_profile", JSON.stringify(updated));
 
       // Async background server sync
       saveEntropyRecord(
@@ -371,7 +423,7 @@ export default function App() {
     // 1. Add to local cache list
     const updated = [score, ...localScores];
     setLocalScores(updated);
-    localStorage.setItem('schulte_local_scores', JSON.stringify(updated));
+    localStorage.setItem("schulte_local_scores", JSON.stringify(updated));
 
     // 2. Submit score asynchronously to Firestore
     await saveScore(score);
@@ -379,10 +431,10 @@ export default function App() {
     // 3. Entropy economics: playing costs 3 entropy (handled by consumeEntropy),
     //    skill generates negentropy reward scaled by difficulty
     let reward = 25; // default negentropy reward
-    if (score.difficulty.includes('3x3')) reward = 15;
-    else if (score.difficulty.includes('4x4')) reward = 25;
-    else if (score.difficulty.includes('5x5')) reward = 35;
-    else if (score.difficulty.includes('6x6')) reward = 50;
+    if (score.difficulty.includes("3x3")) reward = 15;
+    else if (score.difficulty.includes("4x4")) reward = 25;
+    else if (score.difficulty.includes("5x5")) reward = 35;
+    else if (score.difficulty.includes("6x6")) reward = 50;
     // Higher reward for faster times (under 30s gets bonus)
     if (score.time && score.time < 30) reward += 10;
 
@@ -397,7 +449,7 @@ export default function App() {
         ...prevUser,
         negentropy: Math.max(0, (prevUser.negentropy || 0) - spent),
       };
-      localStorage.setItem('schulte_profile', JSON.stringify(updated));
+      localStorage.setItem("schulte_profile", JSON.stringify(updated));
       return updated;
     });
   }, []);
@@ -417,90 +469,101 @@ export default function App() {
   // Games meta for the 3x3 九宫格 Portal
   const gamePortalSlots = [
     {
-      id: 'schulte',
-      title: '舒尔特方格 (Retina)',
-      desc: '周边视野与眼肌对焦张力训练',
+      id: "schulte",
+      title: "舒尔特方格 (Retina)",
+      desc: "周边视野与眼肌对焦张力训练",
       icon: Target,
-      color: '#3EB489',
-      status: 'HOT',
-      bgClass: 'from-[#3EB489]/10 to-[#3EB489]/5 border-[#3EB489]/25 hover:border-[#3EB489]/60',
+      color: "#3EB489",
+      status: "HOT",
+      bgClass:
+        "from-[#3EB489]/10 to-[#3EB489]/5 border-[#3EB489]/25 hover:border-[#3EB489]/60",
     },
     {
-      id: '2048',
-      title: '网格合并 2048',
-      desc: '数学方向规划，极限数字卡片进阶',
+      id: "2048",
+      title: "网格合并 2048",
+      desc: "数学方向规划，极限数字卡片进阶",
       icon: Hash,
-      color: '#F59E0B',
-      status: 'NEW',
-      bgClass: 'from-[#F59E0B]/10 to-[#F59E0B]/5 border-[#F59E0B]/25 hover:border-[#F59E0B]/60',
+      color: "#F59E0B",
+      status: "NEW",
+      bgClass:
+        "from-[#F59E0B]/10 to-[#F59E0B]/5 border-[#F59E0B]/25 hover:border-[#F59E0B]/60",
     },
     {
-      id: 'gomoku',
-      title: '五子连珠 (Gobang)',
-      desc: '落子无悔之博，对称网格策略对抗',
+      id: "gomoku",
+      title: "五子连珠 (Gobang)",
+      desc: "落子无悔之博，对称网格策略对抗",
       icon: CircleDot,
-      color: '#8B5CF6',
-      status: 'BOT',
-      bgClass: 'from-[#8B5CF6]/10 to-[#8B5CF6]/5 border-[#8B5CF6]/25 hover:border-[#8B5CF6]/60',
+      color: "#8B5CF6",
+      status: "BOT",
+      bgClass:
+        "from-[#8B5CF6]/10 to-[#8B5CF6]/5 border-[#8B5CF6]/25 hover:border-[#8B5CF6]/60",
     },
     {
-      id: 'sudoku',
-      title: '经典数独 (Sudoku)',
-      desc: '空缺填位逻辑，数字链推理训练',
+      id: "sudoku",
+      title: "经典数独 (Sudoku)",
+      desc: "空缺填位逻辑，数字链推理训练",
       icon: Table,
-      color: '#10B981',
-      status: 'HOT',
-      bgClass: 'from-[#10B981]/10 to-[#10B981]/5 border-[#10B981]/25 hover:border-[#10B981]/60',
+      color: "#10B981",
+      status: "HOT",
+      bgClass:
+        "from-[#10B981]/10 to-[#10B981]/5 border-[#10B981]/25 hover:border-[#10B981]/60",
     },
     {
-      id: 'mines',
-      title: '经典扫雷 (Minesweeper)',
-      desc: '排雷标记危险区，全盘逻辑数算',
+      id: "mines",
+      title: "经典扫雷 (Minesweeper)",
+      desc: "排雷标记危险区，全盘逻辑数算",
       icon: Bomb,
-      color: '#F43F5E',
-      status: 'HOT',
-      bgClass: 'from-[#F43F5E]/10 to-[#F43F5E]/5 border-[#F43F5E]/25 hover:border-[#F43F5E]/60',
+      color: "#F43F5E",
+      status: "HOT",
+      bgClass:
+        "from-[#F43F5E]/10 to-[#F43F5E]/5 border-[#F43F5E]/25 hover:border-[#F43F5E]/60",
     },
     {
-      id: 'memory',
-      title: '记忆矩阵 (Matrix)',
-      desc: '空间格局瞬时激发，视见回忆检验',
+      id: "memory",
+      title: "记忆矩阵 (Matrix)",
+      desc: "空间格局瞬时激发，视见回忆检验",
       icon: Cpu,
-      color: '#8B5CF6',
-      status: 'HOT',
-      bgClass: 'from-[#8B5CF6]/10 to-[#8B5CF6]/5 border-[#8B5CF6]/25 hover:border-[#8B5CF6]/60',
+      color: "#8B5CF6",
+      status: "HOT",
+      bgClass:
+        "from-[#8B5CF6]/10 to-[#8B5CF6]/5 border-[#8B5CF6]/25 hover:border-[#8B5CF6]/60",
     },
     {
-      id: 'life',
-      title: '元胞生活 (Life)',
-      desc: '生命自动规则，网格繁复衍化斑驳',
+      id: "life",
+      title: "元胞生活 (Life)",
+      desc: "生命自动规则，网格繁复衍化斑驳",
       icon: Dna,
-      color: '#10B981',
-      status: 'HOT',
-      bgClass: 'from-[#10B981]/10 to-[#10B981]/5 border-[#10B981]/25 hover:border-[#10B981]/60',
+      color: "#10B981",
+      status: "HOT",
+      bgClass:
+        "from-[#10B981]/10 to-[#10B981]/5 border-[#10B981]/25 hover:border-[#10B981]/60",
     },
     {
-      id: 'pixel',
-      title: '像素艺术 (Canvas)',
-      desc: '创意自由像素填色，作品即时保存',
+      id: "pixel",
+      title: "像素艺术 (Canvas)",
+      desc: "创意自由像素填色，作品即时保存",
       icon: Palette,
-      color: '#F59E0B',
-      status: 'HOT',
-      bgClass: 'from-[#F59E0B]/10 to-[#F59E0B]/5 border-[#F59E0B]/25 hover:border-[#F59E0B]/60',
+      color: "#F59E0B",
+      status: "HOT",
+      bgClass:
+        "from-[#F59E0B]/10 to-[#F59E0B]/5 border-[#F59E0B]/25 hover:border-[#F59E0B]/60",
     },
     {
-      id: 'snake',
-      title: '网格贪吃蛇 (Snake)',
-      desc: '极限避让障碍，贪吃巨蛇生存博弈',
+      id: "snake",
+      title: "网格贪吃蛇 (Snake)",
+      desc: "极限避让障碍，贪吃巨蛇生存博弈",
       icon: Gamepad2,
-      color: '#F43F5E',
-      status: 'HOT',
-      bgClass: 'from-[#F43F5E]/10 to-[#F43F5E]/5 border-[#F43F5E]/25 hover:border-[#F43F5E]/60',
-    }
+      color: "#F43F5E",
+      status: "HOT",
+      bgClass:
+        "from-[#F43F5E]/10 to-[#F43F5E]/5 border-[#F43F5E]/25 hover:border-[#F43F5E]/60",
+    },
   ];
 
   return (
-    <div className={`min-h-screen ${activeTheme.bg} transition-colors duration-500 py-6 px-4 flex flex-col justify-between select-none`}>
+    <div
+      className={`min-h-screen bg-theme text-theme transition-colors duration-500 py-6 px-4 flex flex-col justify-between select-none`}
+    >
       {/* Invite reward toast */}
       <AnimatePresence>
         {inviteToast && (
@@ -517,7 +580,6 @@ export default function App() {
 
       {/* Outer balanced boundary container */}
       <div className="w-full max-w-5xl mx-auto flex-1 flex flex-col justify-center gap-6">
-
         {/* ========================================================= */}
         {/* TOP HEADER SECTION: Hides smoothly during play distraction-free */}
         {/* ========================================================= */}
@@ -534,7 +596,11 @@ export default function App() {
               <div className="flex items-center justify-between flex-nowrap gap-2 pb-3.5 border-b border-zinc-800/60 w-full px-1">
                 <div className="flex items-center gap-2.5 min-w-0 shrink">
                   <div className="w-8.5 h-8.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/25 flex items-center justify-center text-[#3EB489] font-black text-base select-none shrink-0">
-                    <Grid size={15} className="animate-spin" style={{ animationDuration: '6s' }} />
+                    <Grid
+                      size={15}
+                      className="animate-spin"
+                      style={{ animationDuration: "6s" }}
+                    />
                   </div>
                   <div className="min-w-0">
                     <h1 className="text-sm md:text-base font-extrabold tracking-tight text-white select-none leading-none uppercase truncate">
@@ -546,6 +612,15 @@ export default function App() {
                   </div>
                 </div>
 
+                {/* Dark/light mode toggle */}
+                <button
+                  onClick={() => setIsDarkMode((prev) => !prev)}
+                  className="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-zinc-300 group"
+                  title={isDarkMode ? "切换到浅色模式" : "切换到深色模式"}
+                >
+                  {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
+                </button>
+
                 {/* Minimalist Settings Gear Trigger */}
                 <button
                   id="mobile-drawer-trigger"
@@ -553,7 +628,10 @@ export default function App() {
                   className="p-2 rounded-xl bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-zinc-300 group"
                   title="大厅及主题配置"
                 >
-                  <Settings size={18} className="group-hover:rotate-45 transition-transform duration-300 shrink-0" />
+                  <Settings
+                    size={18}
+                    className="group-hover:rotate-45 transition-transform duration-300 shrink-0"
+                  />
                 </button>
               </div>
             </motion.header>
@@ -564,7 +642,6 @@ export default function App() {
         {/* ACTIVE MAIN PLAY INTERACTIVE SECTION */}
         {/* ========================================================= */}
         <main className="w-full flex flex-col gap-6 items-center">
-          
           <div className="w-full max-w-2xl">
             {selectedGameId === null ? (
               /* ========================================================= */
@@ -581,9 +658,15 @@ export default function App() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6.5 h-6.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/20 flex items-center justify-center text-[#3EB489]">
-                        <Orbit size={13} className="animate-spin" style={{ animationDuration: '6s' }} />
+                        <Orbit
+                          size={13}
+                          className="animate-spin"
+                          style={{ animationDuration: "6s" }}
+                        />
                       </div>
-                      <span className="text-xs font-black text-white tracking-tight">熵 · 系统状态</span>
+                      <span className="text-xs font-black text-white tracking-tight">
+                        熵 · 系统状态
+                      </span>
                     </div>
                   </div>
 
@@ -620,7 +703,15 @@ export default function App() {
                   {/* Entropy Level Bar */}
                   <div className="space-y-1.5">
                     <div className="flex justify-between text-[11px] font-semibold text-zinc-400">
-                      <span>{(user.entropy || 0) <= 0 ? '系统已恢复秩序' : (user.entropy || 0) < 30 ? `混沌熵值 · 微弱波动中` : (user.entropy || 0) < 80 ? `混沌熵值 · 持续增长中 (+1/分钟)` : `混沌熵值 · 加速膨胀中 (+1/分钟)`}</span>
+                      <span>
+                        {(user.entropy || 0) <= 0
+                          ? "系统已恢复秩序"
+                          : (user.entropy || 0) < 30
+                            ? `混沌熵值 · 微弱波动中`
+                            : (user.entropy || 0) < 80
+                              ? `混沌熵值 · 持续增长中 (+1/分钟)`
+                              : `混沌熵值 · 加速膨胀中 (+1/分钟)`}
+                      </span>
                       <span className="font-mono text-zinc-300 font-bold">
                         {user.entropy || 0} E
                       </span>
@@ -629,7 +720,9 @@ export default function App() {
                     <div className="h-2 rounded-full bg-zinc-800/60 overflow-hidden relative border border-zinc-950">
                       <div
                         className="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500"
-                        style={{ width: `${Math.min(100, ((user.entropy || 0) / 200) * 100)}%` }}
+                        style={{
+                          width: `${Math.min(100, ((user.entropy || 0) / 200) * 100)}%`,
+                        }}
                       />
                     </div>
                   </div>
@@ -641,11 +734,19 @@ export default function App() {
                         负熵余额
                       </span>
                       <span className="font-mono text-xs font-black text-white flex items-center gap-1.5 mt-0.5">
-                        <span className={(user.negentropy || 0) > 0 ? "text-[#3EB489]" : "text-zinc-500"}>
+                        <span
+                          className={
+                            (user.negentropy || 0) > 0
+                              ? "text-[#3EB489]"
+                              : "text-zinc-500"
+                          }
+                        >
                           {user.negentropy || 0} E
                         </span>
                         {(user.negentropy || 0) > 0 && (
-                          <span className="text-[8.5px] font-normal text-zinc-500 leading-tight">可用于提交需求</span>
+                          <span className="text-[8.5px] font-normal text-zinc-500 leading-tight">
+                            可用于提交需求
+                          </span>
                         )}
                       </span>
                     </div>
@@ -670,36 +771,48 @@ export default function App() {
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 md:gap-4 w-full max-w-2xl mx-auto">
                   {gamePortalSlots.map((slot, index) => {
                     const IconComp = slot.icon;
-                    const isPlayable = slot.status !== 'PLAN';
-                    
+                    const isPlayable = slot.status !== "PLAN";
+
                     return (
                       <motion.div
                         key={slot.id}
                         initial={{ opacity: 0, y: 15 }}
                         animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: index * 0.04, type: "spring", stiffness: 200, damping: 18 }}
+                        transition={{
+                          delay: index * 0.04,
+                          type: "spring",
+                          stiffness: 200,
+                          damping: 18,
+                        }}
                         onClick={() => {
                           if (isPlayable) {
                             setSelectedGameId(slot.id);
                           }
                         }}
                         className={`group relative rounded-2xl p-3 flex flex-col justify-between border select-none transition-all duration-300 min-h-[135px] sm:min-h-[145px] md:min-h-[155px] ${
-                          isPlayable 
-                            ? `bg-gradient-to-b ${slot.bgClass} cursor-pointer active:scale-95 shadow-lg shadow-black/30` 
-                            : 'bg-zinc-900/15 border-zinc-900/40 opacity-40 cursor-not-allowed'
+                          isPlayable
+                            ? `bg-gradient-to-b ${slot.bgClass} cursor-pointer active:scale-95 shadow-lg shadow-black/30`
+                            : "bg-zinc-900/15 border-zinc-900/40 opacity-40 cursor-not-allowed"
                         }`}
                       >
                         {/* Status tag & alignment layout row */}
                         <div className="flex justify-between items-center mb-1.5 md:mb-3">
-                          <div 
+                          <div
                             className="p-1.5 rounded-lg border"
-                            style={{ 
-                              color: slot.color, 
+                            style={{
+                              color: slot.color,
                               borderColor: `${slot.color}1e`,
-                              backgroundColor: `${slot.color}08` 
+                              backgroundColor: `${slot.color}08`,
                             }}
                           >
-                            <IconComp size={16} className={isPlayable ? "group-hover:rotate-12 transition-transform duration-300" : ""} />
+                            <IconComp
+                              size={16}
+                              className={
+                                isPlayable
+                                  ? "group-hover:rotate-12 transition-transform duration-300"
+                                  : ""
+                              }
+                            />
                           </div>
 
                           <div className="flex items-center gap-1.5">
@@ -713,14 +826,19 @@ export default function App() {
                                 className="p-1.5 rounded-md bg-zinc-950/60 hover:bg-zinc-800 hover:text-emerald-400 text-zinc-400 border border-zinc-800/60 transition-all cursor-pointer relative z-20"
                                 title="参数与规格配置"
                               >
-                                <Settings size={12} className="animate-spin-slow hover:animate-spin" />
+                                <Settings
+                                  size={12}
+                                  className="animate-spin-slow hover:animate-spin"
+                                />
                               </button>
                             )}
-                            <span 
+                            <span
                               className="text-[8px] font-black tracking-widest px-1.5 py-0.5 rounded-full select-none"
-                              style={{ 
-                                backgroundColor: isPlayable ? `${slot.color}20` : '#27272a',
-                                color: isPlayable ? slot.color : '#71717a'
+                              style={{
+                                backgroundColor: isPlayable
+                                  ? `${slot.color}20`
+                                  : "#27272a",
+                                color: isPlayable ? slot.color : "#71717a",
                               }}
                             >
                               {slot.status}
@@ -750,14 +868,20 @@ export default function App() {
                 {/* Quick Player Profile card under the portal */}
                 <div className="flex items-center justify-between px-4 py-3 bg-zinc-900/30 rounded-xl border border-zinc-800/50 max-w-lg mx-auto">
                   <div className="flex items-center gap-2 min-w-0">
-                    <span className="text-base select-none shrink-0">{user.avatarEmoji || "🕹️"}</span>
+                    <span className="text-base select-none shrink-0">
+                      {user.avatarEmoji || "🕹️"}
+                    </span>
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
-                        <span className="text-xs font-black text-white font-mono truncate">{user.nickname || "载入中..."}</span>
+                        <span className="text-xs font-black text-white font-mono truncate">
+                          {user.nickname || "载入中..."}
+                        </span>
                       </div>
                       {user.userId && (
                         <div className="flex items-center gap-1 mt-0.5">
-                          <span className="text-[10px] text-zinc-500 font-mono select-all">{user.userId}</span>
+                          <span className="text-[10px] text-zinc-500 font-mono select-all">
+                            {user.userId}
+                          </span>
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(user.userId);
@@ -767,7 +891,11 @@ export default function App() {
                             className="p-0.5 rounded text-zinc-600 hover:text-zinc-300 hover:bg-zinc-800/50 transition-all cursor-pointer"
                             title="复制用户 ID"
                           >
-                            {userIdCopied ? <Check size={10} className="text-[#3EB489]" /> : <Copy size={10} />}
+                            {userIdCopied ? (
+                              <Check size={10} className="text-[#3EB489]" />
+                            ) : (
+                              <Copy size={10} />
+                            )}
                           </button>
                         </div>
                       )}
@@ -811,7 +939,7 @@ export default function App() {
                 transition={{ duration: 0.2 }}
                 className="w-full"
               >
-                {selectedGameId === 'schulte' && (
+                {selectedGameId === "schulte" && (
                   <SchulteGrid
                     currentUserId={user.userId}
                     userNickname={user.nickname}
@@ -829,7 +957,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === '2048' && (
+                {selectedGameId === "2048" && (
                   <Game2048
                     theme={activeTheme}
                     onGoBack={() => {
@@ -843,7 +971,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'gomoku' && (
+                {selectedGameId === "gomoku" && (
                   <Gomoku
                     theme={activeTheme}
                     onGoBack={() => {
@@ -857,7 +985,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'sudoku' && (
+                {selectedGameId === "sudoku" && (
                   <Sudoku
                     theme={activeTheme}
                     onGoBack={() => {
@@ -871,7 +999,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'mines' && (
+                {selectedGameId === "mines" && (
                   <Minesweeper
                     theme={activeTheme}
                     onGoBack={() => {
@@ -888,7 +1016,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'memory' && (
+                {selectedGameId === "memory" && (
                   <MemoryMatrix
                     theme={activeTheme}
                     onGoBack={() => {
@@ -904,7 +1032,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'life' && (
+                {selectedGameId === "life" && (
                   <GameOfLife
                     theme={activeTheme}
                     onGoBack={() => {
@@ -916,7 +1044,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'pixel' && (
+                {selectedGameId === "pixel" && (
                   <PixelCanvas
                     theme={activeTheme}
                     onGoBack={() => {
@@ -931,7 +1059,7 @@ export default function App() {
                   />
                 )}
 
-                {selectedGameId === 'snake' && (
+                {selectedGameId === "snake" && (
                   <Snake
                     theme={activeTheme}
                     onGoBack={() => {
@@ -948,10 +1076,14 @@ export default function App() {
 
           {/* Leaderboard */}
           {selectedGameId === null && user.userId && (
-            <div className={`w-full max-w-2xl rounded-2xl p-4.5 ${activeTheme.card} border ${activeTheme.border} transition-colors duration-300`}>
+            <div
+              className={`w-full max-w-2xl rounded-2xl p-4.5 card-theme transition-colors duration-300`}
+            >
               <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-zinc-800/60">
                 <Trophy size={15} className="text-amber-500 animate-bounce" />
-                <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">格子熵对抗排行荣誉碑 (每日解熵与高速格盘)</h4>
+                <h4 className="text-xs font-extrabold text-white uppercase tracking-wider">
+                  格子熵对抗排行荣誉碑 (每日解熵与高速格盘)
+                </h4>
               </div>
               <Leaderboard
                 currentUserId={user.userId}
@@ -1006,17 +1138,19 @@ export default function App() {
 
               {/* Custom Drawer container */}
               <motion.div
-                initial={{ x: '100%' }}
+                initial={{ x: "100%" }}
                 animate={{ x: 0 }}
-                exit={{ x: '100%' }}
-                transition={{ type: 'spring', damping: 26, stiffness: 220 }}
-                className={`fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] z-50 p-5 overflow-y-auto ${activeTheme.bg} border-l border-zinc-800/80 shadow-2xl flex flex-col select-none`}
+                exit={{ x: "100%" }}
+                transition={{ type: "spring", damping: 26, stiffness: 220 }}
+                className={`fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] z-50 p-5 overflow-y-auto bg-theme border-l border-theme shadow-2xl flex flex-col select-none`}
               >
                 {/* Header of Menu */}
                 <div className="flex items-center justify-between pb-4 mb-5 border-b border-zinc-800/40">
                   <div className="flex items-center gap-2">
                     <Trophy size={16} className="text-[#3EB489]" />
-                    <span className="text-sm font-extrabold text-white font-sans tracking-wide">训练控制中心</span>
+                    <span className="text-sm font-extrabold text-white font-sans tracking-wide">
+                      训练控制中心
+                    </span>
                   </div>
                   <button
                     onClick={() => setIsDrawerOpen(false)}
@@ -1030,7 +1164,8 @@ export default function App() {
                 {/* Body elements of Drawer */}
                 <div className="space-y-6 pb-16 flex-1">
                   <div className="bg-[#3EB489]/5 p-3 rounded-xl border border-[#3EB489]/15 text-[10px] leading-relaxed text-zinc-400">
-                    💡 您在此处可以随时自定义角色名、修改头像与背景主题，变更将自适应并实时全大厅、全游戏地实时全局生效。
+                    💡
+                    您在此处可以随时自定义角色名、修改头像与背景主题，变更将自适应并实时全大厅、全游戏地实时全局生效。
                   </div>
 
                   {/* User ID + Share */}
@@ -1040,7 +1175,9 @@ export default function App() {
                         玩家身份标识
                       </span>
                       <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-mono font-black text-white select-all">{user.userId}</span>
+                        <span className="text-sm font-mono font-black text-white select-all">
+                          {user.userId}
+                        </span>
                         <div className="flex items-center gap-1 shrink-0">
                           <button
                             onClick={() => {
@@ -1050,8 +1187,12 @@ export default function App() {
                             }}
                             className="flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white text-[10px] font-bold transition-all cursor-pointer"
                           >
-                            {userIdCopied ? <Check size={11} className="text-[#3EB489]" /> : <Copy size={11} />}
-                            <span>{userIdCopied ? '已复制' : '复制'}</span>
+                            {userIdCopied ? (
+                              <Check size={11} className="text-[#3EB489]" />
+                            ) : (
+                              <Copy size={11} />
+                            )}
+                            <span>{userIdCopied ? "已复制" : "复制"}</span>
                           </button>
                           <button
                             onClick={async () => {
@@ -1059,10 +1200,16 @@ export default function App() {
                               const shareMsg = `来「格子熵」和我一起对抗熵增！🎮 九款几何网格游戏等你挑战`;
                               if (navigator.share) {
                                 try {
-                                  await navigator.share({ title: '格子熵 · Grid Games', text: shareMsg, url: shareUrl });
+                                  await navigator.share({
+                                    title: "格子熵 · Grid Games",
+                                    text: shareMsg,
+                                    url: shareUrl,
+                                  });
                                 } catch {}
                               } else {
-                                navigator.clipboard.writeText(`${shareMsg}\n${shareUrl}`);
+                                navigator.clipboard.writeText(
+                                  `${shareMsg}\n${shareUrl}`
+                                );
                                 setUserIdCopied(true);
                                 setTimeout(() => setUserIdCopied(false), 1500);
                               }
@@ -1092,26 +1239,37 @@ export default function App() {
                   )}
 
                   {/* Invite Stats */}
-                  {user.userId && (inviteStats.totalClicks > 0 || inviteStats.totalReward > 0) && (
-                    <div className="space-y-2 bg-amber-500/5 rounded-xl p-3.5 border border-amber-500/15">
-                      <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
-                        邀请贡献统计
-                      </span>
-                      <div className="grid grid-cols-2 gap-2 text-[11px]">
-                        <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
-                          <div className="text-lg font-black text-white">{inviteStats.totalClicks}</div>
-                          <div className="text-[9px] text-zinc-500">次点击</div>
+                  {user.userId &&
+                    (inviteStats.totalClicks > 0 ||
+                      inviteStats.totalReward > 0) && (
+                      <div className="space-y-2 bg-amber-500/5 rounded-xl p-3.5 border border-amber-500/15">
+                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest block font-bold">
+                          邀请贡献统计
+                        </span>
+                        <div className="grid grid-cols-2 gap-2 text-[11px]">
+                          <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
+                            <div className="text-lg font-black text-white">
+                              {inviteStats.totalClicks}
+                            </div>
+                            <div className="text-[9px] text-zinc-500">
+                              次点击
+                            </div>
+                          </div>
+                          <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
+                            <div className="text-lg font-black text-[#3EB489]">
+                              +{inviteStats.totalReward}
+                            </div>
+                            <div className="text-[9px] text-zinc-500">
+                              负熵收益
+                            </div>
+                          </div>
                         </div>
-                        <div className="bg-zinc-950/40 rounded-lg p-2 text-center">
-                          <div className="text-lg font-black text-[#3EB489]">+{inviteStats.totalReward}</div>
-                          <div className="text-[9px] text-zinc-500">负熵收益</div>
-                        </div>
+                        <p className="text-[9px] text-zinc-500 leading-relaxed">
+                          每有一个人通过你的分享链接访问，你将获得 +5 负熵（24h
+                          同 IP 去重）
+                        </p>
                       </div>
-                      <p className="text-[9px] text-zinc-500 leading-relaxed">
-                        每有一个人通过你的分享链接访问，你将获得 +5 负熵（24h 同 IP 去重）
-                      </p>
-                    </div>
-                  )}
+                    )}
 
                   {/* Themes list selector */}
                   <div className="space-y-1">
@@ -1150,19 +1308,27 @@ export default function App() {
                 initial={{ opacity: 0, scale: 0.95, y: 10 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                transition={{ type: 'spring', damping: 24, stiffness: 210 }}
-                className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[420px] z-50 rounded-2xl border border-zinc-850 bg-zinc-950 p-5 shadow-2xl select-none ${activeTheme.bg}`}
+                transition={{ type: "spring", damping: 24, stiffness: 210 }}
+                className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[420px] z-50 rounded-2xl border border-zinc-850 bg-zinc-950 p-5 shadow-2xl select-none bg-theme`}
               >
                 {/* Header */}
                 <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-zinc-800/60">
                   <div className="flex items-center gap-2">
-                    <Settings className="text-emerald-400 animate-spin-slow" size={16} />
+                    <Settings
+                      className="text-emerald-400 animate-spin-slow"
+                      size={16}
+                    />
                     <span className="text-sm font-black text-white tracking-wide">
-                      {activeSettingsGameId === 'gomoku' && '五子连珠 (Gobang) 偏好设置'}
-                      {activeSettingsGameId === 'sudoku' && '终极数独 (Sudoku) 偏好设置'}
-                      {activeSettingsGameId === '2048' && '2048 合并 (Game 2048) 偏好设置'}
-                      {activeSettingsGameId === 'schulte' && '舒尔特网格 (Schulte) 偏好设置'}
-                      {activeSettingsGameId === 'mines' && '经典扫雷 (Minesweeper) 偏好设置'}
+                      {activeSettingsGameId === "gomoku" &&
+                        "五子连珠 (Gobang) 偏好设置"}
+                      {activeSettingsGameId === "sudoku" &&
+                        "终极数独 (Sudoku) 偏好设置"}
+                      {activeSettingsGameId === "2048" &&
+                        "2048 合并 (Game 2048) 偏好设置"}
+                      {activeSettingsGameId === "schulte" &&
+                        "舒尔特网格 (Schulte) 偏好设置"}
+                      {activeSettingsGameId === "mines" &&
+                        "经典扫雷 (Minesweeper) 偏好设置"}
                     </span>
                   </div>
                   <button
@@ -1175,7 +1341,7 @@ export default function App() {
 
                 {/* Body scroll area */}
                 <div className="space-y-5 max-h-[360px] overflow-y-auto pr-1">
-                  {activeSettingsGameId === 'gomoku' && (
+                  {activeSettingsGameId === "gomoku" && (
                     <>
                       {/* Grid Size Config */}
                       <div className="space-y-2">
@@ -1186,11 +1352,16 @@ export default function App() {
                           {[11, 13, 15].map((size) => (
                             <button
                               key={`gomoku-size-${size}`}
-                              onClick={() => setGomokuSettings(prev => ({ ...prev, gridSize: size }))}
+                              onClick={() =>
+                                setGomokuSettings((prev) => ({
+                                  ...prev,
+                                  gridSize: size,
+                                }))
+                              }
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 gomokuSettings.gridSize === size
-                                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {size} x {size}
@@ -1198,7 +1369,8 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 对应初级、标准与专业围棋标准，更高规格要求更大博弈视野与后视深度。
+                          *
+                          对应初级、标准与专业围棋标准，更高规格要求更大博弈视野与后视深度。
                         </p>
                       </div>
 
@@ -1209,17 +1381,25 @@ export default function App() {
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {[
-                            { id: 'easy', label: '入门小白' },
-                            { id: 'medium', label: '算力中班' },
-                            { id: 'hard', label: '五子大师' },
+                            { id: "easy", label: "入门小白" },
+                            { id: "medium", label: "算力中班" },
+                            { id: "hard", label: "五子大师" },
                           ].map((diff) => (
                             <button
                               key={`gomoku-diff-${diff.id}`}
-                              onClick={() => setGomokuSettings(prev => ({ ...prev, difficulty: diff.id as 'easy' | 'medium' | 'hard' }))}
+                              onClick={() =>
+                                setGomokuSettings((prev) => ({
+                                  ...prev,
+                                  difficulty: diff.id as
+                                    | "easy"
+                                    | "medium"
+                                    | "hard",
+                                }))
+                              }
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 gomokuSettings.difficulty === diff.id
-                                  ? 'bg-purple-500/20 text-purple-300 border-purple-500'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-purple-500/20 text-purple-300 border-purple-500"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {diff.label}
@@ -1227,13 +1407,14 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 大师模式下，AI 白子会预判并切断您的每一条死/活三 or 死/活四路线，博弈挑战性拉满。
+                          * 大师模式下，AI 白子会预判并切断您的每一条死/活三 or
+                          死/活四路线，博弈挑战性拉满。
                         </p>
                       </div>
                     </>
                   )}
 
-                  {activeSettingsGameId === 'sudoku' && (
+                  {activeSettingsGameId === "sudoku" && (
                     <>
                       {/* Difficulty Config */}
                       <div className="space-y-2">
@@ -1242,17 +1423,25 @@ export default function App() {
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {[
-                            { id: 'easy', label: '初级小白' },
-                            { id: 'medium', label: '中级标准' },
-                            { id: 'hard', label: '逻辑大师' },
+                            { id: "easy", label: "初级小白" },
+                            { id: "medium", label: "中级标准" },
+                            { id: "hard", label: "逻辑大师" },
                           ].map((diff) => (
                             <button
                               key={`sudoku-diff-${diff.id}`}
-                              onClick={() => setSudokuSettings(prev => ({ ...prev, difficulty: diff.id as 'easy' | 'medium' | 'hard' }))}
+                              onClick={() =>
+                                setSudokuSettings((prev) => ({
+                                  ...prev,
+                                  difficulty: diff.id as
+                                    | "easy"
+                                    | "medium"
+                                    | "hard",
+                                }))
+                              }
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 sudokuSettings.difficulty === diff.id
-                                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-emerald-500/20 text-emerald-300 border-emerald-500"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {diff.label}
@@ -1260,13 +1449,14 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 初级暴露较多已知数值以供探索；中等要求基础三链锁；大师深度测试数独的隐性唯余与链排。
+                          *
+                          初级暴露较多已知数值以供探索；中等要求基础三链锁；大师深度测试数独的隐性唯余与链排。
                         </p>
                       </div>
                     </>
                   )}
 
-                  {activeSettingsGameId === 'mines' && (
+                  {activeSettingsGameId === "mines" && (
                     <>
                       {/* Difficulty Config */}
                       <div className="space-y-2">
@@ -1275,17 +1465,25 @@ export default function App() {
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {[
-                            { id: 'easy', label: '初级(9x9 10雷)' },
-                            { id: 'medium', label: '中级(12x12 22雷)' },
-                            { id: 'hard', label: '高级(15x15 35雷)' },
+                            { id: "easy", label: "初级(9x9 10雷)" },
+                            { id: "medium", label: "中级(12x12 22雷)" },
+                            { id: "hard", label: "高级(15x15 35雷)" },
                           ].map((diff) => (
                             <button
                               key={`mines-diff-${diff.id}`}
-                              onClick={() => setMinesweeperSettings(prev => ({ ...prev, difficulty: diff.id as 'easy' | 'medium' | 'hard' }))}
+                              onClick={() =>
+                                setMinesweeperSettings((prev) => ({
+                                  ...prev,
+                                  difficulty: diff.id as
+                                    | "easy"
+                                    | "medium"
+                                    | "hard",
+                                }))
+                              }
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer leading-tight ${
                                 minesweeperSettings.difficulty === diff.id
-                                  ? 'bg-[#F43F5E]/20 text-rose-300 border-[#F43F5E]'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-[#F43F5E]/20 text-rose-300 border-[#F43F5E]"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {diff.label}
@@ -1293,13 +1491,14 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 初级便于视力敏捷训练；中级带有中等排斥链推理；高级测试极佳的空间对焦张力与深逻辑连通。
+                          *
+                          初级便于视力敏捷训练；中级带有中等排斥链推理；高级测试极佳的空间对焦张力与深逻辑连通。
                         </p>
                       </div>
                     </>
                   )}
 
-                  {activeSettingsGameId === '2048' && (
+                  {activeSettingsGameId === "2048" && (
                     <>
                       {/* Spawn Mode Config */}
                       <div className="space-y-2">
@@ -1308,17 +1507,25 @@ export default function App() {
                         </label>
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                           {[
-                            { id: 'normal', label: '经典(90%出2)' },
-                            { id: 'chaos', label: '混沌(50%出4)' },
-                            { id: 'hell', label: '炼狱(100%出4)' },
+                            { id: "normal", label: "经典(90%出2)" },
+                            { id: "chaos", label: "混沌(50%出4)" },
+                            { id: "hell", label: "炼狱(100%出4)" },
                           ].map((mode) => (
                             <button
                               key={`2048-mode-${mode.id}`}
-                              onClick={() => setGame2048Settings(prev => ({ ...prev, spawnMode: mode.id as 'normal' | 'chaos' | 'hell' }))}
+                              onClick={() =>
+                                setGame2048Settings((prev) => ({
+                                  ...prev,
+                                  spawnMode: mode.id as
+                                    | "normal"
+                                    | "chaos"
+                                    | "hell",
+                                }))
+                              }
                               className={`py-2 px-1 rounded-lg text-xs font-black border transition-all cursor-pointer leading-tight ${
                                 game2048Settings.spawnMode === mode.id
-                                  ? 'bg-amber-500/20 text-amber-303 border-amber-500'
-                                  : 'bg-zinc-900/40 text-zinc-405 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-amber-500/20 text-amber-303 border-amber-500"
+                                  : "bg-zinc-900/40 text-zinc-405 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {mode.label}
@@ -1326,7 +1533,8 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-505">
-                          * 在混沌或炼狱模式下，生成的初始数值更大，网格极易卡死或提速合并，对高阶规划挑战极大！
+                          *
+                          在混沌或炼狱模式下，生成的初始数值更大，网格极易卡死或提速合并，对高阶规划挑战极大！
                         </p>
                       </div>
 
@@ -1339,11 +1547,16 @@ export default function App() {
                           {[2, 3, 4].map((count) => (
                             <button
                               key={`2048-count-${count}`}
-                              onClick={() => setGame2048Settings(prev => ({ ...prev, starterCount: count }))}
+                              onClick={() =>
+                                setGame2048Settings((prev) => ({
+                                  ...prev,
+                                  starterCount: count,
+                                }))
+                              }
                               className={`py-2 px-3 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 game2048Settings.starterCount === count
-                                  ? 'bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {count} 块卡牌
@@ -1351,13 +1564,14 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 开局加载出的空闲奖励牌数量，较多数量可支持高级博局迅速衔接合并。
+                          *
+                          开局加载出的空闲奖励牌数量，较多数量可支持高级博局迅速衔接合并。
                         </p>
                       </div>
                     </>
                   )}
 
-                  {activeSettingsGameId === 'schulte' && (
+                  {activeSettingsGameId === "schulte" && (
                     <>
                       {/* Default Dimension Config */}
                       <div className="space-y-2">
@@ -1368,11 +1582,13 @@ export default function App() {
                           {[3, 4, 5, 6].map((dim) => (
                             <button
                               key={`schulte-dim-${dim}`}
-                              onClick={() => setSchulteSettings({ defaultDimension: dim })}
+                              onClick={() =>
+                                setSchulteSettings({ defaultDimension: dim })
+                              }
                               className={`py-2 px-1 rounded-lg text-xs font-black border transition-all cursor-pointer ${
                                 schulteSettings.defaultDimension === dim
-                                  ? 'bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]'
-                                  : 'bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800'
+                                  ? "bg-[#3EB489]/20 text-emerald-300 border-[#3EB489]"
+                                  : "bg-zinc-900/40 text-zinc-400 border-zinc-800 hover:bg-zinc-800"
                               }`}
                             >
                               {dim} x {dim}
@@ -1380,12 +1596,12 @@ export default function App() {
                           ))}
                         </div>
                         <p className="text-[9px] text-zinc-500">
-                          * 舒尔特最核心的视力自由训练参数。3x3为热身，5x5为国际测试标准，6x6测试并拓展极限界。
+                          *
+                          舒尔特最核心的视力自由训练参数。3x3为热身，5x5为国际测试标准，6x6测试并拓展极限界。
                         </p>
                       </div>
                     </>
                   )}
-
                 </div>
 
                 {/* Footer Save button */}
@@ -1401,7 +1617,6 @@ export default function App() {
             </>
           )}
         </AnimatePresence>
-
       </div>
 
       {/* ========================================================= */}
@@ -1426,7 +1641,9 @@ export default function App() {
               <div className="pointer-events-auto w-full max-w-md">
                 <AuthModal
                   theme={activeTheme}
-                  onSuccess={(authUser, password) => handleAuthSuccess(authUser, password)}
+                  onSuccess={(authUser, password) =>
+                    handleAuthSuccess(authUser, password)
+                  }
                   onClose={() => setShowAuth(false)}
                 />
               </div>
@@ -1439,7 +1656,9 @@ export default function App() {
       {/* PERSISTENT MINIMAL FOOTER */}
       {/* ========================================================= */}
       <footer className="w-full text-center py-4 mt-8 border-t border-zinc-900 text-[10px] text-zinc-650 block leading-tight">
-        <p className="select-text">Grid Game Box Diagnostic Hub © 矩阵网格游戏实验室 · 筑梦几何机能集</p>
+        <p className="select-text">
+          Grid Game Box Diagnostic Hub © 矩阵网格游戏实验室 · 筑梦几何机能集
+        </p>
       </footer>
     </div>
   );

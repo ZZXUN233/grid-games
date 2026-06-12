@@ -44,26 +44,24 @@ export interface FeatureRequest {
   id: number;
   title: string;
   description: string;
-  type: 'theme' | 'difficulty' | 'leaderboard' | 'effect' | 'game_mode' | 'avatar' | 'custom';
+  type:
+    | "theme"
+    | "difficulty"
+    | "leaderboard"
+    | "effect"
+    | "game_mode"
+    | "avatar"
+    | "custom";
   cost: number;
   votes: number;
   userVoted: boolean;
-  status: 'pending' | 'in_progress' | 'done' | 'rejected';
+  status: "pending" | "in_progress" | "done" | "rejected";
   createdAt: number;
 }
 
 export interface GameTheme {
   id: string;
   name: string;
-  bg: string;              // page body bg class
-  card: string;            // panel/container bg
-  gridItemDefault: string; // default grid button style
-  gridItemHover: string;   // grid button hover logic
-  gridItemActive: string;  // completed state of grid button
-  gridItemWrong: string;   // wrong click effect
-  accent: string;          // control button backgrounds
-  textMain: string;        // title text color
-  textMuted: string;       // minor elements color
-  border: string;          // divider lines color
+  accent: string;
   description: string;
 }

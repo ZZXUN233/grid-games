@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { GameTheme, ScoreRecord } from '../types';
+import React, { useState, useEffect, useRef, useCallback } from "react";
+import { GameTheme, ScoreRecord } from "../types";
 import {
   Cpu,
   ArrowLeft,
@@ -14,9 +14,9 @@ import {
   Info,
   Zap,
   Star,
-  Layers
-} from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+  Layers,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
 
 interface MemoryMatrixProps {
   theme: GameTheme;
@@ -40,19 +40,19 @@ interface MatrixCell {
 
 // Grid size progression based on target count
 const getGridForTargets = (targetCount: number): number => {
-  if (targetCount <= 4) return 4;  // 4x4 for 3-4 targets
-  if (targetCount <= 6) return 5;  // 5x5 for 5-6 targets
-  if (targetCount <= 9) return 6;  // 6x6 for 7-9 targets
-  return 7;                          // 7x7 for 10+ targets
+  if (targetCount <= 4) return 4; // 4x4 for 3-4 targets
+  if (targetCount <= 6) return 5; // 5x5 for 5-6 targets
+  if (targetCount <= 9) return 6; // 6x6 for 7-9 targets
+  return 7; // 7x7 for 10+ targets
 };
 
 // Glow color pairs for flash phase (breathing gradient)
 const GLOW_COLORS = [
-  { from: '#F59E0B', to: '#F97316' }, // Amber → Orange
-  { from: '#8B5CF6', to: '#6366F1' }, // Violet → Indigo
-  { from: '#3EB489', to: '#10B981' }, // Mint → Emerald
-  { from: '#EC4899', to: '#F43F5E' }, // Pink → Rose
-  { from: '#06B6D4', to: '#0EA5E9' }, // Cyan → Sky
+  { from: "#F59E0B", to: "#F97316" }, // Amber → Orange
+  { from: "#8B5CF6", to: "#6366F1" }, // Violet → Indigo
+  { from: "#3EB489", to: "#10B981" }, // Mint → Emerald
+  { from: "#EC4899", to: "#F43F5E" }, // Pink → Rose
+  { from: "#06B6D4", to: "#0EA5E9" }, // Cyan → Sky
 ];
 
 // Entropy points calculation based on target count
@@ -79,17 +79,14 @@ export default function MemoryMatrix({
   userNickname,
   onConsumeEntropy,
   onScoreSubmit,
-  currentUserId = 'memory-tester',
-  avatarColor = '#64748B',
-  avatarEmoji = '🧠',
+  currentUserId = "memory-tester",
+  avatarColor = "#64748B",
+  avatarEmoji = "🧠",
 }: MemoryMatrixProps) {
-
-  const isLight = theme.id === 'sepia-light';
-
   // === Game State ===
   const [targetCount, setTargetCount] = useState(3); // Start with 3 targets
   const [gridSize, setGridSize] = useState(4);
-  const [phase, setPhase] = useState<'flash' | 'recall' | 'result'>('flash');
+  const [phase, setPhase] = useState<"flash" | "recall" | "result">("flash");
   const [cells, setCells] = useState<MatrixCell[]>([]);
   const [selectedCount, setSelectedCount] = useState(0);
   const [isLocked, setIsLocked] = useState(false); // Input debounce lock
@@ -115,7 +112,7 @@ export default function MemoryMatrix({
 
   // Load best from localStorage
   useEffect(() => {
-    const cached = localStorage.getItem('memory_matrix_best');
+    const cached = localStorage.getItem("memory_matrix_best");
     if (cached) {
       try {
         const parsed = JSON.parse(cached);
@@ -130,17 +127,19 @@ export default function MemoryMatrix({
   // Save best to localStorage
   const saveBest = useCallback((targets: number, streakVal: number) => {
     const data = { bestTargetCount: targets, bestStreak: streakVal };
-    localStorage.setItem('memory_matrix_best', JSON.stringify(data));
+    localStorage.setItem("memory_matrix_best", JSON.stringify(data));
   }, []);
 
   // Generate a new round
   const generateRound = useCallback((numTargets: number) => {
     const size = getGridForTargets(numTargets);
     setGridSize(size);
-    setPhase('flash');
+    setPhase("flash");
 
     // Pick a random glow color for this round
-    setFlashGlowColor(GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)]);
+    setFlashGlowColor(
+      GLOW_COLORS[Math.floor(Math.random() * GLOW_COLORS.length)]
+    );
 
     const totalCells = size * size;
     // Ensure targets <= total cells
@@ -192,13 +191,13 @@ export default function MemoryMatrix({
 
   // Flash phase timer: show targets then transition to recall
   useEffect(() => {
-    if (phase === 'flash' && cells.length > 0) {
+    if (phase === "flash" && cells.length > 0) {
       const flashDuration = getFlashDuration(targetCount);
       const displayDuration = getDisplayDuration(targetCount);
       const totalDuration = flashDuration + displayDuration;
 
       const timeout = setTimeout(() => {
-        setPhase('recall');
+        setPhase("recall");
         setIsLocked(false);
         setIsTimingRecall(true);
       }, totalDuration);
@@ -209,9 +208,9 @@ export default function MemoryMatrix({
 
   // Recall phase timer
   useEffect(() => {
-    if (isTimingRecall && phase === 'recall') {
+    if (isTimingRecall && phase === "recall") {
       timerRef.current = setInterval(() => {
-        setRecallTime(prev => prev + 1);
+        setRecallTime((prev) => prev + 1);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -223,14 +222,14 @@ export default function MemoryMatrix({
 
   // Handle cell click during recall phase
   const handleCellClick = (cell: MatrixCell) => {
-    if (isLocked || phase !== 'recall' || isGameComplete) return;
+    if (isLocked || phase !== "recall" || isGameComplete) return;
     if (cell.isSelected) return;
 
     // Lock input briefly for click debounce
     setIsLocked(true);
 
-    const newCells = cells.map(c => ({ ...c }));
-    const clickedCell = newCells.find(c => c.id === cell.id)!;
+    const newCells = cells.map((c) => ({ ...c }));
+    const clickedCell = newCells.find((c) => c.id === cell.id)!;
     clickedCell.isSelected = true;
     clickedCell.isWrong = !cell.isTarget;
 
@@ -244,7 +243,7 @@ export default function MemoryMatrix({
       if (newSelectedCount >= targetIds.size) {
         // Round won!
         setIsTimingRecall(false);
-        setPhase('result');
+        setPhase("result");
         setIsGameComplete(true);
         handleRoundWin();
       } else {
@@ -254,7 +253,7 @@ export default function MemoryMatrix({
     } else {
       // Wrong selection — round failed
       setIsTimingRecall(false);
-      setPhase('result');
+      setPhase("result");
       setIsGameComplete(true);
       setCells(newCells);
       handleRoundLoss();
@@ -290,8 +289,8 @@ export default function MemoryMatrix({
         nickname: userNickname,
         avatarColor,
         avatarEmoji,
-        game: 'memory-matrix',
-        mode: 'memory-matrix',
+        game: "memory-matrix",
+        mode: "memory-matrix",
         difficulty: `记忆矩阵 ${targetCount}目标 ${gridSize}x${gridSize}`,
         time: recallTime || 1,
         createdAt: Date.now(),
@@ -303,7 +302,7 @@ export default function MemoryMatrix({
   // Handle round loss
   const handleRoundLoss = () => {
     setStreak(0);
-    setTotalAttempts(prev => prev + 1);
+    setTotalAttempts((prev) => prev + 1);
 
     // Consume a small amount even on failure (effort reward)
     const smallEntropy = Math.max(3, targetCount);
@@ -312,13 +311,13 @@ export default function MemoryMatrix({
 
   // Proceed to next round (after result phase)
   const handleNextRound = () => {
-    setCurrentRound(prev => prev + 1);
+    setCurrentRound((prev) => prev + 1);
 
     // Check if should level up or down
     let newTargetCount = targetCount;
     if (streak >= 2) {
       // 2 consecutive wins → level up (but cap at reasonable max for grid)
-      const maxReasonable = (gridSize * gridSize) - 2;
+      const maxReasonable = gridSize * gridSize - 2;
       if (targetCount < maxReasonable) {
         newTargetCount = targetCount + 1;
       }
@@ -336,7 +335,7 @@ export default function MemoryMatrix({
   const handleLevelDownRetry = () => {
     const newTargetCount = Math.max(3, targetCount - 1);
     setTargetCount(newTargetCount);
-    setCurrentRound(prev => prev + 1);
+    setCurrentRound((prev) => prev + 1);
     generateRound(newTargetCount);
   };
 
@@ -364,57 +363,56 @@ export default function MemoryMatrix({
   // Get cell background based on state
   const getCellBackground = (cell: MatrixCell): string => {
     // Flash phase: show targets with glow
-    if (phase === 'flash') {
+    if (phase === "flash") {
       if (cell.isTarget) {
-        return isLight
-          ? 'bg-amber-100 border-amber-400'
-          : 'bg-zinc-800/80';
+        return false ? "bg-amber-100 border-amber-400" : "bg-zinc-800/80";
       }
-      return isLight
-        ? 'bg-[#EFEADB] border-[#DFD3C1]'
-        : 'bg-zinc-900/60 border-zinc-800';
+      return false
+        ? "bg-[#EFEADB] border-[#DFD3C1]"
+        : "bg-zinc-900/60 border-zinc-800";
     }
 
     // Recall phase or result
     if (cell.isSelected) {
       if (cell.isWrong) {
-        return isLight
-          ? 'bg-red-100 border-red-400'
-          : 'bg-red-950/60 border-red-500';
+        return false
+          ? "bg-red-100 border-red-400"
+          : "bg-red-950/60 border-red-500";
       }
       // Correct selection
-      return isLight
-        ? 'bg-emerald-100 border-emerald-400'
-        : 'bg-emerald-900/40 border-emerald-500';
+      return false
+        ? "bg-emerald-100 border-emerald-400"
+        : "bg-emerald-900/40 border-emerald-500";
     }
 
     // Unselected cells in recall/result
     // Show missed targets in result phase
-    if (phase === 'result' && cell.isTarget) {
-      return isLight
-        ? 'bg-amber-50 border-amber-300 ring-1 ring-amber-200'
-        : 'bg-zinc-800/40 border-amber-600/40 ring-1 ring-amber-700/30';
+    if (phase === "result" && cell.isTarget) {
+      return false
+        ? "bg-amber-50 border-amber-300 ring-1 ring-amber-200"
+        : "bg-zinc-800/40 border-amber-600/40 ring-1 ring-amber-700/30";
     }
 
     // Default unselected
-    return isLight
-      ? 'bg-[#EFEADB] hover:bg-[#E1D6BF] border-[#DFD3C1]'
-      : 'bg-zinc-900/60 hover:bg-zinc-800/80 border-zinc-800';
+    return false
+      ? "bg-[#EFEADB] hover:bg-[#E1D6BF] border-[#DFD3C1]"
+      : "bg-zinc-900/60 hover:bg-zinc-800/80 border-zinc-800";
   };
 
   return (
-    <div className={`w-full flex flex-col gap-4 select-none ${isLight ? 'text-[#4A3C31]' : 'text-zinc-300'}`}>
-
+    <div
+      className={`w-full flex flex-col gap-4 select-none ${"text-zinc-300"}`}
+    >
       {/* Sub-header Navigation row */}
-      <div className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${
-        isLight ? 'border-[#E1D4C0]' : 'border-zinc-800/60'
-      }`}>
+      <div
+        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
+      >
         <button
           onClick={onGoBack}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
-            isLight
-              ? 'bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]'
-              : 'bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400'
+            false
+              ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
+              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"
           }`}
         >
           <ArrowLeft size={13} />
@@ -422,8 +420,12 @@ export default function MemoryMatrix({
         </button>
 
         <div className="flex items-center gap-1.5">
-          <div className={`w-2.5 h-2.5 rounded-full animate-pulse ${phase === 'flash' ? 'bg-amber-500' : phase === 'recall' ? 'bg-emerald-500' : 'bg-indigo-500'}`} />
-          <span className={`text-[11px] font-mono tracking-wider block uppercase ${isLight ? 'text-[#8B5A2B]' : 'text-zinc-500'}`}>
+          <div
+            className={`w-2.5 h-2.5 rounded-full animate-pulse ${phase === "flash" ? "bg-amber-500" : phase === "recall" ? "bg-emerald-500" : "bg-indigo-500"}`}
+          />
+          <span
+            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-zinc-500"}`}
+          >
             记忆矩阵 · VISUAL CACHE
           </span>
         </div>
@@ -434,50 +436,62 @@ export default function MemoryMatrix({
         {/* Left segment - Player info & round stats */}
         <div className="flex flex-col gap-2">
           <div className="flex items-baseline gap-1">
-            <span className={`text-xs ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>挑战者：</span>
-            <span className={`text-sm font-bold font-mono tracking-wide ${isLight ? 'text-[#4A3C31]' : 'text-white'}`}>
+            <span className={`text-xs ${"text-zinc-500"}`}>挑战者：</span>
+            <span
+              className={`text-sm font-bold font-mono tracking-wide ${"text-white"}`}
+            >
               {userNickname}
             </span>
           </div>
 
           {/* Round info chips */}
           <div className="flex gap-2 flex-wrap">
-            <div className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
-              isLight
-                ? 'bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]'
-                : 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
-            }`}>
+            <div
+              className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
+                false
+                  ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
+                  : "bg-zinc-900/60 border-zinc-800 text-zinc-300"
+              }`}
+            >
               <Target size={10} />
               <span>目标: {targetIds.size} 个</span>
             </div>
 
-            <div className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
-              isLight
-                ? 'bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]'
-                : 'bg-zinc-900/60 border-zinc-800 text-zinc-300'
-            }`}>
+            <div
+              className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
+                false
+                  ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
+                  : "bg-zinc-900/60 border-zinc-800 text-zinc-300"
+              }`}
+            >
               <Layers size={10} />
-              <span>{gridSize}x{gridSize}</span>
+              <span>
+                {gridSize}x{gridSize}
+              </span>
             </div>
 
-            <div className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
-              streak >= 2
-                ? isLight
-                  ? 'bg-emerald-50 border-emerald-300 text-emerald-700'
-                  : 'bg-emerald-900/30 border-emerald-700/50 text-emerald-400'
-                : isLight
-                  ? 'bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]'
-                  : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'
-            }`}>
-              <Zap size={10} className={streak >= 2 ? 'animate-pulse' : ''} />
+            <div
+              className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
+                streak >= 2
+                  ? false
+                    ? "bg-emerald-50 border-emerald-300 text-emerald-700"
+                    : "bg-emerald-900/30 border-emerald-700/50 text-emerald-400"
+                  : false
+                    ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
+                    : "bg-zinc-900/60 border-zinc-800 text-zinc-400"
+              }`}
+            >
+              <Zap size={10} className={streak >= 2 ? "animate-pulse" : ""} />
               <span>连胜: {streak}</span>
             </div>
 
-            <div className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
-              isLight
-                ? 'bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]'
-                : 'bg-zinc-900/60 border-zinc-800 text-zinc-400'
-            }`}>
+            <div
+              className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
+                false
+                  ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
+                  : "bg-zinc-900/60 border-zinc-800 text-zinc-400"
+              }`}
+            >
               <Star size={10} />
               <span>最佳: {bestTargetCount}目标</span>
             </div>
@@ -485,66 +499,79 @@ export default function MemoryMatrix({
         </div>
 
         {/* Right - Timer */}
-        <div className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${
-          isLight ? 'bg-[#FAF6EE] border-[#E1D4C0]' : 'bg-zinc-900/60 border border-zinc-800'
-        }`}>
-          <span className={`text-[8px] uppercase tracking-wider font-bold ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>
+        <div
+          className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
+        >
+          <span
+            className={`text-[8px] uppercase tracking-wider font-bold ${"text-zinc-500"}`}
+          >
             回忆用时
           </span>
-          <span className={`text-xs font-black font-mono leading-none mt-1 ${isLight ? 'text-[#4A3C31]' : 'text-white'}`}>
+          <span
+            className={`text-xs font-black font-mono leading-none mt-1 ${"text-white"}`}
+          >
             {recallTime}s
           </span>
         </div>
       </div>
 
       {/* Main Game Board Wrapper */}
-      <div className={`relative max-w-md mx-auto w-full p-3 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${
-        isLight ? 'bg-[#DFD3C1] border-[#E1D4C0] shadow-sm' : 'bg-zinc-950/80 border border-zinc-800/60'
-      }`}>
-
+      <div
+        className={`relative max-w-md mx-auto w-full p-3 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${"bg-zinc-950/80 border border-zinc-800/60"}`}
+      >
         {/* Phase indicator */}
         <div className="flex items-center justify-between px-1 mb-2.5">
           <div className="flex items-center gap-2">
-            {phase === 'flash' && (
+            {phase === "flash" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex items-center gap-1.5"
               >
-                <div className={`w-2 h-2 rounded-full ${isLight ? 'bg-amber-500' : 'bg-amber-400'} animate-pulse`} />
-                <span className={`text-[10px] font-black tracking-wider ${isLight ? 'text-amber-700' : 'text-amber-400'}`}>
+                <div
+                  className={`w-2 h-2 rounded-full ${"bg-amber-400"} animate-pulse`}
+                />
+                <span
+                  className={`text-[10px] font-black tracking-wider ${"text-amber-400"}`}
+                >
                   瞬时记忆阶段 · 正在闪烁
                 </span>
               </motion.div>
             )}
-            {phase === 'recall' && (
+            {phase === "recall" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex items-center gap-1.5"
               >
-                <div className={`w-2 h-2 rounded-full ${isLight ? 'bg-emerald-600' : 'bg-emerald-400'} animate-pulse`} />
-                <span className={`text-[10px] font-black tracking-wider ${isLight ? 'text-emerald-700' : 'text-emerald-400'}`}>
+                <div
+                  className={`w-2 h-2 rounded-full ${"bg-emerald-400"} animate-pulse`}
+                />
+                <span
+                  className={`text-[10px] font-black tracking-wider ${"text-emerald-400"}`}
+                >
                   空间回忆阶段 · 点击目标格
                 </span>
               </motion.div>
             )}
-            {phase === 'result' && (
+            {phase === "result" && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="flex items-center gap-1.5"
               >
-                <div className={`w-2 h-2 rounded-full ${isLight ? 'text-[#8B5A2B]' : 'text-indigo-400'}`} />
-                <span className={`text-[10px] font-black tracking-wider ${isLight ? 'text-[#8B5A2B]' : 'text-indigo-400'}`}>
+                <div className={`w-2 h-2 rounded-full ${"text-indigo-400"}`} />
+                <span
+                  className={`text-[10px] font-black tracking-wider ${"text-indigo-400"}`}
+                >
                   本轮结算
                 </span>
               </motion.div>
             )}
           </div>
 
-          {phase === 'recall' && (
-            <span className={`text-[10px] font-bold ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>
+          {phase === "recall" && (
+            <span className={`text-[10px] font-bold ${"text-zinc-500"}`}>
               已选择 {selectedCount}/{targetIds.size}
             </span>
           )}
@@ -559,8 +586,9 @@ export default function MemoryMatrix({
           }}
         >
           {cells.map((cell) => {
-            const isFlashing = phase === 'flash' && cell.isTarget;
-            const isRevealedMiss = phase === 'result' && cell.isTarget && !cell.isSelected;
+            const isFlashing = phase === "flash" && cell.isTarget;
+            const isRevealedMiss =
+              phase === "result" && cell.isTarget && !cell.isSelected;
             const isCorrectHit = cell.isSelected && !cell.isWrong;
             const isWrongHit = cell.isSelected && cell.isWrong;
 
@@ -575,7 +603,7 @@ export default function MemoryMatrix({
                     scale: [0, 1.2, 1],
                     opacity: [0, 1, 0.8],
                   }}
-                  transition={{ duration: 0.5, ease: 'easeOut' }}
+                  transition={{ duration: 0.5, ease: "easeOut" }}
                   className="w-full h-full rounded-lg flex items-center justify-center"
                   style={{
                     background: `radial-gradient(circle, ${flashGlowColor.from}99, ${flashGlowColor.to}44)`,
@@ -587,8 +615,12 @@ export default function MemoryMatrix({
                       scale: [1, 1.15, 1],
                       opacity: [0.8, 1, 0.8],
                     }}
-                    transition={{ duration: 1.2, repeat: Infinity, ease: 'easeInOut' }}
-                    className={`w-3 h-3 rounded-full ${isLight ? 'bg-amber-500' : 'bg-white'} shadow-lg`}
+                    transition={{
+                      duration: 1.2,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
+                    className={`w-3 h-3 rounded-full ${"bg-white"} shadow-lg`}
                     style={{
                       boxShadow: `0 0 12px ${flashGlowColor.from}`,
                     }}
@@ -604,12 +636,14 @@ export default function MemoryMatrix({
                   <motion.div
                     initial={{ scale: 0 }}
                     animate={{ scale: 1 }}
-                    transition={{ type: 'spring', stiffness: 200 }}
-                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${
-                      isLight ? 'border-amber-400 bg-amber-50' : 'border-amber-500/60 bg-amber-500/10'
-                    }`}
+                    transition={{ type: "spring", stiffness: 200 }}
+                    className={`w-5 h-5 rounded-full border-2 flex items-center justify-center ${"border-amber-500/60 bg-amber-500/10"}`}
                   >
-                    <span className={`text-[8px] font-black ${isLight ? 'text-amber-600' : 'text-amber-400'}`}>?</span>
+                    <span
+                      className={`text-[8px] font-black ${"text-amber-400"}`}
+                    >
+                      ?
+                    </span>
                   </motion.div>
                 </div>
               );
@@ -621,12 +655,12 @@ export default function MemoryMatrix({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   className="w-full h-full rounded-lg flex items-center justify-center"
                 >
-                  <div className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                    isLight ? 'bg-emerald-400 text-white' : 'bg-emerald-500 text-zinc-950'
-                  }`}>
+                  <div
+                    className={`w-5 h-5 rounded-full flex items-center justify-center ${"bg-emerald-500 text-zinc-950"}`}
+                  >
                     <Sparkles size={10} />
                   </div>
                 </motion.div>
@@ -639,7 +673,7 @@ export default function MemoryMatrix({
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  transition={{ type: 'spring', stiffness: 300, damping: 15 }}
+                  transition={{ type: "spring", stiffness: 300, damping: 15 }}
                   className="w-full h-full rounded-lg flex items-center justify-center"
                 >
                   <div className="w-5 h-5 rounded-full bg-red-500 flex items-center justify-center text-white font-black text-xs">
@@ -655,24 +689,24 @@ export default function MemoryMatrix({
               <button
                 key={cell.id}
                 onClick={() => handleCellClick(cell)}
-                disabled={phase !== 'recall' || isGameComplete || cell.isSelected}
+                disabled={
+                  phase !== "recall" || isGameComplete || cell.isSelected
+                }
                 className={`relative rounded-xl border-2 transition-all duration-200 cursor-pointer disabled:cursor-default overflow-hidden
                   ${bgClass}
-                  ${isFlashing ? '' : ''}
-                  ${phase === 'recall' && !cell.isSelected && !isGameComplete
-                    ? isLight
-                      ? 'hover:shadow-md active:scale-95'
-                      : 'hover:shadow-lg hover:shadow-emerald-500/5 active:scale-95'
-                    : ''
+                  ${isFlashing ? "" : ""}
+                  ${
+                    phase === "recall" && !cell.isSelected && !isGameComplete
+                      ? false
+                        ? "hover:shadow-md active:scale-95"
+                        : "hover:shadow-lg hover:shadow-emerald-500/5 active:scale-95"
+                      : ""
                   }
-                  ${isWrongHit
-                    ? isLight ? 'animate-shake' : 'animate-shake'
-                    : ''
-                  }
+                  ${isWrongHit ? "animate-shake" : ""}
                 `}
                 style={{
                   ...(isFlashing ? getFlashStyle(true) : {}),
-                  borderRadius: '10px',
+                  borderRadius: "10px",
                 }}
               >
                 {/* Flash phase glow overlay */}
@@ -682,7 +716,11 @@ export default function MemoryMatrix({
                     animate={{
                       opacity: [0.4, 0.8, 0.4],
                     }}
-                    transition={{ duration: 1.5, repeat: Infinity, ease: 'easeInOut' }}
+                    transition={{
+                      duration: 1.5,
+                      repeat: Infinity,
+                      ease: "easeInOut",
+                    }}
                     style={{
                       background: `radial-gradient(circle at center, ${flashGlowColor.from}66, transparent 70%)`,
                     }}
@@ -700,7 +738,7 @@ export default function MemoryMatrix({
 
         {/* Result Overlay */}
         <AnimatePresence>
-          {phase === 'result' && (
+          {phase === "result" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -718,7 +756,11 @@ export default function MemoryMatrix({
                     <div className="w-14 h-14 bg-emerald-500/10 rounded-full border border-emerald-500/30 flex items-center justify-center text-emerald-400 mb-4">
                       <motion.div
                         animate={{ rotate: 360 }}
-                        transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          ease: "linear",
+                        }}
                       >
                         <Brain size={26} />
                       </motion.div>
@@ -728,21 +770,25 @@ export default function MemoryMatrix({
                       完美回忆！
                     </h3>
                     <p className="text-xs text-zinc-400 mt-2 font-medium">
-                      成功在 {gridSize}x{gridSize} 网格中精准定位了所有 {targetIds.size} 个目标块，
-                      视觉空间暂存器表现卓越！
+                      成功在 {gridSize}x{gridSize} 网格中精准定位了所有{" "}
+                      {targetIds.size} 个目标块， 视觉空间暂存器表现卓越！
                     </p>
 
                     {/* Score details */}
                     <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">回忆用时</span>
+                        <span className="text-[10px] text-zinc-500 block leading-none">
+                          回忆用时
+                        </span>
                         <span className="text-sm font-black font-mono text-emerald-400 mt-1 block">
                           {recallTime}s
                         </span>
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">消解负熵</span>
+                        <span className="text-[10px] text-zinc-500 block leading-none">
+                          消解负熵
+                        </span>
                         <span className="text-sm font-black font-mono text-indigo-400 mt-1 block flex items-center gap-1">
                           <Flame size={12} className="text-rose-400" />
                           <span>{getEntropyPoints(targetCount)} P</span>
@@ -750,7 +796,9 @@ export default function MemoryMatrix({
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">当前连胜</span>
+                        <span className="text-[10px] text-zinc-500 block leading-none">
+                          当前连胜
+                        </span>
                         <span className="text-sm font-black font-mono text-amber-400 mt-1 block">
                           {streak}
                         </span>
@@ -765,7 +813,10 @@ export default function MemoryMatrix({
                         className="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-amber-400 bg-amber-500/10 px-3 py-1.5 rounded-full border border-amber-500/30"
                       >
                         <ChevronUp size={12} />
-                        <span>连续 {streak} 次通关！即将提升至 {targetCount + 1} 个目标</span>
+                        <span>
+                          连续 {streak} 次通关！即将提升至 {targetCount + 1}{" "}
+                          个目标
+                        </span>
                       </motion.div>
                     )}
 
@@ -788,20 +839,25 @@ export default function MemoryMatrix({
                       空间记忆偏差
                     </h3>
                     <p className="text-xs text-zinc-400 mt-2 font-medium">
-                      未能完全复现 {targetIds.size} 个目标的空间格局。工作记忆对焦需要重新校准。
+                      未能完全复现 {targetIds.size}{" "}
+                      个目标的空间格局。工作记忆对焦需要重新校准。
                     </p>
 
                     {/* Missed targets summary */}
                     <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">正确回忆</span>
+                        <span className="text-[10px] text-zinc-500 block leading-none">
+                          正确回忆
+                        </span>
                         <span className="text-sm font-black font-mono text-emerald-400 mt-1 block">
                           {selectedCount} / {targetIds.size}
                         </span>
                       </div>
                       <div className="w-px h-6 bg-zinc-800" />
                       <div>
-                        <span className="text-[10px] text-zinc-500 block leading-none">回忆用时</span>
+                        <span className="text-[10px] text-zinc-500 block leading-none">
+                          回忆用时
+                        </span>
                         <span className="text-sm font-black font-mono text-zinc-300 mt-1 block">
                           {recallTime}s
                         </span>
@@ -814,14 +870,16 @@ export default function MemoryMatrix({
                         className="flex-1 py-2 px-4 rounded-xl text-xs font-black bg-indigo-500 hover:bg-indigo-400 text-zinc-950 shadow-md cursor-pointer active:scale-95 transition-all text-center flex items-center justify-center gap-1"
                       >
                         <ChevronDown size={12} />
-                        <span>降阶重试 ({Math.max(3, targetCount - 1)}目标)</span>
+                        <span>
+                          降阶重试 ({Math.max(3, targetCount - 1)}目标)
+                        </span>
                       </button>
                       <button
                         onClick={handleNextRound}
                         className={`flex-1 py-2 px-4 rounded-xl text-xs font-black shadow active:scale-95 transition-all text-center ${
-                          isLight
-                            ? 'bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]'
-                            : 'bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300'
+                          false
+                            ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
+                            : "bg-zinc-800 hover:bg-zinc-700 hover:text-white text-zinc-300"
                         }`}
                       >
                         保持当前阶数
@@ -842,9 +900,9 @@ export default function MemoryMatrix({
                   <button
                     onClick={onGoBack}
                     className={`flex-1 py-2 px-4 rounded-lg text-[10px] font-bold shadow active:scale-95 transition-all text-center ${
-                      isLight
-                        ? 'bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]'
-                        : 'bg-zinc-800/50 hover:bg-zinc-700/60 hover:text-white text-zinc-400'
+                      false
+                        ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
+                        : "bg-zinc-800/50 hover:bg-zinc-700/60 hover:text-white text-zinc-400"
                     }`}
                   >
                     返回大厅
@@ -857,48 +915,53 @@ export default function MemoryMatrix({
       </div>
 
       {/* How to Play Guide */}
-      <div className={`max-w-md mx-auto w-full flex flex-col gap-2 p-3 rounded-xl border ${
-        isLight ? 'bg-[#FAF6EE] border-[#E1D4C0]' : 'bg-zinc-900/40 border border-zinc-800/40'
-      }`}>
+      <div
+        className={`max-w-md mx-auto w-full flex flex-col gap-2 p-3 rounded-xl border ${"bg-zinc-900/40 border border-zinc-800/40"}`}
+      >
         <div className="flex justify-between items-center px-1">
-          <span className={`text-[9px] uppercase tracking-widest font-black ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>
+          <span
+            className={`text-[9px] uppercase tracking-widest font-black ${"text-zinc-500"}`}
+          >
             玩法说明
           </span>
           <button
-            onClick={() => setShowGuide(prev => !prev)}
+            onClick={() => setShowGuide((prev) => !prev)}
             className="text-[9px] font-bold text-indigo-400 hover:underline flex items-center gap-0.5"
           >
             <Info size={9} />
-            <span>{showGuide ? '收起' : '展开'}</span>
+            <span>{showGuide ? "收起" : "展开"}</span>
           </button>
         </div>
 
         {showGuide && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: "auto" }}
             className={`mt-0.5 p-2.5 rounded-lg border text-[10px] leading-relaxed flex flex-col gap-1.5 ${
-              isLight
-                ? 'bg-[#FAF6EE]/80 border-[#E1D4C0] text-[#6C5E53]'
-                : 'bg-zinc-950/40 border-zinc-900 text-zinc-400'
+              false
+                ? "bg-[#FAF6EE]/80 border-[#E1D4C0] text-[#6C5E53]"
+                : "bg-zinc-950/40 border-zinc-900 text-zinc-400"
             }`}
           >
             <p>
-              🧠 <strong className="text-emerald-400">瞬时视觉暂存：</strong> 网格中部分单元格会短暂闪烁（Glow脉冲），
+              🧠 <strong className="text-emerald-400">瞬时视觉暂存：</strong>{" "}
+              网格中部分单元格会短暂闪烁（Glow脉冲），
               您需要在它们消失后准确回忆并点击所有目标位置。
             </p>
             <p>
-              🎯 <strong className="text-amber-400">动态层级：</strong> 从 3 个目标开始。
-              连续成功 <strong className="text-emerald-400">2 次</strong> 后自动增加目标数（升阶）；
-              失败后自动建议降阶重试。
+              🎯 <strong className="text-amber-400">动态层级：</strong> 从 3
+              个目标开始。 连续成功{" "}
+              <strong className="text-emerald-400">2 次</strong>{" "}
+              后自动增加目标数（升阶）； 失败后自动建议降阶重试。
             </p>
             <p>
-              ⚡ <strong className="text-indigo-400">空间视觉训练：</strong> 高阶挑战将扩大网格规模
-              (4x4 → 5x5 → 6x6 → 7x7)，同时目标数量递增，训练工作记忆对焦与空间格局瞬时捕获能力。
+              ⚡ <strong className="text-indigo-400">空间视觉训练：</strong>{" "}
+              高阶挑战将扩大网格规模 (4x4 → 5x5 → 6x6 →
+              7x7)，同时目标数量递增，训练工作记忆对焦与空间格局瞬时捕获能力。
             </p>
             <p>
-              🔥 <strong className="text-rose-400">负熵消解：</strong> 每次完美通关折算高额负熵值，
-              目标越高阶，消解熵增效果越显著。
+              🔥 <strong className="text-rose-400">负熵消解：</strong>{" "}
+              每次完美通关折算高额负熵值， 目标越高阶，消解熵增效果越显著。
             </p>
           </motion.div>
         )}

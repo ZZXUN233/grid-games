@@ -1,33 +1,40 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { GameTheme } from '../types';
-import { ArrowLeft, RefreshCw, Trophy, ArrowUp, ArrowDown, ArrowRight as ArrowRightIcon } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
-import confetti from 'canvas-confetti';
+import React, { useState, useEffect, useCallback } from "react";
+import { GameTheme } from "../types";
+import {
+  ArrowLeft,
+  RefreshCw,
+  Trophy,
+  ArrowUp,
+  ArrowDown,
+  ArrowRight as ArrowRightIcon,
+} from "lucide-react";
+import { motion, AnimatePresence } from "motion/react";
+import confetti from "canvas-confetti";
 
 interface Game2048Props {
   theme: GameTheme;
   onGoBack: () => void;
   userNickname: string;
   onConsumeEntropy?: (points: number) => void;
-  spawnMode?: 'normal' | 'chaos' | 'hell';
+  spawnMode?: "normal" | "chaos" | "hell";
   starterCount?: number;
 }
 
 type Board = number[][];
 
-export default function Game2048({ 
-  theme, 
-  onGoBack, 
-  userNickname, 
+export default function Game2048({
+  theme,
+  onGoBack,
+  userNickname,
   onConsumeEntropy,
-  spawnMode = 'normal',
-  starterCount = 2
+  spawnMode = "normal",
+  starterCount = 2,
 }: Game2048Props) {
   const [board, setBoard] = useState<Board>([
     [0, 0, 0, 0],
     [0, 0, 0, 0],
     [0, 0, 0, 0],
-    [0, 0, 0, 0]
+    [0, 0, 0, 0],
   ]);
   const [score, setScore] = useState(0);
   const [bestScore, setBestScore] = useState(0);
@@ -37,7 +44,7 @@ export default function Game2048({
 
   // Load best score on mount
   useEffect(() => {
-    const cachedBest = localStorage.getItem('gridgame_2048_best');
+    const cachedBest = localStorage.getItem("gridgame_2048_best");
     if (cachedBest) {
       setBestScore(parseInt(cachedBest, 10) || 0);
     }
@@ -56,18 +63,18 @@ export default function Game2048({
     if (emptyCells.length === 0) return currentBoard;
 
     const { r, c } = emptyCells[Math.floor(Math.random() * emptyCells.length)];
-    
+
     // Choose spawn value based on mode
     let val = 2;
-    if (spawnMode === 'chaos') {
+    if (spawnMode === "chaos") {
       val = Math.random() < 0.5 ? 2 : 4;
-    } else if (spawnMode === 'hell') {
+    } else if (spawnMode === "hell") {
       val = 4;
     } else {
       val = Math.random() < 0.9 ? 2 : 4;
     }
 
-    const nextBoard = currentBoard.map(row => [...row]);
+    const nextBoard = currentBoard.map((row) => [...row]);
     nextBoard[r][c] = val;
     return nextBoard;
   };
@@ -77,8 +84,10 @@ export default function Game2048({
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
         if (currentBoard[r][c] === 0) return false;
-        if (r < 3 && currentBoard[r][c] === currentBoard[r + 1][c]) return false;
-        if (c < 3 && currentBoard[r][c] === currentBoard[r][c + 1]) return false;
+        if (r < 3 && currentBoard[r][c] === currentBoard[r + 1][c])
+          return false;
+        if (c < 3 && currentBoard[r][c] === currentBoard[r][c + 1])
+          return false;
       }
     }
     return true;
@@ -90,7 +99,7 @@ export default function Game2048({
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ];
     // Dynamic starting count
     for (let i = 0; i < starterCount; i++) {
@@ -110,11 +119,11 @@ export default function Game2048({
 
   // Handle Score Updates
   const updateScoreAndBest = (pointsToAdd: number) => {
-    setScore(prev => {
+    setScore((prev) => {
       const next = prev + pointsToAdd;
       if (next > bestScore) {
         setBestScore(next);
-        localStorage.setItem('gridgame_2048_best', next.toString());
+        localStorage.setItem("gridgame_2048_best", next.toString());
       }
       return next;
     });
@@ -128,7 +137,7 @@ export default function Game2048({
   // Sliding row logic helper
   const slideRowLeft = (row: number[]): { slid: number[]; points: number } => {
     // 1. Filter out zeros
-    let filtered = row.filter(val => val !== 0);
+    let filtered = row.filter((val) => val !== 0);
     let points = 0;
     const result: number[] = [];
 
@@ -158,7 +167,7 @@ export default function Game2048({
       [0, 0, 0, 0],
       [0, 0, 0, 0],
       [0, 0, 0, 0],
-      [0, 0, 0, 0]
+      [0, 0, 0, 0],
     ];
     for (let r = 0; r < 4; r++) {
       for (let c = 0; c < 4; c++) {
@@ -169,131 +178,148 @@ export default function Game2048({
   };
 
   // Move Board Actions
-  const move = useCallback((direction: 'LEFT' | 'RIGHT' | 'UP' | 'DOWN') => {
-    if (gameOver) return;
+  const move = useCallback(
+    (direction: "LEFT" | "RIGHT" | "UP" | "DOWN") => {
+      if (gameOver) return;
 
-    let tempBoard = board.map(row => [...row]);
-    let pointsEarned = 0;
-    let rotatedCount = 0;
+      let tempBoard = board.map((row) => [...row]);
+      let pointsEarned = 0;
+      let rotatedCount = 0;
 
-    // Convert direction into standard leftward operations via rotation
-    if (direction === 'UP') {
-      // 270deg clockwise rotates UP columns to LEFT rows
-      tempBoard = rotateClockwise(rotateClockwise(rotateClockwise(tempBoard)));
-      rotatedCount = 1; // 1 rotation needed to restore
-    } else if (direction === 'RIGHT') {
-      // 180deg
-      tempBoard = rotateClockwise(rotateClockwise(tempBoard));
-      rotatedCount = 2;
-    } else if (direction === 'DOWN') {
-      // 90deg
-      tempBoard = rotateClockwise(tempBoard);
-      rotatedCount = 3;
-    }
-
-    // Process left slide for all rows
-    let changed = false;
-    const processedBoard: Board = [];
-    for (let r = 0; r < 4; r++) {
-      const { slid, points } = slideRowLeft(tempBoard[r]);
-      processedBoard.push(slid);
-      pointsEarned += points;
-      if (JSON.stringify(tempBoard[r]) !== JSON.stringify(slid)) {
-        changed = true;
-      }
-    }
-
-    // Restore original orientation
-    let finalBoard = processedBoard;
-    if (rotatedCount === 1) {
-      finalBoard = rotateClockwise(finalBoard);
-    } else if (rotatedCount === 2) {
-      finalBoard = rotateClockwise(rotateClockwise(finalBoard));
-    } else if (rotatedCount === 3) {
-      finalBoard = rotateClockwise(rotateClockwise(rotateClockwise(finalBoard)));
-    }
-
-    if (changed || pointsEarned > 0) {
-      // Generate next tile
-      const withNewTile = spawnTile(finalBoard);
-      setBoard(withNewTile);
-      if (pointsEarned > 0) {
-        updateScoreAndBest(pointsEarned);
+      // Convert direction into standard leftward operations via rotation
+      if (direction === "UP") {
+        // 270deg clockwise rotates UP columns to LEFT rows
+        tempBoard = rotateClockwise(
+          rotateClockwise(rotateClockwise(tempBoard))
+        );
+        rotatedCount = 1; // 1 rotation needed to restore
+      } else if (direction === "RIGHT") {
+        // 180deg
+        tempBoard = rotateClockwise(rotateClockwise(tempBoard));
+        rotatedCount = 2;
+      } else if (direction === "DOWN") {
+        // 90deg
+        tempBoard = rotateClockwise(tempBoard);
+        rotatedCount = 3;
       }
 
-      // Check if player hit 2048 for the first time
-      let contains2048 = false;
+      // Process left slide for all rows
+      let changed = false;
+      const processedBoard: Board = [];
       for (let r = 0; r < 4; r++) {
-        for (let c = 0; c < 4; c++) {
-          if (withNewTile[r][c] >= 2048) {
-            contains2048 = true;
-          }
+        const { slid, points } = slideRowLeft(tempBoard[r]);
+        processedBoard.push(slid);
+        pointsEarned += points;
+        if (JSON.stringify(tempBoard[r]) !== JSON.stringify(slid)) {
+          changed = true;
         }
       }
 
-      if (contains2048 && !hasCelebrated) {
-        setWon(true);
-        setHasCelebrated(true);
-        // Trigger lovely 2048 success confetti burst
-        confetti({
-          particleCount: 150,
-          spread: 80,
-          origin: { y: 0.6 },
-          colors: ['#FFD700', '#F59E0B', '#10B981', '#3B82F6']
-        });
+      // Restore original orientation
+      let finalBoard = processedBoard;
+      if (rotatedCount === 1) {
+        finalBoard = rotateClockwise(finalBoard);
+      } else if (rotatedCount === 2) {
+        finalBoard = rotateClockwise(rotateClockwise(finalBoard));
+      } else if (rotatedCount === 3) {
+        finalBoard = rotateClockwise(
+          rotateClockwise(rotateClockwise(finalBoard))
+        );
       }
 
-      // Check game over
-      if (checkGameOver(withNewTile)) {
-        setGameOver(true);
+      if (changed || pointsEarned > 0) {
+        // Generate next tile
+        const withNewTile = spawnTile(finalBoard);
+        setBoard(withNewTile);
+        if (pointsEarned > 0) {
+          updateScoreAndBest(pointsEarned);
+        }
+
+        // Check if player hit 2048 for the first time
+        let contains2048 = false;
+        for (let r = 0; r < 4; r++) {
+          for (let c = 0; c < 4; c++) {
+            if (withNewTile[r][c] >= 2048) {
+              contains2048 = true;
+            }
+          }
+        }
+
+        if (contains2048 && !hasCelebrated) {
+          setWon(true);
+          setHasCelebrated(true);
+          // Trigger lovely 2048 success confetti burst
+          confetti({
+            particleCount: 150,
+            spread: 80,
+            origin: { y: 0.6 },
+            colors: ["#FFD700", "#F59E0B", "#10B981", "#3B82F6"],
+          });
+        }
+
+        // Check game over
+        if (checkGameOver(withNewTile)) {
+          setGameOver(true);
+        }
       }
-    }
-  }, [board, gameOver, bestScore, hasCelebrated]);
+    },
+    [board, gameOver, bestScore, hasCelebrated]
+  );
 
   // Attach keyboard event handlers
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'KeyW', 'KeyS', 'KeyA', 'KeyD'].includes(e.code)) {
+      if (
+        [
+          "ArrowUp",
+          "ArrowDown",
+          "ArrowLeft",
+          "ArrowRight",
+          "KeyW",
+          "KeyS",
+          "KeyA",
+          "KeyD",
+        ].includes(e.code)
+      ) {
         e.preventDefault();
       }
       switch (e.code) {
-        case 'ArrowUp':
-        case 'KeyW':
-          move('UP');
+        case "ArrowUp":
+        case "KeyW":
+          move("UP");
           break;
-        case 'ArrowDown':
-        case 'KeyS':
-          move('DOWN');
+        case "ArrowDown":
+        case "KeyS":
+          move("DOWN");
           break;
-        case 'ArrowLeft':
-        case 'KeyA':
-          move('LEFT');
+        case "ArrowLeft":
+        case "KeyA":
+          move("LEFT");
           break;
-        case 'ArrowRight':
-        case 'KeyD':
-          move('RIGHT');
+        case "ArrowRight":
+        case "KeyD":
+          move("RIGHT");
           break;
       }
     };
 
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
   }, [move]);
 
-  const isLight = theme.id === 'sepia-light';
-
-  // Style mapper for numbers 
+  // Style mapper for numbers
   const getTileStyles = (val: number) => {
     if (val === 0) {
-      return isLight 
-        ? 'bg-[#FAF6EE] text-transparent border border-[#DFD3C1] flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300'
-        : 'bg-zinc-900/40 text-transparent border border-zinc-900/60 flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300';
+      return false
+        ? "bg-[#FAF6EE] text-transparent border border-[#DFD3C1] flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300"
+        : "bg-zinc-900/40 text-transparent border border-zinc-900/60 flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300";
     }
-    
+
     // Custom beautiful mapping matching modular systems
-    const baseClass = "flex items-center justify-center font-bold rounded-xl transition-all duration-300 font-mono shadow-inner border";
-    
-    if (isLight) {
+    const baseClass =
+      "flex items-center justify-center font-bold rounded-xl transition-all duration-300 font-mono shadow-inner border";
+
+    if (false) {
       switch (val) {
         case 2:
           return `${baseClass} bg-[#EFEADB] text-[#4A3C31] border-[#DFD3C1] text-xl`;
@@ -352,17 +378,16 @@ export default function Game2048({
   };
 
   return (
-    <div className={`w-full flex flex-col gap-5 select-none ${isLight ? 'text-[#4A3C31]' : 'text-zinc-300'}`}>
-      
+    <div
+      className={`w-full flex flex-col gap-5 select-none ${"text-zinc-300"}`}
+    >
       {/* Dynamic Sub-header */}
-      <div className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${
-        isLight ? 'border-[#E1D4C0]' : 'border-zinc-800/60'
-      }`}>
+      <div
+        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
+      >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
-            isLight ? 'bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]' : 'bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400'
-          }`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-zinc-400"}`}
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -370,7 +395,9 @@ export default function Game2048({
 
         <div className="flex items-center gap-1">
           <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
-          <span className={`text-[11px] font-mono tracking-wider block uppercase ${isLight ? 'text-[#8B5A2B]' : 'text-zinc-500'}`}>
+          <span
+            className={`text-[11px] font-mono tracking-wider block uppercase ${"text-zinc-500"}`}
+          >
             2048 合并微挑战
           </span>
         </div>
@@ -379,35 +406,58 @@ export default function Game2048({
       {/* Profile & Grid Status */}
       <div className="flex items-center justify-between px-2 py-1">
         <div className="flex flex-col">
-          <span className={`text-xs leading-none ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>当前挑战者</span>
-          <span className={`text-sm font-bold mt-1 font-mono tracking-wide ${isLight ? 'text-[#4A3C31]' : 'text-white'}`}>{userNickname}</span>
+          <span className={`text-xs leading-none ${"text-zinc-500"}`}>
+            当前挑战者
+          </span>
+          <span
+            className={`text-sm font-bold mt-1 font-mono tracking-wide ${"text-white"}`}
+          >
+            {userNickname}
+          </span>
         </div>
-        
+
         {/* Real-time score boards */}
         <div className="flex items-center gap-2">
-          <div className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${
-            isLight ? 'bg-[#FAF6EE] border-[#E1D4C0]' : 'bg-zinc-900/60 border border-zinc-800'
-          }`}>
-            <span className={`text-[9px] uppercase tracking-wider font-bold ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>分数</span>
-            <span className={`text-xs font-black font-mono leading-none mt-1 ${isLight ? 'text-[#8B5A2B]' : 'text-amber-500'}`}>{score}</span>
+          <div
+            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
+          >
+            <span
+              className={`text-[9px] uppercase tracking-wider font-bold ${"text-zinc-500"}`}
+            >
+              分数
+            </span>
+            <span
+              className={`text-xs font-black font-mono leading-none mt-1 ${"text-amber-500"}`}
+            >
+              {score}
+            </span>
           </div>
-          <div className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${
-            isLight ? 'bg-[#FAF6EE] border-[#E1D4C0]' : 'bg-zinc-900/60 border border-zinc-800'
-          }`}>
-            <span className={`text-[9px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>最佳 <Trophy size={8} className="text-[#8B5A2B] sm:text-amber-500" /></span>
-            <span className={`text-xs font-black font-mono leading-none mt-1 ${isLight ? 'text-[#4A3C31]' : 'text-white'}`}>{bestScore}</span>
+          <div
+            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
+          >
+            <span
+              className={`text-[9px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-zinc-500"}`}
+            >
+              最佳{" "}
+              <Trophy size={8} className="text-[#8B5A2B] sm:text-amber-500" />
+            </span>
+            <span
+              className={`text-xs font-black font-mono leading-none mt-1 ${"text-white"}`}
+            >
+              {bestScore}
+            </span>
           </div>
         </div>
       </div>
 
       {/* Main 4x4 grid board wrapper with dynamic transitions */}
-      <div className={`relative max-w-sm mx-auto w-full aspect-square p-2.5 rounded-2xl flex flex-col justify-center border ${
-        isLight ? 'bg-[#DFD3C1] border-[#E1D4C0]' : 'bg-zinc-950/80 border border-zinc-800'
-      }`}>
+      <div
+        className={`relative max-w-sm mx-auto w-full aspect-square p-2.5 rounded-2xl flex flex-col justify-center border ${"bg-zinc-950/80 border border-zinc-800"}`}
+      >
         <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
-          {board.map((row, r) => 
+          {board.map((row, r) =>
             row.map((val, c) => (
-              <div 
+              <div
                 key={`cell-${r}-${c}`}
                 className={`${getTileStyles(val)} aspect-square`}
               >
@@ -428,18 +478,21 @@ export default function Game2048({
         {/* Game Over overlay */}
         <AnimatePresence>
           {gameOver && (
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="absolute inset-0 rounded-2xl bg-black/90 backdrop-blur-md flex flex-col items-center justify-center p-6 text-center z-10"
             >
               <Trophy size={42} className="text-zinc-600 mb-3 animate-spin" />
-              <h3 className="text-lg font-black text-white uppercase tracking-wider">挑战终结 (Game Over)</h3>
+              <h3 className="text-lg font-black text-white uppercase tracking-wider">
+                挑战终结 (Game Over)
+              </h3>
               <p className="text-xs text-zinc-400 mt-2 max-w-[220px]">
-                没有格子可以合并了！本次游戏得分 <span className="text-amber-500 font-extrabold">{score}</span>
+                没有格子可以合并了！本次游戏得分{" "}
+                <span className="text-amber-500 font-extrabold">{score}</span>
               </p>
-              
+
               <button
                 onClick={resetGame}
                 className="mt-5 py-2.5 px-6 rounded-xl text-xs font-bold bg-[#8B5A2B] hover:bg-[#A06D3B] text-white active:scale-95 transition-all flex items-center gap-1.5 cursor-pointer shadow-md"
@@ -451,17 +504,21 @@ export default function Game2048({
           )}
 
           {won && !gameOver && (
-            <motion.div 
+            <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               className="absolute bottom-2 left-2 right-2 p-3.5 rounded-xl bg-gradient-to-r from-amber-600/20 to-emerald-600/20 border border-amber-500/30 backdrop-blur-sm shadow-xl flex items-center justify-between z-10"
             >
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest leading-none">传奇勋章</span>
-                <span className="text-xs text-white font-extrabold mt-1">🎉 冲刺达成 2048 方块！</span>
+                <span className="text-[10px] font-bold text-amber-500 uppercase tracking-widest leading-none">
+                  传奇勋章
+                </span>
+                <span className="text-xs text-white font-extrabold mt-1">
+                  🎉 冲刺达成 2048 方块！
+                </span>
               </div>
-              <button 
+              <button
                 onClick={() => setWon(false)}
                 className="px-2.5 py-1 rounded bg-[#3EB489]/10 text-[#3EB489] hover:bg-[#3EB489]/20 border border-[#3EB489]/30 text-[10px] font-extrabold active:scale-95 cursor-pointer transition-all"
               >
@@ -473,55 +530,52 @@ export default function Game2048({
       </div>
 
       {/* Swipe buttons for Mobile/iframe simulation */}
-      <div className={`max-w-[200px] mx-auto w-full flex flex-col gap-1 items-center p-2 rounded-xl border ${
-        isLight ? 'bg-[#FAF6EE] border-[#E1D4C0]' : 'bg-zinc-900/30 border border-zinc-800/40'
-      }`}>
-        <span className={`text-[9px] uppercase tracking-widest block font-bold mb-1 ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>方向虚拟手柄</span>
-        
+      <div
+        className={`max-w-[200px] mx-auto w-full flex flex-col gap-1 items-center p-2 rounded-xl border ${"bg-zinc-900/30 border border-zinc-800/40"}`}
+      >
+        <span
+          className={`text-[9px] uppercase tracking-widest block font-bold mb-1 ${"text-zinc-500"}`}
+        >
+          方向虚拟手柄
+        </span>
+
         <button
-          onClick={() => move('UP')}
+          onClick={() => move("UP")}
           disabled={gameOver}
-          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${
-            isLight ? 'bg-[#EFEADB] border-[#DFD3C1] text-[#4A3C31] hover:bg-[#E1D6BF]' : 'bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300'
-          }`}
+          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
         >
           <ArrowUp size={14} />
         </button>
         <div className="flex gap-4">
           <button
-            onClick={() => move('LEFT')}
+            onClick={() => move("LEFT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${
-              isLight ? 'bg-[#EFEADB] border-[#DFD3C1] text-[#4A3C31] hover:bg-[#E1D6BF]' : 'bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300'
-            }`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
           >
             <ArrowLeft size={14} />
           </button>
           <button
-            onClick={() => move('DOWN')}
+            onClick={() => move("DOWN")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${
-              isLight ? 'bg-[#EFEADB] border-[#DFD3C1] text-[#4A3C31] hover:bg-[#E1D6BF]' : 'bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300'
-            }`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
           >
             <ArrowDown size={14} />
           </button>
           <button
-            onClick={() => move('RIGHT')}
+            onClick={() => move("RIGHT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${
-              isLight ? 'bg-[#EFEADB] border-[#DFD3C1] text-[#4A3C31] hover:bg-[#E1D6BF]' : 'bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300'
-            }`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-zinc-300"}`}
           >
             <ArrowRightIcon size={14} />
           </button>
         </div>
-        
-        <p className={`text-[9px] text-center font-mono mt-2 tracking-wide leading-none ${isLight ? 'text-[#81745E]' : 'text-zinc-500'}`}>
+
+        <p
+          className={`text-[9px] text-center font-mono mt-2 tracking-wide leading-none ${"text-zinc-500"}`}
+        >
           键盘 WASD / 键盘方向键亦可操控
         </p>
       </div>
-
     </div>
   );
 }
