@@ -433,14 +433,14 @@ export default function Minesweeper({
     <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       {/* Sub-header Navigation row */}
       <div
-        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
+        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-theme"}`}
       >
         <button
           onClick={onGoBack}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
             false
               ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-805 hover:text-white text-secondary"
+              : "bg-zinc-800/60 border border-theme hover:bg-zinc-805 hover:text-white text-secondary"
           }`}
         >
           <ArrowLeft size={13} />
@@ -483,7 +483,7 @@ export default function Minesweeper({
                       : "bg-indigo-600 border-indigo-500 text-white shadow-[0_0_10px_rgba(99,102,241,0.25)]"
                     : false
                       ? "bg-[#EFEADB]/50 hover:bg-[#E1D6BF] text-[#6C5E53] border-[#DFD3C1]"
-                      : "bg-zinc-900/40 hover:bg-zinc-850 text-secondary border-zinc-800"
+                      : "bg-zinc-900/40 hover:bg-zinc-850 text-secondary border-theme"
                 }`}
               >
                 {diff === "easy"
@@ -500,7 +500,7 @@ export default function Minesweeper({
         <div className="flex items-center gap-2自适应 justify-end">
           {/* MINE COUNTER BOARD */}
           <div
-            className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
+            className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-theme"}`}
           >
             <span
               className={`text-[8px] uppercase tracking-wider font-bold ${"text-muted"}`}
@@ -520,7 +520,7 @@ export default function Minesweeper({
             className={`w-10 h-10 rounded-xl flex items-center justify-center text-lg active:scale-90 border transition-all cursor-pointer ${
               false
                 ? "bg-[#FAF6EE] border-[#E1D4C0] hover:bg-[#E1D6BF]"
-                : "bg-zinc-850 hover:bg-zinc-800 border-zinc-800 text-zinc-200"
+                : "bg-zinc-850 hover:bg-zinc-800 border-theme text-zinc-200"
             }`}
             title="重新洗牌 (再来一局)"
           >
@@ -529,7 +529,7 @@ export default function Minesweeper({
 
           {/* TIMER BOARD */}
           <div
-            className={`px-2.5 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
+            className={`px-2.5 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-theme"}`}
           >
             <span
               className={`text-[8px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-muted"}`}
@@ -552,7 +552,7 @@ export default function Minesweeper({
 
       {/* Main Grid Game board Wrapper */}
       <div
-        className={`relative max-w-lg mx-auto w-full p-2 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${"bg-zinc-950/80 border border-zinc-850"}`}
+        className={`relative max-w-lg mx-auto w-full p-2 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${"bg-zinc-950/80 border border-theme"}`}
       >
         {/* Dynamically styled Board layout */}
         <div
@@ -669,7 +669,7 @@ export default function Minesweeper({
                 </p>
 
                 {/* Score details banner */}
-                <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
+                <div className="bg-zinc-900 border border-theme px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                   <div>
                     <span className="text-[10px] text-muted block leading-none">
                       通关用时
@@ -761,7 +761,7 @@ export default function Minesweeper({
 
       {/* Touch device virtual tool / Left-click & Right-click simulate options */}
       <div
-        className={`max-w-[280px] mx-auto w-full flex flex-col gap-2 p-2.5 rounded-xl border ${"bg-zinc-900/40 border border-zinc-800/40"}`}
+        className={`max-w-[280px] mx-auto w-full flex flex-col gap-2 p-2.5 rounded-xl border ${"bg-zinc-900/40 border border-theme"}`}
       >
         <div className="flex justify-between items-center px-1">
           <span
@@ -816,7 +816,7 @@ export default function Minesweeper({
         {/* Dynamic usage guidance alerts */}
         {showGuide && (
           <div
-            className={`mt-1 p-2 rounded-lg border text-[10px] leading-normal flex flex-col gap-1 ${"bg-zinc-955/40 border border-zinc-900 text-secondary"}`}
+            className={`mt-1 p-2 rounded-lg border text-[10px] leading-normal flex flex-col gap-1 ${"bg-zinc-955/40 border border-theme text-secondary"}`}
           >
             <p>
               🎁 <strong className="text-indigo-400">首击：</strong>{" "}

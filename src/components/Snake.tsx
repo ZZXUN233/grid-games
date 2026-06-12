@@ -202,7 +202,7 @@ export default function Snake({
   }, [run, dead, onConsumeEntropy, spawn]);
 
   const tm = "text-secondary";
-  const bc = "border-zinc-800";
+  const bc = "border-theme";
 
   return (
     <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
@@ -211,7 +211,7 @@ export default function Snake({
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} /> <span>返回大厅</span>
         </button>
@@ -363,7 +363,7 @@ export default function Snake({
         </div>
         {guide && (
           <div
-            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-zinc-900 text-secondary"}`}
+            className={`mt-1.5 p-2 rounded-lg border text-[10px] leading-relaxed ${"bg-zinc-950/40 border-theme text-secondary"}`}
           >
             <p>
               🎮 <strong>操作：</strong> 方向键 / WASD 控制。支持输入缓冲，快速

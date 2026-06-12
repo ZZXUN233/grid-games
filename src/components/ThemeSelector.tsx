@@ -45,7 +45,7 @@ export default function ThemeSelector({
               className={`p-3 rounded-lg border text-left transition-all relative overflow-hidden flex items-center gap-3 group active:scale-[0.98] ${
                 isActive
                   ? "border-amber-500 bg-amber-500/5 shadow-md"
-                  : "border-zinc-800 bg-zinc-900/50 hover:bg-zinc-900 hover:border-zinc-700"
+                  : "border-theme bg-zinc-900/50 hover:bg-zinc-900 hover:border-theme"
               }`}
             >
               {/* Visual Swatch: dark dot + accent dot */}

@@ -167,7 +167,7 @@ export default function FeatureRequestPanel({
   const canSubmit = negentropy >= SUBMIT_COST;
 
   return (
-    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded-2xl p-4.5 w-full flex flex-col gap-3.5 shadow-xl select-none">
+    <div className="bg-zinc-900/40 border border-theme rounded-2xl p-4.5 w-full flex flex-col gap-3.5 shadow-xl select-none">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <div className="w-6.5 h-6.5 bg-amber-500/10 rounded-lg border border-amber-500/20 flex items-center justify-center text-amber-500">
@@ -183,7 +183,7 @@ export default function FeatureRequestPanel({
         </span>
       </div>
 
-      <div className="text-[10px] text-muted leading-relaxed bg-zinc-950/30 rounded-xl p-3 border border-zinc-800/20">
+      <div className="text-[10px] text-muted leading-relaxed bg-zinc-950/30 rounded-xl p-3 border border-theme">
         投票消耗需求标价 E；
         <strong className="text-amber-400">
           提交新需求消耗 {SUBMIT_COST} E
@@ -203,7 +203,7 @@ export default function FeatureRequestPanel({
           className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-[11px] font-bold transition-all cursor-pointer ${
             canSubmit
               ? "bg-amber-600/20 text-amber-400 border border-amber-500/30 hover:bg-amber-600/30 active:scale-95"
-              : "bg-zinc-900/30 text-zinc-600 border border-zinc-800/30 cursor-not-allowed"
+              : "bg-zinc-900/30 text-zinc-600 border border-theme cursor-not-allowed"
           }`}
         >
           <Plus size={12} />
@@ -237,7 +237,7 @@ export default function FeatureRequestPanel({
                   className={`px-2 py-0.5 rounded text-[9px] font-bold transition-all cursor-pointer ${
                     newType === t
                       ? "bg-amber-500/20 text-amber-400 border border-amber-500/30"
-                      : "bg-zinc-800/40 text-muted border border-zinc-700/30 hover:text-zinc-300"
+                      : "bg-zinc-800/40 text-muted border border-theme hover:text-zinc-300"
                   }`}
                 >
                   {TYPE_LABELS[t] || t}
@@ -255,7 +255,7 @@ export default function FeatureRequestPanel({
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="用一句话描述你的需求"
               maxLength={64}
-              className="w-full px-2.5 py-1.5 text-[11px] rounded-lg bg-zinc-900/80 border border-zinc-700/50 text-white placeholder-zinc-600 outline-none focus:border-amber-500/50 transition-all"
+              className="w-full px-2.5 py-1.5 text-[11px] rounded-lg bg-zinc-900/80 border border-theme text-white placeholder-zinc-600 outline-none focus:border-amber-500/50 transition-all"
             />
           </div>
 
@@ -269,7 +269,7 @@ export default function FeatureRequestPanel({
               onChange={(e) => setNewDesc(e.target.value)}
               placeholder="详细描述你的想法..."
               rows={2}
-              className="w-full px-2.5 py-1.5 text-[11px] rounded-lg bg-zinc-900/80 border border-zinc-700/50 text-white placeholder-zinc-600 outline-none focus:border-amber-500/50 transition-all resize-none"
+              className="w-full px-2.5 py-1.5 text-[11px] rounded-lg bg-zinc-900/80 border border-theme text-white placeholder-zinc-600 outline-none focus:border-amber-500/50 transition-all resize-none"
             />
           </div>
 
@@ -318,7 +318,7 @@ export default function FeatureRequestPanel({
             return (
               <div
                 key={feature.id}
-                className="bg-zinc-950/40 rounded-xl p-3 border border-zinc-800/20 hover:border-zinc-700/40 transition-all"
+                className="bg-zinc-950/40 rounded-xl p-3 border border-theme hover:border-theme transition-all"
               >
                 <div className="flex items-start justify-between gap-2">
                   <div className="flex-1 min-w-0">
@@ -334,7 +334,7 @@ export default function FeatureRequestPanel({
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between mt-2 pt-2 border-t border-zinc-800/20">
+                <div className="flex items-center justify-between mt-2 pt-2 border-t border-theme">
                   <div className="flex items-center gap-2 text-[10px]">
                     <span className="flex items-center gap-0.5 text-secondary">
                       <ThumbsUp size={10} />

@@ -369,7 +369,7 @@ export default function Leaderboard({
     return {
       emoji: "",
       cls: "text-muted font-mono font-bold",
-      border: "border-zinc-800/40 bg-zinc-900/10",
+      border: "border-theme bg-zinc-900/10",
     };
   };
 
@@ -397,7 +397,7 @@ export default function Leaderboard({
         <button
           onClick={() => setSyncCount((c) => c + 1)}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-1 text-xs rounded bg-white/5 border border-zinc-800 text-secondary hover:bg-white/10 hover:border-zinc-700 active:scale-95 transition-all self-start sm:self-center cursor-pointer"
+          className="flex items-center gap-1.5 px-3 py-1 text-xs rounded bg-white/5 border border-theme text-secondary hover:bg-white/10 hover:border-theme active:scale-95 transition-all self-start sm:self-center cursor-pointer"
         >
           <RefreshCw size={12} className={loading ? "animate-spin" : ""} />
           <span>{loading ? "同步中..." : "刷新排行"}</span>
@@ -405,7 +405,7 @@ export default function Leaderboard({
       </div>
 
       {/* Top-Level Tab: Entropy vs Games */}
-      <div className="grid grid-cols-2 p-1 rounded-xl bg-black/60 border border-zinc-900 text-xs gap-1 mb-5">
+      <div className="grid grid-cols-2 p-1 rounded-xl bg-black/60 border border-theme text-xs gap-1 mb-5">
         <button
           onClick={() => setLeaderboardMode("entropy")}
           className={`py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
@@ -544,7 +544,7 @@ export default function Leaderboard({
                   className={`px-2.5 py-1 text-[10px] rounded-lg font-bold transition-all cursor-pointer ${
                     selectedDifficulty === d.value
                       ? "bg-amber-500/15 text-amber-400 border border-amber-500/30"
-                      : "bg-zinc-900/40 text-muted border border-zinc-800 hover:text-zinc-300"
+                      : "bg-zinc-900/40 text-muted border border-theme hover:text-zinc-300"
                   }`}
                 >
                   {d.label}
@@ -571,7 +571,7 @@ export default function Leaderboard({
                     className={`flex items-center justify-between p-2.5 rounded-lg border text-xs transition-all ${
                       isSelf
                         ? "border-amber-500/50 bg-amber-500/5 shadow-sm"
-                        : `${badge.border} hover:bg-zinc-900/30 hover:border-zinc-800`
+                        : `${badge.border} hover:bg-zinc-900/30 hover:border-theme`
                     }`}
                   >
                     <div className="flex items-center gap-2 max-w-[65%]">

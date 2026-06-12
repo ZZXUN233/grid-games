@@ -593,7 +593,7 @@ export default function App() {
               className="w-full flex flex-col gap-4 mt-2"
             >
               {/* Header Bar */}
-              <div className="flex items-center justify-between flex-nowrap gap-2 pb-3.5 border-b border-theme/60 w-full px-1">
+              <div className="flex items-center justify-between flex-nowrap gap-2 pb-3.5 border-b border-theme w-full px-1">
                 <div className="flex items-center gap-2.5 min-w-0 shrink">
                   <div className="w-8.5 h-8.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/25 flex items-center justify-center text-[#3EB489] font-black text-base select-none shrink-0">
                     <Grid
@@ -615,7 +615,7 @@ export default function App() {
                 {/* Dark/light mode toggle */}
                 <button
                   onClick={() => setIsDarkMode((prev) => !prev)}
-                  className="p-2 rounded-xl bg-elevated/60 border border-theme/50 hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
+                  className="p-2 rounded-xl bg-elevated/60 border border-theme hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
                   title={isDarkMode ? "切换到浅色模式" : "切换到深色模式"}
                 >
                   {isDarkMode ? <Moon size={16} /> : <Sun size={16} />}
@@ -625,7 +625,7 @@ export default function App() {
                 <button
                   id="mobile-drawer-trigger"
                   onClick={() => setIsDrawerOpen(true)}
-                  className="p-2 rounded-xl bg-elevated/60 border border-theme/50 hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
+                  className="p-2 rounded-xl bg-elevated/60 border border-theme hover:bg-elevated hover:text-amber-500 active:scale-95 transition-all cursor-pointer shrink-0 text-theme group"
                   title="大厅及主题配置"
                 >
                   <Settings
@@ -654,7 +654,7 @@ export default function App() {
                 className="space-y-5"
               >
                 {/* 🌌 对抗熵增 - Entropy Dashboard */}
-                <div className="bg-elevated/40 border border-theme/80 rounded-2xl p-4.5 max-w-2xl mx-auto flex flex-col gap-3.5 shadow-xl select-none">
+                <div className="bg-elevated/40 border border-theme rounded-2xl p-4.5 max-w-2xl mx-auto flex flex-col gap-3.5 shadow-xl select-none">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2">
                       <div className="w-6.5 h-6.5 bg-[#3EB489]/10 rounded-lg border border-[#3EB489]/20 flex items-center justify-center text-[#3EB489]">
@@ -717,7 +717,7 @@ export default function App() {
                       </span>
                     </div>
 
-                    <div className="h-2 rounded-full bg-elevated/60 overflow-hidden relative border border-zinc-950">
+                    <div className="h-2 rounded-full bg-elevated/60 overflow-hidden relative border border-theme">
                       <div
                         className="h-full bg-gradient-to-r from-amber-500 to-rose-500 transition-all duration-500"
                         style={{
@@ -728,8 +728,8 @@ export default function App() {
                   </div>
 
                   {/* Detail Row: Negentropy balance + Total generated */}
-                  <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium pt-3.5 border-t border-theme/40 text-secondary">
-                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme/20 flex flex-col gap-0.5">
+                  <div className="grid grid-cols-2 gap-2.5 text-[11px] font-medium pt-3.5 border-t border-theme text-secondary">
+                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme flex flex-col gap-0.5">
                       <span className="text-[9px] text-muted block">
                         负熵余额
                       </span>
@@ -751,7 +751,7 @@ export default function App() {
                       </span>
                     </div>
 
-                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme/20 flex flex-col gap-0.5">
+                    <div className="bg-card/40 p-2.5 rounded-xl border border-theme flex flex-col gap-0.5">
                       <span className="text-[9px] text-muted block">
                         累计产出负熵
                       </span>
@@ -792,7 +792,7 @@ export default function App() {
                         className={`group relative rounded-2xl p-3 flex flex-col justify-between border select-none transition-all duration-300 min-h-[135px] sm:min-h-[145px] md:min-h-[155px] ${
                           isPlayable
                             ? `bg-gradient-to-b ${slot.bgClass} cursor-pointer active:scale-95 shadow-lg shadow-black/30`
-                            : "bg-elevated/15 border-zinc-900/40 opacity-40 cursor-not-allowed"
+                            : "bg-elevated/15 border-theme opacity-40 cursor-not-allowed"
                         }`}
                       >
                         {/* Status tag & alignment layout row */}
@@ -823,7 +823,7 @@ export default function App() {
                                   e.stopPropagation();
                                   setActiveSettingsGameId(slot.id);
                                 }}
-                                className="p-1.5 rounded-md bg-card/60 hover:bg-elevated hover:text-emerald-400 text-secondary border border-theme/60 transition-all cursor-pointer relative z-20"
+                                className="p-1.5 rounded-md bg-card/60 hover:bg-elevated hover:text-emerald-400 text-secondary border border-theme transition-all cursor-pointer relative z-20"
                                 title="参数与规格配置"
                               >
                                 <Settings
@@ -866,7 +866,7 @@ export default function App() {
                 </div>
 
                 {/* Quick Player Profile card under the portal */}
-                <div className="flex items-center justify-between px-4 py-3 bg-elevated/30 rounded-xl border border-theme/50 max-w-lg mx-auto">
+                <div className="flex items-center justify-between px-4 py-3 bg-elevated/30 rounded-xl border border-theme max-w-lg mx-auto">
                   <div className="flex items-center gap-2 min-w-0">
                     <span className="text-base select-none shrink-0">
                       {user.avatarEmoji || "🕹️"}
@@ -1079,7 +1079,7 @@ export default function App() {
             <div
               className={`w-full max-w-2xl rounded-2xl p-4.5 card-theme transition-colors duration-300`}
             >
-              <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-theme/60">
+              <div className="flex items-center gap-2 mb-3.5 pb-2.5 border-b border-theme">
                 <Trophy size={15} className="text-amber-500 animate-bounce" />
                 <h4 className="text-xs font-extrabold text-theme uppercase tracking-wider">
                   格子熵对抗排行荣誉碑 (每日解熵与高速格盘)
@@ -1145,7 +1145,7 @@ export default function App() {
                 className={`fixed top-0 right-0 bottom-0 w-[88%] max-w-[400px] z-50 p-5 overflow-y-auto bg-theme border-l border-theme shadow-2xl flex flex-col select-none`}
               >
                 {/* Header of Menu */}
-                <div className="flex items-center justify-between pb-4 mb-5 border-b border-theme/40">
+                <div className="flex items-center justify-between pb-4 mb-5 border-b border-theme">
                   <div className="flex items-center gap-2">
                     <Trophy size={16} className="text-[#3EB489]" />
                     <span className="text-sm font-extrabold text-theme font-sans tracking-wide">
@@ -1154,7 +1154,7 @@ export default function App() {
                   </div>
                   <button
                     onClick={() => setIsDrawerOpen(false)}
-                    className="p-1 px-2.5 rounded-lg bg-elevated/50 text-secondary hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer font-bold border border-theme/40"
+                    className="p-1 px-2.5 rounded-lg bg-elevated/50 text-secondary hover:text-white transition-all text-xs flex items-center gap-1 cursor-pointer font-bold border border-theme"
                   >
                     <X size={14} />
                     <span>收起</span>
@@ -1170,7 +1170,7 @@ export default function App() {
 
                   {/* User ID + Share */}
                   {user.userId && (
-                    <div className="space-y-3 bg-elevated/40 rounded-xl p-3.5 border border-theme/50">
+                    <div className="space-y-3 bg-elevated/40 rounded-xl p-3.5 border border-theme">
                       <span className="text-[10px] text-muted uppercase tracking-widest block font-bold">
                         玩家身份标识
                       </span>
@@ -1310,7 +1310,7 @@ export default function App() {
                 className={`fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[92%] max-w-[420px] z-50 rounded-2xl border border-theme bg-card p-5 shadow-2xl select-none bg-theme`}
               >
                 {/* Header */}
-                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-theme/60">
+                <div className="flex items-center justify-between pb-3.5 mb-4 border-b border-theme">
                   <div className="flex items-center gap-2">
                     <Settings
                       className="text-emerald-400 animate-spin-slow"
@@ -1603,7 +1603,7 @@ export default function App() {
                 </div>
 
                 {/* Footer Save button */}
-                <div className="mt-6 pt-3 border-t border-theme/40 flex justify-end">
+                <div className="mt-6 pt-3 border-t border-theme flex justify-end">
                   <button
                     onClick={() => setActiveSettingsGameId(null)}
                     className="py-1.5 px-4 rounded-lg text-xs font-bold bg-[#3EB489] hover:bg-[#3d9f7c] text-zinc-950 active:scale-95 transition-all shadow-md cursor-pointer flex items-center gap-1"
@@ -1653,7 +1653,7 @@ export default function App() {
       {/* ========================================================= */}
       {/* PERSISTENT MINIMAL FOOTER */}
       {/* ========================================================= */}
-      <footer className="w-full text-center py-4 mt-8 border-t border-zinc-900 text-[10px] text-zinc-650 block leading-tight">
+      <footer className="w-full text-center py-4 mt-8 border-t border-theme text-[10px] text-zinc-650 block leading-tight">
         <p className="select-text">
           Grid Game Box Diagnostic Hub © 矩阵网格游戏实验室 · 筑梦几何机能集
         </p>

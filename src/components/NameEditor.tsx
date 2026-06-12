@@ -106,7 +106,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
   const inputBase = `w-full px-2.5 py-1.5 text-xs rounded-lg border bg-transparent transition-all outline-none ${
     false
       ? "border-[#DFD3C1] text-[#4A3C31] focus:border-[#8B5A2B]"
-      : "border-zinc-700 text-white focus:border-emerald-500"
+      : "border-theme text-white focus:border-emerald-500"
   }`;
 
   return (
@@ -154,7 +154,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
                     type="text"
                     value={nicknameInput}
                     onChange={(e) => setNicknameInput(e.target.value)}
-                    className="flex-1 px-2.5 py-1 text-sm rounded border border-zinc-700 bg-zinc-900 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
+                    className="flex-1 px-2.5 py-1 text-sm rounded border border-theme bg-zinc-900 text-white focus:outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500"
                     maxLength={16}
                     autoFocus
                     onKeyDown={(e) => e.key === "Enter" && handleSaveNickname()}
@@ -263,7 +263,7 @@ export default function NameEditor({ user, onChange, theme }: NameEditorProps) {
       </AnimatePresence>
 
       {/* Password Change Toggle */}
-      <div className="mt-4 pt-3 border-t border-zinc-800/30">
+      <div className="mt-4 pt-3 border-t border-theme">
         <button
           onClick={() => {
             setShowPasswordChanger(!showPasswordChanger);

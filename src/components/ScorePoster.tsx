@@ -326,10 +326,10 @@ export default function ScorePoster({
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.95 }}
-        className="w-full max-w-lg bg-[#161619] border border-zinc-800 rounded-2xl overflow-hidden shadow-2xl relative"
+        className="w-full max-w-lg bg-[#161619] border border-theme rounded-2xl overflow-hidden shadow-2xl relative"
       >
         {/* Main Header inside sharing card */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-800 bg-[#1D1D22]">
+        <div className="flex items-center justify-between p-4 border-b border-theme bg-[#1D1D22]">
           <div className="flex items-center gap-2">
             <Award className="text-amber-500" size={18} />
             <span className="font-bold text-white text-sm">分享挑战成绩单</span>
@@ -337,7 +337,7 @@ export default function ScorePoster({
           <button
             id="close-poster-btn"
             onClick={onClose}
-            className="text-secondary hover:text-zinc-200 py-1 px-2.5 rounded-lg bg-zinc-800/40 hover:bg-zinc-800/80 border border-zinc-700/30 transition-all text-xs flex items-center gap-1 cursor-pointer font-medium"
+            className="text-secondary hover:text-zinc-200 py-1 px-2.5 rounded-lg bg-zinc-800/40 hover:bg-zinc-800/80 border border-theme transition-all text-xs flex items-center gap-1 cursor-pointer font-medium"
           >
             <span>返回大厅</span>
             <span className="font-bold">✕</span>
@@ -376,7 +376,7 @@ export default function ScorePoster({
             </span>
 
             {/* Middle scoreboard */}
-            <div className="my-5 py-3.5 px-6 rounded-lg bg-zinc-950/85 border border-zinc-900 w-full max-w-xs">
+            <div className="my-5 py-3.5 px-6 rounded-lg bg-zinc-950/85 border border-theme w-full max-w-xs">
               <span className="text-xs text-secondary font-medium block">
                 {score.mode === "level"
                   ? "闯关突破"
@@ -413,7 +413,7 @@ export default function ScorePoster({
           <canvas ref={canvasRef} className="hidden" />
 
           {/* Social Media Copy-Paste Card Text */}
-          <div className="w-full mt-4 bg-zinc-900/60 border border-zinc-800 p-3 rounded-xl text-left">
+          <div className="w-full mt-4 bg-zinc-900/60 border border-theme p-3 rounded-xl text-left">
             <span className="text-[10px] text-muted font-bold uppercase tracking-wider block mb-1">
               文字版格式 (适于粘贴微信/微博)
             </span>
@@ -430,7 +430,7 @@ export default function ScorePoster({
             <button
               id="copy-text-btn"
               onClick={handleCopyText}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-semibold rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-100 transition-colors active:scale-95 border border-zinc-700/50 cursor-pointer"
+              className="flex items-center justify-center gap-1.5 py-2.5 px-4 text-xs font-semibold rounded-xl bg-zinc-800 hover:bg-zinc-700 text-zinc-100 transition-colors active:scale-95 border border-theme cursor-pointer"
             >
               {copied ? (
                 <>

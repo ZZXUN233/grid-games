@@ -558,11 +558,11 @@ export default function Sudoku({
     >
       {/* Sub Header */}
       <div
-        className={`flex flex-row items-center justify-between pb-3.5 border-b w-full px-1 gap-2 ${"border-zinc-800/60"}`}
+        className={`flex flex-row items-center justify-between pb-3.5 border-b w-full px-1 gap-2 ${"border-theme"}`}
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95 shrink-0 ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-theme"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all text-xs font-semibold cursor-pointer active:scale-95 shrink-0 ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-theme"}`}
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -583,10 +583,10 @@ export default function Sudoku({
 
       {/* Control panel & difficulty options */}
       <div
-        className={`grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-xl border ${"bg-zinc-900/35 border-zinc-850/40"}`}
+        className={`grid grid-cols-1 md:grid-cols-2 gap-3 p-3 rounded-xl border ${"bg-zinc-900/35 border-theme"}`}
       >
         <div
-          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border ${"bg-zinc-950/25 border border-zinc-900/65"}`}
+          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border ${"bg-zinc-950/25 border border-theme"}`}
         >
           <span
             className={`text-xs font-bold font-mono tracking-wide shrink-0 ${"text-secondary"}`}
@@ -617,7 +617,7 @@ export default function Sudoku({
         </div>
 
         <div
-          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border text-xs font-mono ${"bg-zinc-950/25 border border-zinc-900/65 text-secondary font-mono"}`}
+          className={`flex items-center justify-between gap-2.5 p-2 rounded-lg border text-xs font-mono ${"bg-zinc-950/25 border border-theme text-secondary font-mono"}`}
         >
           <div className="flex items-center gap-2">
             <span>实时检查冲突:</span>
@@ -626,7 +626,7 @@ export default function Sudoku({
               className={`p-1 px-2 text-[10px] rounded font-bold transition-all cursor-pointer ${
                 autoHighlightErrors
                   ? "bg-red-500/15 text-red-500 border border-red-500/30"
-                  : "bg-zinc-900 text-muted border border-zinc-800"
+                  : "bg-zinc-900 text-muted border border-theme"
               }`}
             >
               {autoHighlightErrors ? "已开启" : "已关闭"}
@@ -680,7 +680,7 @@ export default function Sudoku({
                 </p>
 
                 {/* Reward Indicator */}
-                <div className="mt-4 px-4 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 text-xs font-bold text-theme flex items-center gap-2">
+                <div className="mt-4 px-4 py-1.5 rounded-lg bg-zinc-900 border border-theme text-xs font-bold text-theme flex items-center gap-2">
                   <Zap className="text-amber-400 animate-pulse" size={13} />
                   <span>
                     释放负熵 -
@@ -713,7 +713,7 @@ export default function Sudoku({
 
           {/* 9x9 Grid Layout */}
           <div
-            className={`grid grid-cols-9 gap-px p-[3px] rounded-xl overflow-hidden shadow-2xl relative border w-full aspect-square ${"bg-zinc-850 border-zinc-800"}`}
+            className={`grid grid-cols-9 gap-px p-[3px] rounded-xl overflow-hidden shadow-2xl relative border w-full aspect-square ${"bg-zinc-850 border-theme"}`}
           >
             {board.map((row, r) =>
               row.map((cell, c) => {
@@ -783,7 +783,7 @@ export default function Sudoku({
         <div className="w-full max-w-[255px] sm:max-w-[275px] flex flex-col gap-2 scale-95 sm:scale-100 origin-top">
           {/* Header Stats directly inside controls */}
           <div
-            className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border ${"bg-zinc-900/60 border border-zinc-800/80"}`}
+            className={`flex items-center justify-between px-2.5 py-1.5 rounded-xl border ${"bg-zinc-900/60 border border-theme"}`}
           >
             <div
               className={`flex items-center gap-1.5 font-mono text-xs ${"text-muted"}`}
@@ -799,7 +799,7 @@ export default function Sudoku({
               <button
                 onClick={handleUndo}
                 disabled={history.length === 0}
-                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ${"bg-zinc-950 text-secondary hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
+                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none ${"bg-zinc-950 text-secondary hover:text-white border-theme hover:bg-zinc-800"}`}
                 title="撤销上一步操作"
               >
                 <RotateCcw size={13} />
@@ -812,7 +812,7 @@ export default function Sudoku({
                   (selectedCell &&
                     board[selectedCell.r][selectedCell.c].original)
                 }
-                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 text-[10px] font-bold ${"bg-zinc-950 text-zinc-405 hover:text-amber-300 border-zinc-850 hover:bg-zinc-800"}`}
+                className={`p-1.5 rounded border transition-all cursor-pointer disabled:opacity-30 disabled:pointer-events-none flex items-center gap-1 text-[10px] font-bold ${"bg-zinc-950 text-zinc-405 hover:text-amber-300 border-theme hover:bg-zinc-800"}`}
                 title="揭晓本单元格正确数值 (+15秒罚时)"
               >
                 <HelpCircle size={12} />
@@ -821,7 +821,7 @@ export default function Sudoku({
 
               <button
                 onClick={() => initGame(difficulty)}
-                className={`p-1.5 rounded border transition-all cursor-pointer ${"bg-zinc-950 text-secondary hover:text-white border-zinc-850 hover:bg-zinc-800"}`}
+                className={`p-1.5 rounded border transition-all cursor-pointer ${"bg-zinc-950 text-secondary hover:text-white border-theme hover:bg-zinc-800"}`}
                 title="完全重新加载本局"
               >
                 <RefreshCw size={13} />
@@ -835,7 +835,7 @@ export default function Sudoku({
             className={`w-full py-2 px-4 rounded-xl border font-bold flex items-center justify-between text-xs transition-all cursor-pointer ${
               notesMode
                 ? "bg-amber-500/20 border-amber-500/80 text-amber-303 shadow-md ring-1 ring-amber-500/30"
-                : "bg-zinc-900/40 border-zinc-800 text-secondary hover:border-zinc-700/80"
+                : "bg-zinc-900/40 border-theme text-secondary hover:border-theme"
             }`}
           >
             <div className="flex items-center gap-2">
@@ -866,7 +866,7 @@ export default function Sudoku({
                   className={`py-2 px-1 hover:scale-105 active:scale-95 rounded-xl font-bold font-mono text-base sm:text-lg transition-all cursor-pointer shadow flex flex-col items-center justify-center relative group border ${
                     false
                       ? "bg-[#EFEADB] hover:bg-[#E1D6BF] border-[#DFD3C1] text-[#4F4639]"
-                      : "bg-zinc-900/90 border border-zinc-800 text-white hover:bg-zinc-800 hover:text-emerald-400"
+                      : "bg-zinc-900/90 border border-theme text-white hover:bg-zinc-800 hover:text-emerald-400"
                   }`}
                 >
                   <span>{num}</span>
@@ -889,7 +889,7 @@ export default function Sudoku({
           </div>
 
           <div
-            className={`mt-1 p-2.5 rounded-lg border text-[10px] leading-normal flex items-start gap-1.5 ${"bg-zinc-955/40 border border-zinc-900 text-muted"}`}
+            className={`mt-1 p-2.5 rounded-lg border text-[10px] leading-normal flex items-start gap-1.5 ${"bg-zinc-955/40 border border-theme text-muted"}`}
           >
             <AlertTriangle
               size={13}

@@ -407,10 +407,10 @@ export default function Gomoku({
   return (
     <div className="w-full flex flex-col gap-4 select-none text-theme">
       {/* Sub-Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-zinc-800/60 w-full px-1">
+      <div className="flex items-center justify-between pb-3.5 border-b border-theme w-full px-1">
         <button
           onClick={onGoBack}
-          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary transition-all text-xs font-semibold cursor-pointer active:scale-95"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary transition-all text-xs font-semibold cursor-pointer active:scale-95"
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -431,9 +431,9 @@ export default function Gomoku({
       </div>
 
       {/* Dynamic Game-settings Panel directly inside Go Interface */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-zinc-900/35 border border-zinc-805/40 p-3 rounded-xl">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 bg-zinc-900/35 border border-theme p-3 rounded-xl">
         {/* Row 1: Board specifications choice */}
-        <div className="flex items-center justify-between gap-2.5 bg-zinc-950/25 p-2 rounded-lg border border-zinc-900/65">
+        <div className="flex items-center justify-between gap-2.5 bg-zinc-950/25 p-2 rounded-lg border border-theme">
           <span className="text-xs font-bold text-secondary font-mono tracking-wide shrink-0">
             棋盘规格:
           </span>
@@ -455,7 +455,7 @@ export default function Gomoku({
         </div>
 
         {/* Row 2: Master difficulty settings */}
-        <div className="flex items-center justify-between gap-2.5 bg-zinc-950/25 p-2 rounded-lg border border-zinc-900/65">
+        <div className="flex items-center justify-between gap-2.5 bg-zinc-950/25 p-2 rounded-lg border border-theme">
           <span className="text-xs font-bold text-secondary font-mono tracking-wide shrink-0">
             对手智商:
           </span>
@@ -484,7 +484,7 @@ export default function Gomoku({
       </div>
 
       {/* Configuration Switches */}
-      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-zinc-900/40 p-3 rounded-xl border border-zinc-800/60">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-zinc-900/40 p-3 rounded-xl border border-theme">
         {/* Game Mode Pickers */}
         <div className="flex items-center gap-2">
           <button
@@ -525,10 +525,10 @@ export default function Gomoku({
 
             <div className="flex items-center gap-1.5">
               <div
-                className={`w-3.5 h-3.5 rounded-full border border-zinc-750 shadow-sm ${
+                className={`w-3.5 h-3.5 rounded-full border border-theme shadow-sm ${
                   currentPlayer === "black"
-                    ? "bg-zinc-950 text-white border-zinc-850"
-                    : "bg-white text-zinc-950 border-zinc-300"
+                    ? "bg-zinc-950 text-white border-theme"
+                    : "bg-white text-zinc-950 border-theme"
                 }`}
               />
               <span className="text-xs font-bold text-theme font-mono">
@@ -543,7 +543,7 @@ export default function Gomoku({
 
           <button
             onClick={() => resetGame()}
-            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-750 border border-zinc-700/40 text-secondary hover:text-white transition-all cursor-pointer"
+            className="p-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-750 border border-theme text-secondary hover:text-white transition-all cursor-pointer"
             title="重开棋局"
           >
             <RefreshCw size={12} />
@@ -659,7 +659,7 @@ export default function Gomoku({
                   !winner &&
                   !(currentPlayer === "white" && gameMode === "vs-bot") && (
                     <div
-                      className={`absolute select-none pointer-events-none rounded-full opacity-0 group-hover:opacity-35 border border-dashed border-zinc-950 ${hoverSizeClass} ${
+                      className={`absolute select-none pointer-events-none rounded-full opacity-0 group-hover:opacity-35 border border-dashed border-theme ${hoverSizeClass} ${
                         currentPlayer === "black" ? "bg-zinc-950" : "bg-white"
                       }`}
                     />
@@ -675,8 +675,8 @@ export default function Gomoku({
                     transition={{ type: "spring", stiffness: 450, damping: 20 }}
                     className={`absolute rounded-full flex items-center justify-center shadow-md select-none ring-1 relative ${stoneSizeClass} ${
                       val === "black"
-                        ? "bg-gradient-to-br from-zinc-800 to-zinc-950 text-white ring-zinc-900/60 border border-zinc-900"
-                        : "bg-gradient-to-br from-white to-zinc-150 text-zinc-900 ring-zinc-300 border border-zinc-100/90"
+                        ? "bg-gradient-to-br from-zinc-800 to-zinc-950 text-white ring-zinc-900/60 border border-theme"
+                        : "bg-gradient-to-br from-white to-zinc-150 text-zinc-900 ring-zinc-300 border border-theme"
                     }`}
                   >
                     {/* Win pulsated marker highlight */}
@@ -760,7 +760,7 @@ export default function Gomoku({
       </div>
 
       {/* Guide text */}
-      <div className="bg-zinc-900/30 p-3 rounded-lg border border-zinc-800/40 text-[11px] text-muted leading-relaxed text-center font-mono select-text">
+      <div className="bg-zinc-900/30 p-3 rounded-lg border border-theme text-[11px] text-muted leading-relaxed text-center font-mono select-text">
         💡 五子棋规则：黑先白后，双方轮流落子，先在横、竖、斜任意方向连成连续 5
         颗同色棋子者胜。消解越大棋盘规格或更高对手智商将获得更多负熵。
       </div>

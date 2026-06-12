@@ -312,7 +312,7 @@ export default function Game2048({
     if (val === 0) {
       return false
         ? "bg-[#FAF6EE] text-transparent border border-[#DFD3C1] flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300"
-        : "bg-zinc-900/40 text-transparent border border-zinc-900/60 flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300";
+        : "bg-zinc-900/40 text-transparent border border-theme flex items-center justify-center rounded-xl font-bold font-mono transition-all duration-300";
     }
 
     // Custom beautiful mapping matching modular systems
@@ -349,9 +349,9 @@ export default function Game2048({
     } else {
       switch (val) {
         case 2:
-          return `${baseClass} bg-zinc-800 text-zinc-100 border-zinc-700 text-xl`;
+          return `${baseClass} bg-zinc-800 text-zinc-100 border-theme text-xl`;
         case 4:
-          return `${baseClass} bg-zinc-700/80 text-zinc-100 border-zinc-600/80 text-xl`;
+          return `${baseClass} bg-zinc-700/80 text-zinc-100 border-theme text-xl`;
         case 8:
           return `${baseClass} bg-amber-955/40 text-amber-500 border-amber-500/25 text-xl font-extrabold animate-pulse`;
         case 16:
@@ -381,11 +381,11 @@ export default function Game2048({
     <div className={`w-full flex flex-col gap-5 select-none ${"text-theme"}`}>
       {/* Dynamic Sub-header */}
       <div
-        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
+        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-theme"}`}
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} />
           <span>返回大厅</span>
@@ -417,7 +417,7 @@ export default function Game2048({
         {/* Real-time score boards */}
         <div className="flex items-center gap-2">
           <div
-            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
+            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-theme"}`}
           >
             <span
               className={`text-[9px] uppercase tracking-wider font-bold ${"text-muted"}`}
@@ -431,7 +431,7 @@ export default function Game2048({
             </span>
           </div>
           <div
-            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-zinc-800"}`}
+            className={`px-2.5 py-1.5 rounded-lg flex flex-col items-center min-w-[64px] border ${"bg-zinc-900/60 border border-theme"}`}
           >
             <span
               className={`text-[9px] uppercase tracking-wider font-bold flex items-center gap-0.5 ${"text-muted"}`}
@@ -450,7 +450,7 @@ export default function Game2048({
 
       {/* Main 4x4 grid board wrapper with dynamic transitions */}
       <div
-        className={`relative max-w-sm mx-auto w-full aspect-square p-2.5 rounded-2xl flex flex-col justify-center border ${"bg-zinc-950/80 border border-zinc-800"}`}
+        className={`relative max-w-sm mx-auto w-full aspect-square p-2.5 rounded-2xl flex flex-col justify-center border ${"bg-zinc-950/80 border border-theme"}`}
       >
         <div className="grid grid-cols-4 grid-rows-4 gap-2 w-full h-full">
           {board.map((row, r) =>
@@ -529,7 +529,7 @@ export default function Game2048({
 
       {/* Swipe buttons for Mobile/iframe simulation */}
       <div
-        className={`max-w-[200px] mx-auto w-full flex flex-col gap-1 items-center p-2 rounded-xl border ${"bg-zinc-900/30 border border-zinc-800/40"}`}
+        className={`max-w-[200px] mx-auto w-full flex flex-col gap-1 items-center p-2 rounded-xl border ${"bg-zinc-900/30 border border-theme"}`}
       >
         <span
           className={`text-[9px] uppercase tracking-widest block font-bold mb-1 ${"text-muted"}`}
@@ -540,7 +540,7 @@ export default function Game2048({
         <button
           onClick={() => move("UP")}
           disabled={gameOver}
-          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
+          className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-theme text-theme"}`}
         >
           <ArrowUp size={14} />
         </button>
@@ -548,21 +548,21 @@ export default function Game2048({
           <button
             onClick={() => move("LEFT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-theme text-theme"}`}
           >
             <ArrowLeft size={14} />
           </button>
           <button
             onClick={() => move("DOWN")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-theme text-theme"}`}
           >
             <ArrowDown size={14} />
           </button>
           <button
             onClick={() => move("RIGHT")}
             disabled={gameOver}
-            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-zinc-750/50 text-theme"}`}
+            className={`w-10 h-10 rounded-lg flex items-center justify-center active:scale-90 transition-all cursor-pointer border ${"bg-zinc-850 hover:bg-zinc-800 border-theme text-theme"}`}
           >
             <ArrowRightIcon size={14} />
           </button>

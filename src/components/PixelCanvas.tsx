@@ -145,7 +145,7 @@ export default function PixelCanvas({
   }, [pixels]);
 
   const tm = "text-secondary";
-  const bc = "border-zinc-800";
+  const bc = "border-theme";
   const bgc = "bg-zinc-900/40";
 
   const toolBtn = (t: "pen" | "eraser" | "bucket", icon: React.ReactNode) => (
@@ -164,7 +164,7 @@ export default function PixelCanvas({
       >
         <button
           onClick={onGoBack}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${"bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary"}`}
         >
           <ArrowLeft size={13} /> <span>返回大厅</span>
         </button>

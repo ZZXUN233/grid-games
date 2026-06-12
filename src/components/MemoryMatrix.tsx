@@ -369,7 +369,7 @@ export default function MemoryMatrix({
       }
       return false
         ? "bg-[#EFEADB] border-[#DFD3C1]"
-        : "bg-zinc-900/60 border-zinc-800";
+        : "bg-zinc-900/60 border-theme";
     }
 
     // Recall phase or result
@@ -396,21 +396,21 @@ export default function MemoryMatrix({
     // Default unselected
     return false
       ? "bg-[#EFEADB] hover:bg-[#E1D6BF] border-[#DFD3C1]"
-      : "bg-zinc-900/60 hover:bg-zinc-800/80 border-zinc-800";
+      : "bg-zinc-900/60 hover:bg-zinc-800/80 border-theme";
   };
 
   return (
     <div className={`w-full flex flex-col gap-4 select-none ${"text-theme"}`}>
       {/* Sub-header Navigation row */}
       <div
-        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-zinc-800/60"}`}
+        className={`flex items-center justify-between pb-3.5 border-b w-full px-1 ${"border-theme"}`}
       >
         <button
           onClick={onGoBack}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer active:scale-95 transition-all ${
             false
               ? "bg-[#EFEADB] hover:bg-[#E1D6BF] text-[#4A3C31] border border-[#DFD3C1]"
-              : "bg-zinc-800/60 border border-zinc-700/50 hover:bg-zinc-800 hover:text-white text-secondary"
+              : "bg-zinc-800/60 border border-theme hover:bg-zinc-800 hover:text-white text-secondary"
           }`}
         >
           <ArrowLeft size={13} />
@@ -448,7 +448,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
-                  : "bg-zinc-900/60 border-zinc-800 text-theme"
+                  : "bg-zinc-900/60 border-theme text-theme"
               }`}
             >
               <Target size={10} />
@@ -459,7 +459,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#8B5A2B]"
-                  : "bg-zinc-900/60 border-zinc-800 text-theme"
+                  : "bg-zinc-900/60 border-theme text-theme"
               }`}
             >
               <Layers size={10} />
@@ -476,7 +476,7 @@ export default function MemoryMatrix({
                     : "bg-emerald-900/30 border-emerald-700/50 text-emerald-400"
                   : false
                     ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
-                    : "bg-zinc-900/60 border-zinc-800 text-secondary"
+                    : "bg-zinc-900/60 border-theme text-secondary"
               }`}
             >
               <Zap size={10} className={streak >= 2 ? "animate-pulse" : ""} />
@@ -487,7 +487,7 @@ export default function MemoryMatrix({
               className={`px-2.5 py-1 rounded-lg border text-[10px] font-black tracking-wide flex items-center gap-1 ${
                 false
                   ? "bg-[#FAF6EE] border-[#E1D4C0] text-[#6C5E53]"
-                  : "bg-zinc-900/60 border-zinc-800 text-secondary"
+                  : "bg-zinc-900/60 border-theme text-secondary"
               }`}
             >
               <Star size={10} />
@@ -498,7 +498,7 @@ export default function MemoryMatrix({
 
         {/* Right - Timer */}
         <div
-          className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-zinc-800"}`}
+          className={`px-3 py-1.5 rounded-xl border flex flex-col items-center min-w-[70px] ${"bg-zinc-900/60 border border-theme"}`}
         >
           <span
             className={`text-[8px] uppercase tracking-wider font-bold ${"text-muted"}`}
@@ -515,7 +515,7 @@ export default function MemoryMatrix({
 
       {/* Main Game Board Wrapper */}
       <div
-        className={`relative max-w-md mx-auto w-full p-3 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${"bg-zinc-950/80 border border-zinc-800/60"}`}
+        className={`relative max-w-md mx-auto w-full p-3 rounded-2xl flex flex-col justify-center border transition-all duration-300 ${"bg-zinc-950/80 border border-theme"}`}
       >
         {/* Phase indicator */}
         <div className="flex items-center justify-between px-1 mb-2.5">
@@ -773,7 +773,7 @@ export default function MemoryMatrix({
                     </p>
 
                     {/* Score details */}
-                    <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
+                    <div className="bg-zinc-900 border border-theme px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
                         <span className="text-[10px] text-muted block leading-none">
                           回忆用时
@@ -842,7 +842,7 @@ export default function MemoryMatrix({
                     </p>
 
                     {/* Missed targets summary */}
-                    <div className="bg-zinc-900 border border-zinc-800 px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
+                    <div className="bg-zinc-900 border border-theme px-4 py-2.5 rounded-xl w-full mt-4 flex items-center justify-around text-left">
                       <div>
                         <span className="text-[10px] text-muted block leading-none">
                           正确回忆
@@ -914,7 +914,7 @@ export default function MemoryMatrix({
 
       {/* How to Play Guide */}
       <div
-        className={`max-w-md mx-auto w-full flex flex-col gap-2 p-3 rounded-xl border ${"bg-zinc-900/40 border border-zinc-800/40"}`}
+        className={`max-w-md mx-auto w-full flex flex-col gap-2 p-3 rounded-xl border ${"bg-zinc-900/40 border border-theme"}`}
       >
         <div className="flex justify-between items-center px-1">
           <span
@@ -938,7 +938,7 @@ export default function MemoryMatrix({
             className={`mt-0.5 p-2.5 rounded-lg border text-[10px] leading-relaxed flex flex-col gap-1.5 ${
               false
                 ? "bg-[#FAF6EE]/80 border-[#E1D4C0] text-[#6C5E53]"
-                : "bg-zinc-950/40 border-zinc-900 text-secondary"
+                : "bg-zinc-950/40 border-theme text-secondary"
             }`}
           >
             <p>

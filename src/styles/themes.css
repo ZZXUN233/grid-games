@@ -6,26 +6,26 @@
 
 :root,
 [data-theme="minimalism"][data-dark="true"] {
-  --color-bg: #121212;
-  --color-bg-card: #1a1a1a;
-  --color-bg-elevated: #2a2a2a;
-  --color-bg-overlay: #0d0d0d;
-  --color-bg-inset: #0a0a0a;
+  --color-bg: #0e0e0e;
+  --color-bg-card: #161616;
+  --color-bg-elevated: #1e1e1e;
+  --color-bg-overlay: #0a0a0a;
+  --color-bg-inset: #080808;
 
-  --color-text: #ffffff;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #6b6b6b;
+  --color-text: #e8e8e8;
+  --color-text-secondary: #9ca3af;
+  --color-text-muted: #6b7280;
 
-  --color-border: #262626;
-  --color-border-hover: #3a3a3a;
+  --color-border: #222222;
+  --color-border-hover: #333333;
 
   --color-accent: #3eb489;
   --color-accent-hover: #4cd0a0;
   --color-accent-bg: rgba(62, 180, 137, 0.1);
   --color-accent-border: rgba(62, 180, 137, 0.25);
 
-  --color-grid-bg: #1e1e1e;
-  --color-grid-border: #2e2e2e;
+  --color-grid-bg: #181818;
+  --color-grid-border: #282828;
   --color-grid-hover-bg: #2d2d2d;
   --color-grid-hover-border: #3eb489;
   --color-grid-active-bg: #3eb489;
@@ -87,26 +87,26 @@
 
 /* ======================== 深邃炭黑 ======================== */
 [data-theme="charcoal"][data-dark="true"] {
-  --color-bg: #121214;
-  --color-bg-card: #18181c;
-  --color-bg-elevated: #222226;
-  --color-bg-overlay: #0e0e10;
-  --color-bg-inset: #09090b;
+  --color-bg: #0c0c0e;
+  --color-bg-card: #141416;
+  --color-bg-elevated: #1a1a1e;
+  --color-bg-overlay: #08080a;
+  --color-bg-inset: #050506;
 
-  --color-text: #f4f4f5;
-  --color-text-secondary: #a1a1aa;
-  --color-text-muted: #6b6b73;
+  --color-text: #e8e8ec;
+  --color-text-secondary: #a0a0a8;
+  --color-text-muted: #686870;
 
-  --color-border: #27272a;
-  --color-border-hover: #3f3f46;
+  --color-border: #202024;
+  --color-border-hover: #323236;
 
   --color-accent: #d97706;
   --color-accent-hover: #f59e0b;
   --color-accent-bg: rgba(217, 118, 6, 0.1);
   --color-accent-border: rgba(217, 118, 6, 0.25);
 
-  --color-grid-bg: #222226;
-  --color-grid-border: #303036;
+  --color-grid-bg: #1a1a1e;
+  --color-grid-border: #28282e;
   --color-grid-hover-bg: #2e2e36;
   --color-grid-hover-border: #d97706;
   --color-grid-active-bg: rgba(217, 118, 6, 0.2);
@@ -164,8 +164,8 @@
   --color-text-secondary: #86efac;
   --color-text-muted: #4a7c65;
 
-  --color-border: #1e3a2f;
-  --color-border-hover: #2d5a48;
+  --color-border: #1a2d23;
+  --color-border-hover: #214433;
 
   --color-accent: #10b981;
   --color-accent-hover: #34d399;
@@ -221,26 +221,26 @@
 
 /* ======================== 温暖摩卡 ======================== */
 [data-theme="mocha"][data-dark="true"] {
-  --color-bg: #171311;
-  --color-bg-card: #201a17;
-  --color-bg-elevated: #2a231f;
-  --color-bg-overlay: #0f0c0a;
-  --color-bg-inset: #0a0807;
+  --color-bg: #12100e;
+  --color-bg-card: #1a1614;
+  --color-bg-elevated: #221d1a;
+  --color-bg-overlay: #0c0a08;
+  --color-bg-inset: #070605;
 
-  --color-text: #fdf8f5;
-  --color-text-secondary: #d5c3b6;
-  --color-text-muted: #8f7a6d;
+  --color-text: #e8dfd5;
+  --color-text-secondary: #b8a89c;
+  --color-text-muted: #786a62;
 
-  --color-border: #392e2a;
-  --color-border-hover: #54433c;
+  --color-border: #2a221e;
+  --color-border-hover: #3d322c;
 
   --color-accent: #f4a261;
   --color-accent-hover: #e76f51;
   --color-accent-bg: rgba(244, 162, 97, 0.1);
   --color-accent-border: rgba(244, 162, 97, 0.25);
 
-  --color-grid-bg: #2a231f;
-  --color-grid-border: #423530;
+  --color-grid-bg: #221d1a;
+  --color-grid-border: #302824;
   --color-grid-hover-bg: #3a302b;
   --color-grid-hover-border: #f4a261;
   --color-grid-active-bg: rgba(244, 162, 97, 0.2);
@@ -288,26 +288,26 @@
 
 /* ======================== 浩瀚深蓝 ======================== */
 [data-theme="cobalt"][data-dark="true"] {
-  --color-bg: #0b0f19;
-  --color-bg-card: #10172a;
-  --color-bg-elevated: #1e293b;
-  --color-bg-overlay: #070b12;
-  --color-bg-inset: #04070c;
+  --color-bg: #080b12;
+  --color-bg-card: #0e121c;
+  --color-bg-elevated: #141824;
+  --color-bg-overlay: #05070c;
+  --color-bg-inset: #030408;
 
-  --color-text: #f1f5f9;
-  --color-text-secondary: #94a3b8;
-  --color-text-muted: #64748b;
+  --color-text: #d8e2f0;
+  --color-text-secondary: #8494b0;
+  --color-text-muted: #556078;
 
-  --color-border: #1e293b;
-  --color-border-hover: #334155;
+  --color-border: #161e2e;
+  --color-border-hover: #222c42;
 
   --color-accent: #38bdf8;
   --color-accent-hover: #7dd3fc;
   --color-accent-bg: rgba(56, 189, 248, 0.1);
   --color-accent-border: rgba(56, 189, 248, 0.25);
 
-  --color-grid-bg: #1e293b;
-  --color-grid-border: #334155;
+  --color-grid-bg: #141824;
+  --color-grid-border: #1a2234;
   --color-grid-hover-bg: #253248;
   --color-grid-hover-border: #38bdf8;
   --color-grid-active-bg: rgba(56, 189, 248, 0.2);
@@ -355,26 +355,26 @@
 
 /* ======================== 抗疲劳书卷 ======================== */
 [data-theme="sepia-light"][data-dark="true"] {
-  --color-bg: #1a1612;
-  --color-bg-card: #221d18;
-  --color-bg-elevated: #2d2620;
-  --color-bg-overlay: #110e0b;
-  --color-bg-inset: #0a0806;
+  --color-bg: #14100c;
+  --color-bg-card: #1c1712;
+  --color-bg-elevated: #241e18;
+  --color-bg-overlay: #0c0906;
+  --color-bg-inset: #070504;
 
-  --color-text: #f0e6d8;
-  --color-text-secondary: #bfaa96;
-  --color-text-muted: #7a6b5e;
+  --color-text: #e0d4c5;
+  --color-text-secondary: #ad9a88;
+  --color-text-muted: #6d5f54;
 
-  --color-border: #3a3028;
-  --color-border-hover: #56483b;
+  --color-border: #2a221a;
+  --color-border-hover: #3d3228;
 
   --color-accent: #c9955e;
   --color-accent-hover: #b88450;
   --color-accent-bg: rgba(201, 149, 94, 0.1);
   --color-accent-border: rgba(201, 149, 94, 0.25);
 
-  --color-grid-bg: #2d2620;
-  --color-grid-border: #3a3028;
+  --color-grid-bg: #241e18;
+  --color-grid-border: #30261e;
   --color-grid-hover-bg: #362e27;
   --color-grid-hover-border: #c9955e;
   --color-grid-active-bg: rgba(201, 149, 94, 0.2);
